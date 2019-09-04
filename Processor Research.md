@@ -1,16 +1,32 @@
 # Processor Research 
 
-Random thoughts/notes
+thoughts/notes
 
 
 
-#### Memory pages: 
-
-memory pages are a fixed length block of virtual memory, described by a single entry in the page table 
+**memory pages** are a fixed length block of virtual memory, described by a single entry in the page table 
 
 
 
-**page table** 
+### questions that need answering
+
+* how to handle memory, treat memory and I/O the same? Create memory pages? how to handle "slots"
+
+  8051 has page 0 for stack page 1 for "register space"
+
+
+
+### Addressing Modes
+
+------
+
+* **Implied**: Opcode has a defined source/destination and does not need to be specified
+* **Immediate**: #, uses data given in operand (constant) ``MOV #35H, A`
+* **Register Addressing**: R, Addresses a register 
+* **Absolute**: Gets the value at an address 
+* **Indirect**: Gets the value from the address that the operand specifies   
+
+
 
 
 
