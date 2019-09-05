@@ -1,8 +1,4 @@
-# Processor Research 
-
-thoughts/notes
-
-
+**Cosmic** is a software simulated, from-scratch, 8-bit microcomputer designed to resemble retro computers. Cosmic consists of many parts including a simulated CPU, underlaying system, inputs and outputs, and graphics. In addition to the simulated machine, we plan to write software that targets the device. The goal of Cosmic is to develop a system that is equivalent to an Apple II, Commodore 64, or similar machines of the early 1980s
 
 **memory pages** are a fixed length block of virtual memory, described by a single entry in the page table 
 
@@ -13,6 +9,10 @@ thoughts/notes
 * how to handle memory, treat memory and I/O the same? Create memory pages? how to handle "slots"
 
   8051 has page 0 for stack page 1 for "register space"
+
+
+
+
 
 
 
