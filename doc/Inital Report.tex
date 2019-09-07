@@ -31,29 +31,38 @@ carmank@etown.edu}
 \maketitle
 
 \begin{abstract}
-Cosmic is a software simulated, from-scratch, 8-bit microcomputer designed to resemble retro computers. Cosmic consists of many parts including a simulated CPU, underlaying system, inputs and outputs, and graphics. In addition to the simulated machine, we plan to write software that targets the device. The goal of Cosmic is to develop a system that is equivalent to an Apple II, TRS-80, and similar machines of the early 1980s
+Cosmic is a software simulated, from-scratch, 8-bit microcomputer designed to resemble retro computers. Cosmic consists of many parts including a simulated CPU, underlaying system, inputs and outputs, and graphics. In addition to the simulated machine, we plan to write software that targets the device. The goal of Cosmic is to develop a system that is equivalent to an Apple II, TRS-80, and similar machines of the era.
 \end{abstract}
 
 \begin{IEEEkeywords}
-retrocomputing, simulation, emulation, somethingelse
+retro-computing, simulation, emulation.
 \end{IEEEkeywords}
 
 \section{Introduction}
-The cosmic project can be broken down into X main parts
+The cosmic project can be broken down into 4 main parts
 \begin{itemize}
 	\item \textbf{Cosmic Processor} - The simulated CPU used to drive the rest of the system. The CosmicCPU is comparable to the Zilog Z80 and the MOS 6502.
 	\item \textbf{Cosmic System} - This is everything that is found on the mainboard of a similar  physical machine, things like memory, input \& output, graphics, and audio. This also will fit in with appropriate machines like the Apple II.
 	\item \textbf{Cosmic Software}  - This portion is software written that is not directly part of cosmic. This includes an Assembler for the Cosmic Instruction set and software written that is targeted to run on a Cosmic system.
-	\item \textbf{Auxillary Software} - This porition is the software written to run on a modern computer. This will be the actual simulation environment and an assembler for Cosmic
+	\item \textbf{Auxiliary Software} - This porition is the software written to run on a modern computer. This will be the actual simulation environment and an assembler for Cosmic while also having a user-friendly panel to use it in.
 \end{itemize}
+
 
 Once finished the simulated system will operate similarly to a computer of the early 1980's, primarily the Apple II. 
 
 \section{Background}
 
-The largest source of background information is in the machines that Cosmic is made to fit in with. As previously mentioned the two primary reference devices are the Apple II and the TRS-80 containing the MOS 6502 and the Zilog Z80 respectively. 
+The largest source of background information is in the machines that Cosmic is designed to resemble. As previously mentioned, the two primary reference devices are the Apple II and the TRS-80 containing the MOS 6502 and the Zilog Z80, respectively. \\\\ There are a few other projects out there that are similar to what we are doing. Emulators of similar devices will be helpful to get design inspiration. Unlike emulators, we will not have the same design constraints adding a sense of freedom when creating the system.  Outside of emulators, there are a few projects where a developer created a self-defined simulated platform. One such is project is an 8-bit Assembler and Simulator written by Marco "Schweigi" Schweighauser\cite{b1}. This project is similar to our first step of creating a processor, and an assembler for the Cosmic Processor.\\
+
+    Luckily devices of the time have been very well documented in the past 40 years. This documentation makes
+reverse-engineering the systems and processors very easy and allows us to figure out how
+engineers of yesterday solved problems. 
 
 
+\begin{thebibliography}{00}
+\bibitem{b1} Schweighauser, M. (2019). Schweigi/assembler-simulator. [online] GitHub. Available at: https://github.com/Schweigi/assembler-simulator [Accessed 7 Sep. 2019].
+
+\end{thebibliography}
 
 
 \end{document}
