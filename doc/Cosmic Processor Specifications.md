@@ -1,10 +1,52 @@
-# Cosmic Processor Specifications
+# Cosmic Processor Specifications (Coz502)
 
-------
+-------
 
-#### Instruction Set
+## Registers
 
-| HiLoi    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
+-----
+
+### General Registers
+
+* 8, 8-bit general registers that can be used for any purpose
+
+  **A**, **B**, **C**, **D**, **E**, **F**, **G**, **H**
+
+  **C/D**, **E/F,** **G/H**, can be grouped together to be used as 3 16-bit registers. [**maybe**]
+
+  **A** is the accumulator, **B** is specifically not grouped to be used by instructions as a return or a check (many instructions use B to check conditions or values)
+
+* 1, 16-bit Stack Pointer
+
+  Stack pointer points to a position in memory for the stack. Can be changed? Increments/Decrements with ``PUSH`` and ``POP`` 
+
+* 1, 16-bit Program Counter
+
+  Holds the current position in memory that is being read from. 
+
+* 1, 8-bit status register
+
+  ```
+  7  bit  0
+  xxxx xxxx
+  |||| ||||
+  |||| |||+-- 
+  |||| ||+---
+  |||| |+----
+  |||| +-----
+  |||+-------
+  ||+--------
+  |+---------
+  +----------
+  ```
+
+  
+
+## Instruction Set
+
+----
+
+| Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
 | -------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | **0x00** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 | **0x10** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
@@ -35,9 +77,7 @@
 
 **Indirect:** A position in memory is given, the data is at the position described.
 
-## Numerical Operators
-
-------
+## Arithmetic and Logic Operations
 
 ### ADD
 
@@ -95,9 +135,17 @@ Rotate Left
 
 Rotate Right
 
-## Control Operations
+### ASL
 
--------
+Arithmetic Shift Left
+
+### ASR
+
+Arithmetic Shift Right
+
+
+
+## Control Flow Operations
 
 ### JMP
 
@@ -111,9 +159,25 @@ Jump Equals Zero
 
 Jump Not Equals Zero
 
-### JMB
+### JCC
 
-Jump if bit set
+Jump on Carry Clear
+
+### JCS
+
+Jump on Carry Set
+
+### JNR
+
+Jump on negative result
+
+### INT
+
+Interrupt handling
+
+### SID
+
+Set interrupt disable
 
 ### CALL
 
@@ -123,9 +187,11 @@ Call subroutine at location
 
 Returns from subroutine
 
-## Memory Management
+### HCF
 
-----
+Halt and Catch Fire
+
+## Data Handling and Memory Operations
 
 ### MOV
 
@@ -139,15 +205,25 @@ Push to stack
 
 Pop from stack
 
+### NOP
+
+No Operation
+
+
+
+## Pin-out
+
+-----
 
 
 
 
 
+## References
 
+-----
 
-
-
+https://en.wikipedia.org/wiki/Instruction_set_architecture
 
 
 
