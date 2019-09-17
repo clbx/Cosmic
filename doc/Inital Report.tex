@@ -12,7 +12,7 @@
 \begin{document}
 
 \title{
- Cosmic\\A Software Simulated  Computing Platform}
+ Cosmic\\A Software Simulated 8-Bit Computer}
 
 \author{\IEEEauthorblockN{Clay Buxton}
 \IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
@@ -31,7 +31,7 @@ carmank@etown.edu}
 \maketitle
 
 \begin{abstract}
-Cosmic is a software simulated, from-scratch, 8-bit microcomputer designed to resemble retro computers. Cosmic consists of many parts including a simulated CPU, underlaying system, inputs and outputs, and graphics. In addition to the simulated machine, we plan to write software that targets the device. The goal of Cosmic is to develop a system that is equivalent to an Apple II, TRS-80, and similar machines of the era.
+Cosmic is a simulated 8-bit microcomputer designed to resemble retro computers. Cosmic's goal is to simulate a computer resembling that of the early 1980s while keeping hardware design in mind. 
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -39,27 +39,29 @@ retro-computing, simulation, emulation.
 \end{IEEEkeywords}
 
 \section{Introduction}
-The cosmic project can be broken down into 4 main parts
+The cosmic project can be broken down into four main parts
 \begin{itemize}
-	\item \textbf{Cosmic Processor} - The simulated CPU used to drive the rest of the system. The CosmicCPU is comparable to the Zilog Z80 and the MOS 6502. 
-	\item \textbf{Cosmic System} - This is everything that is found on the mainboard of a similar  physical machine, things like memory, input \& output, graphics, and audio. This also will fit in with appropriate machines like the Apple II. Our primary goals are things like RAM, ROM, keyboard, and graphics with stretch goals of I/O, audio and expansion peripherals, 
-	\item \textbf{Cosmic Software}  - This portion is software that will run on the cosmic system. Base goals are a simple kernel, with appropriate drivers, some form of command interpreter, basic utilities, and a simple game or two. Our stretch goals are a BASIC interpreter, a library that reflects coreutils, and a port of a popular game of the time. 
-	\item \textbf{Auxiliary Software} - This portion is the software written to run on a modern computer. This will be the actual simulation environment and an assembler for Cosmic while also having a user-friendly panel to use it in.
+    \item \textbf{Cosmic Processor} - The simulated CPU used to drive the rest of the system. The Cosmic CPU design is comparable to the Zilog Z80 and the MOS 6502. 
+    \item \textbf{Cosmic System} - This is everything that is found on the mainboard of a similar physical machine, things like memory, input \& output, graphics, and audio. This also will fit in with appropriate machines like the Apple II. Our primary goals are things like RAM, ROM, keyboard, and graphics with stretch goals of I/O, audio, and expansion peripherals. 
+    \item \textbf{Cosmic Software}  - This portion is software that will run on the cosmic system. Base goals are a simple kernel, with appropriate drivers, some form of command interpreter, basic utilities, and a simple game or two. Our stretch goals are a BASIC interpreter, a library that reflects coreutils, and a port of a popular game of the time. 
+    \item \textbf{Auxiliary Software} - This portion is the software written to run on a modern computer. This will be the actual simulation environment and an assembler for Cosmic while also having a user-friendly panel to use it in.
 \end{itemize}
 
-The project will be deemed "acceptable" once the processor and auxiliary software are complete and we meet the base goals of the system and software portions.
+The project will be deemed "acceptable" once the processor and auxiliary software are complete, and we meet the base goals of the system and software portions.
 
-Once finished the simulated system will operate similarly to a computer of the early 1980's, primarily the Apple II. 
+Once finished, the simulated system will operate similarly to a computer of the early 1980s, primarily the Apple II. 
 
-The design philosophy of the computer is to create a hardware-like machine. The software will be engineered in a way that will reflect the hardware it's based around without having to deal with the nuances of a physical machine. 
+The design philosophy of the computer is to create a hardware-like machine. The software will be engineered in a way that will reflect the hardware it is based around without having to deal with the nuances of a physical machine. Features like chip pinout, busses, and a physical board will be taken into account while things like timing will be disregarded. 
+
+Neither team member is taking the direct lead on any specific part of the project at the moment, though we will probably work on things independently as the project progresses and there are more availble tasks
 
 \section{Background}
 
-The largest source of background information is in the machines that Cosmic is designed to resemble. As previously mentioned, the two primary reference devices are the Apple II and the TRS-80 containing the MOS 6502 and the Zilog Z80, respectively. \\\\ There are a few other projects out there that are similar to what we are doing. Emulators of similar devices will be helpful to get design inspiration. Unlike emulators, we will not have the same design constraints adding a sense of freedom when creating the system.  Outside of emulators, there are a few projects where a developer created a self-defined simulated platform. One such is project is an 8-bit Assembler and Simulator written by Marco "Schweigi" Schweighauser\cite{b1}. This project is similar to our first step of creating a processor, and an assembler for the Cosmic Processor.\\ Another project that influenced the creation of Cosmic is David Murray's Commander X16 project\cite{b2}. Unlike the Assembler-Simulator this is a "home-brew" physical computer made using off the shelf parts. While this project uses the 6502, the design of the system gives a lot of inspiration to the development of Cosmic.
+The largest source of background information is in the machines that Cosmic is designed to resemble. As previously mentioned, the two primary reference devices are the Apple II and the TRS-80 containing the MOS 6502 and the Zilog Z80, respectively. \\\\ There are a few other projects out there that are similar to what we are doing. Emulators of similar devices will be helpful to get design inspiration. Unlike emulators, we will not have the same design constraints adding a sense of freedom when creating the system.  Outside of emulators, there are a few projects where a developer created a self-defined simulated platform. One such is project is an 8-bit Assembler and Simulator written by Marco "Schweigi" Schweighauser\cite{b1}. This project is similar to our first step of creating a processor, and an assembler for the Cosmic Processor.\\ Another project that influenced the creation of Cosmic is David Murray's Commander X16 project\cite{b2}. Unlike the Assembler-Simulator this is a "home-brew" physical computer made using off the shelf parts. This project uses the 6502, and the design of the system gives much inspiration to the development of Cosmic.
 
     Luckily devices of the time have been very well documented in the past 40 years. This documentation makes
 reverse-engineering the systems and processors very easy and allows us to figure out how
-engineers of yesterday solved problems. 
+engineers of yesterday solved problems that we may encounter while designing our system. 
 
 
 \begin{thebibliography}{00}
