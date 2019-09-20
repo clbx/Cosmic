@@ -30,14 +30,14 @@
   7  bit  0
   xxxx xxxx
   |||| ||||
-  |||| |||+-- 
-  |||| ||+---
-  |||| |+----
-  |||| +-----
-  |||+-------
-  ||+--------
-  |+---------
-  +----------
+  |||| |||+-- (N) Negative, high if result is negative
+  |||| ||+--- (O) Overflow, result if overflows carry
+  |||| |+---- (C) Carry/Borrow, result if overflow
+  |||| +----- (Z) Zero
+  |||+-------  X
+  ||+--------  X
+  |+---------  X
+  +----------  X
   ```
 
   
@@ -48,8 +48,8 @@
 
 | Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
 | -------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| **0x00** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x10** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x00** | NOP  |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x10** | ADD# | ADD  | ADD@ | ADDR | SUB# | SUB  | SUB@ | SUBR | MUL# | MUL  | MUL@ | MULR | DIV# | DIV  | DIV@ | DIVR |
 | **0x20** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 | **0x30** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 | **0x40** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
@@ -67,13 +67,13 @@
 
 ### Adressing Modes
 
-**Implied:** Opcode has a defined source no operand is needed. Generally this defined source is the accumulator
+**Implied:** Opcode has a defined source or destination no operand is needed
 
 **Immediate:** Data is given directly in operand
 
 **Absolute:** A position in memory is given, the data is there
 
-**Relative:** The data given is an offset to a certain value, usually the program counter or other system variables
+**Relative:** The data given is an offset to a certain value.
 
 **Indirect:** A position in memory is given, the data is at the position described.
 
@@ -81,19 +81,61 @@
 
 ### ADD
 
-Addition
+Add value with carry
+
+Flags Affected: 
+
+| Assembler | Effect                 | Bytes | Opcode |
+| --------- | ---------------------- | ----- | ------ |
+| ADD #oper | A = A + #oper          | 2     | 0x10   |
+| ADD oper  | A = A + mem[oper]      | 2     | 0x11   |
+| ADD @oper | A = A + mem[mem[oper]] | 2     | 0x12   |
+| ADD RX    | A = A + RX             | 2     | 0x13   |
 
 ### SUB
 
 Subtraction
 
+Flags Affected: 
+
+| Assembler | Effect                 | Bytes | Opcode |
+| --------- | ---------------------- | ----- | ------ |
+| SUB #oper | A = A - #oper          | 2     | 0x14   |
+| SUB oper  | A = A - mem[oper]      | 2     | 0x15   |
+| SUB @oper | A = A - mem[mem[oper]] | 2     | 0x16   |
+| SUB RX    | A = A - RX             | 2     | 0x17   |
+
+### 
+
 ### MUL
 
 Multiplication
 
+Flags Affected: 
+
+| Assembler | Effect                 | Bytes | Opcode |
+| --------- | ---------------------- | ----- | ------ |
+| MUL #oper | A = A * #oper          | 2     | 0x18   |
+| MUL oper  | A = A * mem[oper]      | 2     | 0x19   |
+| MUL @oper | A = A * mem[mem[oper]] | 2     | 0x1A   |
+| MUL RX    | A = A * RX             | 2     | 0x1B   |
+
+### 
+
 ### DIV
 
-Division
+Division, puts remainder in B
+
+Flags Affected: 
+
+| Assembler | Effect                                | Bytes | Opcode |
+| --------- | ------------------------------------- | ----- | ------ |
+| DIV #oper | A = A / #oper, B = Remainder          | 2     | 0x1C   |
+| DIV oper  | A = A / mem[oper], B = Remainder      | 2     | 0x1D   |
+| DIV @oper | A = A / mem[mem[oper]], B = Remainder | 2     | 0x1E   |
+| DIV RX    | A = A / RX, B = Remainder             | 2     | 0x1F   |
+
+### 
 
 ### SHL
 
@@ -127,11 +169,11 @@ Bitwise XOR
 
 Compare
 
-### ROL
+### ~ROL
 
 Rotate Left
 
-### ROR
+### ~ROR
 
 Rotate Right
 
@@ -209,15 +251,33 @@ Pop from stack
 
 No Operation
 
+Flags Affected: None
+
+| Assembler | Effect  | Bytes | Opcode |
+| --------- | ------- | ----- | ------ |
+| NOP       | Nothing | 1     | 0x00   |
+
+### 
+
 
 
 ## Pin-out
 
 -----
 
+**40 Pin Package** (At most)
 
+8 Data Pins							[8]
 
+16 Address Pins					[24]
 
+1 Ready 								[25]
+
+1 Interrupt line	 				  [26]
+
+1 Halt									 [27]
+
+1 Reset								  [28]
 
 ## References
 
