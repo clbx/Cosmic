@@ -8,7 +8,7 @@
 
 ### General Registers
 
-* 8, 8-bit general registers that can be used for any purpose
+* 8x 8-bit general registers that can be used for any purpose
 
   **A**, **B**, **C**, **D**, **E**, **F**, **G**, **H**
 
@@ -16,25 +16,25 @@
 
   **A** is the accumulator, **B** is specifically not grouped to be used by instructions as a return or a check (many instructions use B to check conditions or values)
 
-* 1, 16-bit Stack Pointer
+* 1x, 16-bit Stack Pointer
 
   Stack pointer points to a position in memory for the stack. Can be changed? Increments/Decrements with ``PUSH`` and ``POP`` 
 
-* 1, 16-bit Program Counter
+* 1x 16-bit Program Counter
 
   Holds the current position in memory that is being read from. 
 
-* 1, 8-bit status register
+* 1x 8-bit Status Register
 
   ```
   7  bit  0
   xxxx xxxx
   |||| ||||
-  |||| |||+-- (N) Negative, high if result is negative
-  |||| ||+--- (O) Overflow, result if overflows carry
+  |||| |||+-- (Z) Zero
+  |||| ||+--- (N) Negative, high if result is negative
   |||| |+---- (C) Carry/Borrow, result if overflow
-  |||| +----- (Z) Zero
-  |||+-------  X
+  |||| +----- (O) Overflow, result if overflows carry
+  |||+------- (P) Parity, checks parity
   ||+--------  X
   |+---------  X
   +----------  X
@@ -76,6 +76,8 @@
 **Relative:** The data given is an offset to a certain value.
 
 **Indirect:** A position in memory is given, the data is at the position described.
+
+**Extended Adressing Modes?:** For use with paired 8-bit registers for 16-bit functionality.
 
 ## Arithmetic and Logic Operations
 
@@ -168,18 +170,6 @@ Bitwise XOR
 ### CMP
 
 Compare
-
-### ~ROL
-
-Rotate Left
-
-### ~ROR
-
-Rotate Right
-
-### ASL
-
-Arithmetic Shift Left
 
 ### ASR
 
