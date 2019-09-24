@@ -12,9 +12,9 @@
 
   **A**, **B**, **C**, **D**, **E**, **F**, **G**, **H**
 
-  **C/D**, **E/F,** **G/H**, can be grouped together to be used as 3 16-bit registers. [**maybe**]
+  **AB**,**CD**, **EF,** **GH**, can be grouped together to be used as 4 16-bit registers. [**maybe**]
 
-  **A** is the accumulator, **B** is specifically not grouped to be used by instructions as a return or a check (many instructions use B to check conditions or values)
+  **A** is the accumulator in 8-bit operations, A/B becomes Accumulator in 16-bit operations 
 
 * 1x, 16-bit Stack Pointer
 
@@ -46,24 +46,26 @@
 
 ----
 
-| Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
-| -------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| **0x00** | NOP  |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x10** | ADD# | ADD  | ADD@ | ADDR | SUB# | SUB  | SUB@ | SUBR | MUL# | MUL  | MUL@ | MULR | DIV# | DIV  | DIV@ | DIVR |
-| **0x20** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x30** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x40** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x50** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x60** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x70** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x80** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x90** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xA0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xB0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xC0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xD0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xE0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xF0** |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+Bolded instructions are 16-bit
+
+| Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04     | 0x05    | 0x06     | 0x07     | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C     | 0x0D    | 0x0E     | 0x0F     |
+| -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- |
+| **0x00** | NOP  | HCF  |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x10** | ADD# | ADD  | ADD@ | ADDR | **ADD#** | **ADD** | **ADD@** | **ADDR** | SUB# | SUB  | SUB@ | SUBR | **SUB#** | **SUB** | **SUB@** | **SUBR** |
+| **0x20** | MUL# | MUL  | MUL@ | MULR | **MUL#** | **MUL** | **MUL@** | **MULR** | DIV# | DIV  | DIV@ | DIVR | **DIV#** | **DIV** | **DIV@** | **DIVR** |
+| **0x30** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x40** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x50** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x60** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x70** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x80** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x90** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xA0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xB0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xC0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xD0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xE0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0xF0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
 
 ### Adressing Modes
 
@@ -81,18 +83,22 @@
 
 ## Arithmetic and Logic Operations
 
-### ADD
+### ADD/ADDX 
 
 Add value with carry
 
 Flags Affected: 
 
-| Assembler | Effect                 | Bytes | Opcode |
-| --------- | ---------------------- | ----- | ------ |
-| ADD #oper | A = A + #oper          | 2     | 0x10   |
-| ADD oper  | A = A + mem[oper]      | 2     | 0x11   |
-| ADD @oper | A = A + mem[mem[oper]] | 2     | 0x12   |
-| ADD RX    | A = A + RX             | 2     | 0x13   |
+| Assembler           | Effect                 | Bytes | Opcode |
+| ------------------- | ---------------------- | ----- | ------ |
+| ADD #oper           | A = A + #oper          | 2     | 0x10   |
+| ADD oper            | A = A + mem[oper]      | 2     | 0x11   |
+| ADD @oper           | A = A + mem[mem[oper]] | 2     | 0x12   |
+| ADD RX              | A = A + RX             | 2     | 0x13   |
+| **16bit** ADD #oper | A = A + #oper          | 3     | 0x14   |
+| **16bit** ADD oper  | A = A + mem[oper]      | 3     | 0x15   |
+| **16bit** ADD @oper | A = A + mem[mem[oper]] | 3     | 0x16   |
+| **16bit** ADD RXX   | A = A + RXX            | 2     | 0x27   |
 
 ### SUB
 
@@ -100,14 +106,18 @@ Subtraction
 
 Flags Affected: 
 
-| Assembler | Effect                 | Bytes | Opcode |
-| --------- | ---------------------- | ----- | ------ |
-| SUB #oper | A = A - #oper          | 2     | 0x14   |
-| SUB oper  | A = A - mem[oper]      | 2     | 0x15   |
-| SUB @oper | A = A - mem[mem[oper]] | 2     | 0x16   |
-| SUB RX    | A = A - RX             | 2     | 0x17   |
+| Assembler           | Effect                 | Bytes | Opcode |
+| ------------------- | ---------------------- | ----- | ------ |
+| SUB #oper           | A = A - #oper          | 2     | 0x18   |
+| SUB oper            | A = A - mem[oper]      | 2     | 0x19   |
+| SUB @oper           | A = A - mem[mem[oper]] | 2     | 0x1A   |
+| SUB RX              | A = A - RX             | 2     | 0x1B   |
+| **16bit** SUB #oper | A = A - #oper          | 3     | 0x1C   |
+| **16bit** SUB oper  | A = A - mem[oper]      | 3     | 0x1D   |
+| **16bit** SUB @oper | A = A - mem[mem[oper]] | 3     | 0x1E   |
+| **16bit** SUB RXX   | A = A - RXX            | 2     | 0x1F   |
 
-### 
+###  
 
 ### MUL
 
@@ -115,27 +125,37 @@ Multiplication
 
 Flags Affected: 
 
-| Assembler | Effect                 | Bytes | Opcode |
-| --------- | ---------------------- | ----- | ------ |
-| MUL #oper | A = A * #oper          | 2     | 0x18   |
-| MUL oper  | A = A * mem[oper]      | 2     | 0x19   |
-| MUL @oper | A = A * mem[mem[oper]] | 2     | 0x1A   |
-| MUL RX    | A = A * RX             | 2     | 0x1B   |
+| Assembler           | Effect                 | Bytes | Opcode |
+| ------------------- | ---------------------- | ----- | ------ |
+| MUL #oper           | A = A * #oper          | 2     | 0x20   |
+| MUL oper            | A = A * mem[oper]      | 2     | 0x21   |
+| MUL @oper           | A = A * mem[mem[oper]] | 2     | 0x22   |
+| MUL RX              | A = A * RX             | 2     | 0x23   |
+| **16bit** MUL #oper | A = A * #oper          | 3     | 0x24   |
+| **16bit** MUL oper  | A = A * mem[oper]      | 3     | 0x25   |
+| **16bit** MUL @oper | A = A * mem[mem[oper]] | 3     | 0x26   |
+| **16bit** MUL RXX   | A = A * RXX            | 2     | 0x27   |
+
+### 
 
 ### 
 
 ### DIV
 
-Division, puts remainder in B
+Division, puts remainder in B **What about 16-bit?**
 
 Flags Affected: 
 
-| Assembler | Effect                                | Bytes | Opcode |
-| --------- | ------------------------------------- | ----- | ------ |
-| DIV #oper | A = A / #oper, B = Remainder          | 2     | 0x1C   |
-| DIV oper  | A = A / mem[oper], B = Remainder      | 2     | 0x1D   |
-| DIV @oper | A = A / mem[mem[oper]], B = Remainder | 2     | 0x1E   |
-| DIV RX    | A = A / RX, B = Remainder             | 2     | 0x1F   |
+| Assembler           | Effect                 | Bytes | Opcode |
+| ------------------- | ---------------------- | ----- | ------ |
+| DIV #oper           | A = A / #oper          | 2     | 0x28   |
+| DIV oper            | A = A / mem[oper]      | 2     | 0x29   |
+| DIV @oper           | A = A / mem[mem[oper]] | 2     | 0x2A   |
+| DIV RX              | A = A / RX             | 2     | 0x2B   |
+| **16bit** DIV #oper | A = A / #oper          | 3     | 0x2C   |
+| **16bit** DIV oper  | A = A / mem[oper]      | 3     | 0x2D   |
+| **16bit** DIV @oper | A = A / mem[mem[oper]] | 3     | 0x2E   |
+| **16bit** DIV RXX   | A = A / RXX            | 2     | 0x2F   |
 
 ### 
 
@@ -223,11 +243,23 @@ Returns from subroutine
 
 Halt and Catch Fire
 
+Stops execution of the machine entirely 
+
+| Assembler | Effect        | Bytes | Opcode |
+| --------- | ------------- | ----- | ------ |
+| HCF       | Stops Machine | 1     | 0x01   |
+
+###  
+
 ## Data Handling and Memory Operations
 
 ### MOV
 
 Move memory
+
+### SWP
+
+Swap register with accumulator
 
 ### PUSH
 
