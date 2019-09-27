@@ -101,21 +101,11 @@ int main(int, char**)
             ImGui::EndMainMenuBar();
         }
 
+        
+        
 
-        ImGui::SetNextWindowPos(ImVec2(60,95), ImGuiCond_Once);
-        ImGui::Begin("Editor");
-            static char text[1024 * 16] ="";
-            ImGui::InputTextMultiline("##source", text, 1024*64, ImVec2(350, ImGui::GetTextLineHeight() * 42));
-        ImGui::End();
 
-        printf("%s",text);
 
-        ImGui::SetNextWindowPos(ImVec2(60,30), ImGuiCond_Once);
-        ImGui::Begin("Control");
-            ImGui::Button("Assemble"); ImGui::SameLine();
-            ImGui::Button("Run"); ImGui::SameLine();
-            ImGui::Button("Step"); ImGui::SameLine();
-        ImGui::End();
 
 
         ImGui::SetNextWindowPos(ImVec2(1080,20), ImGuiCond_Once);
