@@ -34,10 +34,12 @@ class proc{
         bool addressBus[16];
 
 
+
         /* Processor directive functions */
         proc();
+        void busWrite(uint16_t, uint8_t);
+        uint16_t busRead();
         void reset();
-        bool load(const char*);
         void execute(uint8_t);
 
         /* Memory functions */

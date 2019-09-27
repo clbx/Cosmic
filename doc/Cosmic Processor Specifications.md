@@ -50,10 +50,10 @@ Bolded instructions are 16-bit
 
 | Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04     | 0x05    | 0x06     | 0x07     | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C     | 0x0D    | 0x0E     | 0x0F     |
 | -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- |
-| **0x00** | NOP  | HCF  |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x00** | NOP  | HCF  | PUSH | POP  | SWP      |         |          |          |      |      |      |      |          |         |          |          |
 | **0x10** | ADD# | ADD  | ADD@ | ADDR | **ADD#** | **ADD** | **ADD@** | **ADDR** | SUB# | SUB  | SUB@ | SUBR | **SUB#** | **SUB** | **SUB@** | **SUBR** |
 | **0x20** | MUL# | MUL  | MUL@ | MULR | **MUL#** | **MUL** | **MUL@** | **MULR** | DIV# | DIV  | DIV@ | DIVR | **DIV#** | **DIV** | **DIV@** | **DIVR** |
-| **0x30** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| **0x30** | MOV  | MOV  | MOV  | MOV  | MOV      | MOV     | MOV      | MOV      | MOV  | MOV  | MOV  | MOV  | MOV      | MOV     | MOV      | MOV      |
 | **0x40** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
 | **0x50** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
 | **0x60** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
@@ -257,17 +257,54 @@ Stops execution of the machine entirely
 
 Move memory
 
+| Assembler        | Effect                          | Bytes | Opcode |
+| ---------------- | ------------------------------- | ----- | ------ |
+| MOV #oper,A      | A = #oper                       |       | 0x30   |
+| MOV #oper,R#     | R#= #oper                       |       | 0x31   |
+| MOV #oper,oper   | mem[oper] = #oper               |       | 0x32   |
+| MOV #oper,@oper  | mem[mem[oper]] = #oper          |       | 0x33   |
+| MOV R#, A        | A = R#                          |       | 0x34   |
+| MOV R#, R#       | R# = R#                         |       | 0x35   |
+| MOV R#, oper     | mem[oper] = R#                  |       | 0x36   |
+| MOV R#, @oper    | mem[mem[oper]] = R#             |       | 0x37   |
+| MOV oper,A       | A = mem[oper]                   |       | 0x38   |
+| MOV oper, R#     | R# = mem[oper]                  |       | 0x39   |
+| MOV oper, oper   | mem[oper] = mem[oper]           |       | 0x3A   |
+| MOV oper,@oper   | mem[mem[oper]] = mem[oper]      |       | 0x3B   |
+| MOV @oper, A     | A = [mem[mem[oper]]             |       | 0x3C   |
+| MOV @oper,R#     | R# = [mem[mem[oper]]]           |       | 0x3D   |
+| MOV @oper, oper  | mem[oper] = mem[mem[oper]]      |       | 0x3E   |
+| MOV @oper, @oper | mem[mem[oper]] = mem[mem[oper]] |       | 0x3F   |
+
+### 
+
 ### SWP
 
 Swap register with accumulator
+
+| Assembler | Effect                              | Bytes | Opcode |
+| --------- | ----------------------------------- | ----- | ------ |
+| SWP R#    | Swaps register with the accumulator | 2     | 0x04   |
+
+### 
 
 ### PUSH
 
 Push to stack
 
+| Assembler | Effect                      | Bytes | Opcode |
+| --------- | --------------------------- | ----- | ------ |
+| PUSH      | Pushes accumulator to stack | 1     | 0x02   |
+
 ### POP
 
 Pop from stack
+
+| Assembler | Effect                           | Bytes | Opcode |
+| --------- | -------------------------------- | ----- | ------ |
+| POP       | Pops top of stack to accumulator | 1     | 0x03   |
+
+### 
 
 ### NOP
 
@@ -280,26 +317,6 @@ Flags Affected: None
 | NOP       | Nothing | 1     | 0x00   |
 
 ### 
-
-
-
-## Pin-out
-
------
-
-**40 Pin Package** (At most)
-
-8 Data Pins							[8]
-
-16 Address Pins					[24]
-
-1 Ready 								[25]
-
-1 Interrupt line	 				  [26]
-
-1 Halt									 [27]
-
-1 Reset								  [28]
 
 ## References
 
