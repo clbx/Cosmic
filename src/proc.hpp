@@ -21,32 +21,31 @@
  */
 class proc{
     public:
+        //Public for Debugger Only
         uint16_t pc; //Program Counter
         uint16_t sp; //Stack Pointer
         uint8_t r[8]; // General Registers
         uint8_t st; //Status Register
 
-        //TODO: Remove internal RAM
-        uint8_t mem[128];
-
-        //TODO: Implement Pinout
-        bool dataBus[8];
-        bool addressBus[16];
-
-
-
-        /* Processor directive functions */
+        //Public for System Usage
         proc();
         void busWrite(uint16_t, uint8_t);
         uint16_t busRead();
         void reset();
         void execute(uint8_t);
-
-        /* Memory functions */
-        uint8_t nextByte();
         
+        //Figure out way to handle bus
 
     private:
+
+        //Addresing Modes
+        void IMPLIED();
+        void IMMEDIATE();
+        void ABSOLUTE();
+        void RELATIVE();
+        void INDIRECT();
+
+        //Opcodes
         void ADD();
         void SUB();
         void MUL();
