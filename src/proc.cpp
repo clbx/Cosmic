@@ -11,7 +11,13 @@ proc::proc(BusWrite w, BusRead r){
     Write = (BusWrite)w;
     Read = (BusRead)r;
 
-    //TODO: Setup Instruction Table Here.
+    Instruction instruction;
+    //Setup Opcodes
+    instruction.addressing = &proc::IMMEDIATE;
+    instruction.opcode = &proc::ADD;
+    instructionSet[0x10] = instruction;
+
+
     reset();
 }
 

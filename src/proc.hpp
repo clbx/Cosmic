@@ -12,13 +12,10 @@
 #include <cstring>
 #include <map>
 
-
-
 /**
  * The processor for the cosmic system
  * 
  * Holds all of the internals for the cosmic processor, instructions, and I/O.
- * Cannot be run on it's own requires external memory.
  */
 class proc{
 
@@ -28,31 +25,32 @@ class proc{
         typedef void (*BusWrite)(uint16_t,uint8_t);
         typedef uint8_t (*BusRead)(uint16_t);
         
+        //Read and write callbacks for the bus
         BusWrite Write;
         BusRead Read;
 
-        //Instruction Encoding
-        typedef struct instruction{
-            uint8_t addr;       //Addressing Mode Used
-            uint8_t code;       //Opcode
-        } instruction;
+        //Instruction encoding pointers
+        typedef void (*Opcode)(uint8_t);
+        typedef uint8_t(*Addressing)();
 
+        //Instruction encoding
+        typedef struct Instruction{
+            Opcode opcode;
+            Addressing addressing;
+        } Instruction;
 
-        //Addresing Modes (maybe)
-        void IMPLIED();
-        void IMMEDIATE();
-        void ABSOLUTE();
-        void RELATIVE();
-        void INDIRECT();
+        //Instruction Set
+        Instruction instructionSet[256];
 
-        //Opcodes
-        void ADD();
-        void SUB();
-        void MUL();
-        void DIV();
+         //Addresing Modes, return the memory address to start looking at
+        uint16_t IMPLIED();
+        uint16_t IMMEDIATE();
+        uint16_t ABSOLUTE();
+        uint16_t RELATIVE();
+        uint16_t INDIRECT();
 
-        
-
+        //Opcodes. Things like MOV will be a little fucky.
+        void ADD(uint16_t loc); //Gets handed the location in memory to look at.
 
     public:
         //Public for Debugger Only
@@ -66,8 +64,4 @@ class proc{
         void reset();
         void execute(uint8_t);
         
-        //Figure out way to handle bus
-
-    
-
 };
