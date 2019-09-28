@@ -82,7 +82,6 @@ int main(int, char**)
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
                 if(ImGui::MenuItem("Load")){}

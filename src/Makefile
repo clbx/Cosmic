@@ -66,5 +66,8 @@ $(EXE): $(OBJS)
 	rm -f imgui.ini
 	rm -f $(OBJS)
 
+simple:
+	g++ -o cosmic proc.cpp term.cpp
+
 clean:
 	rm -f $(EXE) $(OBJS)

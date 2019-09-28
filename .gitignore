@@ -3,6 +3,7 @@
 *.aux
 *.log
 *.synctex.gz
+cosmic
 
 # Prerequisites
 *.d

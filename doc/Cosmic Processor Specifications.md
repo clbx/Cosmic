@@ -87,7 +87,7 @@ Bolded instructions are 16-bit
 
 Add value with carry
 
-Flags Affected: 
+Flags Affected: Zero, Overflow. 
 
 | Assembler           | Effect                 | Bytes | Opcode |
 | ------------------- | ---------------------- | ----- | ------ |
