@@ -4,6 +4,7 @@
 *.log
 *.synctex.gz
 cosmic
+.vscode/
 
 # Prerequisites
 *.d

@@ -2,8 +2,8 @@
  * @file proc.hpp
  * 
  * @author Clay Buxton (clbx, buxtonc@etown.edu)
- * 
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -18,20 +18,20 @@
  * Holds all of the internals for the cosmic processor, instructions, and I/O.
  */
 class proc{
-
+    
     private:
 
         //Bus callbacks
-        typedef void (*BusWrite)(uint16_t,uint8_t);
+        typedef void (*BusWrite)(uint16_t, uint8_t);
         typedef uint8_t (*BusRead)(uint16_t);
-        
+
         //Read and write callbacks for the bus
         BusWrite Write;
         BusRead Read;
-
+        
         //Instruction encoding pointers
         typedef void (proc::*Opcode)(uint16_t);
-        typedef uint16_t(proc::*Addressing)();
+        typedef uint16_t (proc::*Addressing)();
 
         //Instruction encoding
         typedef struct Instruction{
@@ -39,29 +39,33 @@ class proc{
             Addressing addressing;
         } Instruction;
 
-        //Instruction Set
-        Instruction instructionSet[256];
+        Instruction InstructionSet[256];
 
-         //Addresing Modes, return the memory address to start looking at
-        uint16_t IMPLIED();
-        uint16_t IMMEDIATE();
-        uint16_t ABSOLUTE();
-        uint16_t RELATIVE();
-        uint16_t INDIRECT();
+        
 
-        //Opcodes. Things like MOV will be a little fucky.
-        void ADD(uint16_t loc); //Gets handed the location in memory to look at.
+        // -= ADDRESSING MODES =-
+        uint16_t implied();
+        uint16_t immediate();
+        uint16_t absolute();
+        uint16_t relative();
+        uint16_t indirect();
+
+        // -= OPCODES =-
+        void NOP(uint16_t src);
+
+
 
     public:
-        //Public for Debugger Only
+        //Public for Debugger Only (Package this up eventually)
         uint16_t pc; //Program Counter
         uint16_t sp; //Stack Pointer
         uint8_t r[8]; // General Registers
         uint8_t st; //Status Register
 
         //Public for System Usage
-        proc(BusWrite w, BusRead r);
+        proc(BusRead r, BusWrite w);
         void reset();
-        void execute(uint8_t);
-        
+        void run(uint32_t n);
+        void execute(Instruction i);
+
 };
