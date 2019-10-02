@@ -30,8 +30,8 @@ class proc{
         BusRead Read;
 
         //Instruction encoding pointers
-        typedef void (*Opcode)(uint8_t);
-        typedef uint8_t(*Addressing)();
+        typedef void (proc::*Opcode)(uint16_t);
+        typedef uint16_t(proc::*Addressing)();
 
         //Instruction encoding
         typedef struct Instruction{

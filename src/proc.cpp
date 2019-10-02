@@ -38,5 +38,11 @@ void proc::execute(uint8_t op){
 }
 
 
+uint16_t proc::IMMEDIATE(void){
+    printf("the great googly boogly");
+    return 5;
+}
 
-
+void proc::ADD(uint16_t loc){
+    printf("the great boogly googly");
+}
