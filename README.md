@@ -1,7 +1,7 @@
 # Cosmic
 
 <div style="text-align:center">
-    <img style="width:30%" src="./doc/img/logo.png">
+    <img style="width:20%" src="./doc/img/logo.png">
 </div>
 
 ----
