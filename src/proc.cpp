@@ -6,7 +6,7 @@
  * 
  */
 
-#include "proc.h"
+#include "proc.hpp"
 
 proc::proc(BusRead r, BusWrite w)
 {
