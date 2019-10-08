@@ -1,8 +1,8 @@
 # Cosmic
 
-<div style="text-align:center">
-    <img style="width:30%" src="./doc/img/logo.png">
-</div>
+<p align="center">
+    <a target="_blank" rel="noopener noreferrer"><img width="300" src="./doc/img/logo.png" alt="Cosmic Logo"></a>
+<br></p>
 
 ----
 
