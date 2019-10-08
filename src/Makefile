@@ -6,7 +6,7 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 
 CXXFLAGS = -I../ -I../../ -I../lib/imgui
-CXXFLAGS += -g -Wall -Wformat
+CXXFLAGS += -g -Wall -Wformat -Wno-unknown-pragmas
 LIBS =
 
 ## Using OpenGL loader: gl3w [default]

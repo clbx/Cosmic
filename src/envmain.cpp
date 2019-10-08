@@ -6,8 +6,6 @@
  * 
  */
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -16,9 +14,10 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_memory_editor.h"
 #include "cosproc.hpp"
 
-/* #region some dank Macros */
+#pragma region //Some Dank Macros
 #define BYTE_TO_BINARY_PATTERN "%c %c %c %c  %c %c %c %c"
 #define BYTE_TO_BINARY(byte)  \
   (byte & 0x80 ? '1' : '0'), \
@@ -30,10 +29,11 @@
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0') 
 /*fuck std for having hex and octal but no binary */
+#pragma endregion
 
-/* #endregion */
+#pragma region //System Functions
 
-/* #region Probably will be moved elsewhere in the future becauese it doesn't belong here */
+/*Probably will be moved elsewhere in the future becauese it doesn't belong here */
 
 /**
 * -= Memory and Address Bus=-
@@ -54,12 +54,10 @@ uint8_t MemoryRead(uint16_t address){
     printf(" READ: %X\n",address);
     return 0x00;
 }
+#pragma endregion
 
 
-/* #endregion */
-
-/* #region ImGui Helpers */
-
+#pragma region //ImGui Helper Functions
 static void HelpMarker(const char* desc)
 {
     ImGui::TextDisabled("(?)");
@@ -72,12 +70,12 @@ static void HelpMarker(const char* desc)
         ImGui::EndTooltip();
     }
 }
-/* #endregion */
+#pragma endregion
 
 int main()
 {
 
-    /* #region SDL and OpenGL initialization */
+    #pragma region //SDL and OpenGL Init
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
@@ -101,8 +99,6 @@ int main()
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
 
-
-
     bool err = gl3wInit() != 0;
     if (err)
     {
@@ -122,16 +118,16 @@ int main()
 
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    #pragma endregion
 
-    /* #endregion */
 
-    /* #region System initialization */
+    #pragma region //System setup
 
     cosproc proc = cosproc(MemoryRead, MemoryWrite);    
 
-    /* #endregion */
+    #pragma endregion
 
-    /* #region ImGui Main Loop */
+    #pragma region //ImGui Main Loop
     bool done = false;
     while (!done)
     {
@@ -169,12 +165,23 @@ int main()
 
         ImGui::ShowTestWindow();
 
+
+        /**  -= Debug Window =-
+        *  This window holds debug info
+        *       About the gui.
+        */
+
         ImGui::SetNextWindowPos(ImVec2(1080,20), ImGuiCond_Once);
         ImGui::Begin("Debug");
             ImVec2 mousePos = ImGui::GetMousePos();
             ImGui::Text("%f, %f",mousePos.x,mousePos.y);
         ImGui::End();
 
+        /**  -= Status Window =-
+        *  Shows the status of the registers
+        *  And other basic information about
+        *        the processor
+        */
         ImGui::SetNextWindowSize(ImVec2(225,350),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(10,30),ImGuiCond_Once);
         ImGui::Begin("Status");
@@ -210,7 +217,7 @@ int main()
             ImGui::Columns(1);
 
             ImGui::Separator();
-            ImGui::Text("Status: "BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(proc.st));
+            ImGui::Text("Status: " BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(proc.st));
             ImGui::SameLine();
             HelpMarker("P: Parity\nN: Negative\nO: Overflow\nP: Parity\n");
             ImGui::Text("              P  O C N Z");
@@ -232,9 +239,9 @@ int main()
 
 
     }
-    /* #endregion */
+    #pragma endregion
 
-    /* #region SDL and OpenGl Cleanup */
+    #pragma region //SDL and OpenGl Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -242,7 +249,7 @@ int main()
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    /* #endregion */
+    #pragma endregion
 
     return 0;
 }
