@@ -1,5 +1,5 @@
 /**
- * @file proc.hpp
+ * @file cosproc.hpp
  * 
  * @author Clay Buxton (clbx, buxtonc@etown.edu)
  */
@@ -12,12 +12,15 @@
 #include <cstring>
 #include <map>
 
+
+
 /**
  * The processor for the cosmic system
  * 
  * Holds all of the internals for the cosmic processor, instructions, and I/O.
+ * 
  */
-class proc{
+class cosproc{
     
     private:
 
@@ -30,8 +33,8 @@ class proc{
         BusRead Read;
         
         //Instruction encoding pointers
-        typedef void (proc::*Opcode)(uint16_t);
-        typedef uint16_t (proc::*Addressing)();
+        typedef void (cosproc::*Opcode)(uint16_t);
+        typedef uint16_t (cosproc::*Addressing)();
 
         //Instruction encoding
         typedef struct Instruction{
@@ -54,7 +57,6 @@ class proc{
         void NOP(uint16_t src);
 
 
-
     public:
         //Public for Debugger Only (Package this up eventually)
         uint16_t pc; //Program Counter
@@ -63,7 +65,7 @@ class proc{
         uint8_t st; //Status Register
 
         //Public for System Usage
-        proc(BusRead r, BusWrite w);
+        cosproc(BusRead r, BusWrite w);
         void reset();
         void run(uint32_t n);
         void execute(Instruction i);

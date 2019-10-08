@@ -4,22 +4,80 @@
  * @author Clay Buxton (buxtonc@etown.edu)
  * @author Kevin Carman (carmank@etown.edu)
  * 
- * 
- * 
  */
 
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <SDL2/SDL.h>
+#include <GL/gl3w.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#include <stdio.h>
-#include <SDL.h>
-#include <GL/gl3w.h>    
+#include "cosproc.hpp"
+
+/* #region some dank Macros */
+#define BYTE_TO_BINARY_PATTERN "%c %c %c %c  %c %c %c %c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
+/*fuck std for having hex and octal but no binary */
+
+/* #endregion */
+
+/* #region Probably will be moved elsewhere in the future becauese it doesn't belong here */
+
+/**
+* -= Memory and Address Bus=-
+*  
+* These two functions act as a memory and address bus would on a physical machine
+* They pull from a postision in memory and return to wherever calls them.
+* Callbacks make for a wonderful way to emulate a system that is connected 
+* that avoids using a centralized stationary memory location. 
+*/
+
+void MemoryWrite(uint16_t address, uint8_t value){
+        //TODO: Actually put memory here
+        printf("%X\n",address);
+        printf("%X\n", value);
+}
+
+uint8_t MemoryRead(uint16_t address){
+    printf(" READ: %X\n",address);
+    return 0x00;
+}
 
 
-int main(int, char**)
+/* #endregion */
+
+/* #region ImGui Helpers */
+
+static void HelpMarker(const char* desc)
 {
-    // Setup SDL
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+/* #endregion */
+
+int main()
+{
+
+    /* #region SDL and OpenGL initialization */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
@@ -44,6 +102,7 @@ int main(int, char**)
 
 
 
+
     bool err = gl3wInit() != 0;
     if (err)
     {
@@ -64,7 +123,15 @@ int main(int, char**)
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    // Main loop
+    /* #endregion */
+
+    /* #region System initialization */
+
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);    
+
+    /* #endregion */
+
+    /* #region ImGui Main Loop */
     bool done = false;
     while (!done)
     {
@@ -100,18 +167,57 @@ int main(int, char**)
             ImGui::EndMainMenuBar();
         }
 
-        
-        
-
-
-
-
+        ImGui::ShowTestWindow();
 
         ImGui::SetNextWindowPos(ImVec2(1080,20), ImGuiCond_Once);
         ImGui::Begin("Debug");
-        ImVec2 mousePos = ImGui::GetMousePos();
+            ImVec2 mousePos = ImGui::GetMousePos();
             ImGui::Text("%f, %f",mousePos.x,mousePos.y);
         ImGui::End();
+
+        ImGui::SetNextWindowSize(ImVec2(225,350),ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(10,30),ImGuiCond_Once);
+        ImGui::Begin("Status");
+            ImGui::Text("Registers");
+            ImGui::SameLine();
+            HelpMarker("Registers are the most basic unit of storage in a processor.\n The amount, size, and configuration of registers depends on the architecture of the processor. \n\n General Registers: Cosmic contains 8 8-bit general registers that can also be referenced as 4 16-bit registers. These registers are used for temporarily storing data for operations \n\n Program Counter: A 16-bit register that holds the current position where code is being executed.\n\n Stack Pointer: The location of the top of the stack.\n\n Status Register: Holds current execution data about the system.");
+            ImGui::Separator();
+            ImGui::Columns(2,"8bitreg");    
+            //Left Side
+            ImGui::SetColumnWidth(0,130);
+                ImGui::Text("General Registers");
+                ImGui::Text("A: %X (%d)",proc.r[0],proc.r[0]);
+                ImGui::Text("B: %X (%d)",proc.r[1],proc.r[1]);
+                ImGui::Text("C: %X (%d)",proc.r[2],proc.r[2]);
+                ImGui::Text("D: %X (%d)",proc.r[3],proc.r[3]);
+                ImGui::Text("E: %X (%d)",proc.r[4],proc.r[4]);
+                ImGui::Text("F: %X (%d)",proc.r[5],proc.r[5]);
+                ImGui::Text("G: %X (%d)",proc.r[6],proc.r[6]);
+                ImGui::Text("H: %X (%d)",proc.r[7],proc.r[7]);
+            //Right Side
+            ImGui::NextColumn();
+                ImGui::Text("PC: %X (%d)",proc.pc,proc.pc);
+                ImGui::Text("SP: %X (%d)",proc.sp,proc.sp);
+                    
+            ImGui::Columns(1);
+            ImGui::Separator();
+            ImGui::Columns(2, "16bitreg", false);
+            ImGui::Text("A/B: FIX (FIX)");
+            ImGui::Text("E/F: FIX (FIX)");
+            ImGui::NextColumn();
+            ImGui::Text("C/D: FIX (FIX)");
+            ImGui::Text("G/H: FIX (FIX)");
+            ImGui::Columns(1);
+
+            ImGui::Separator();
+            ImGui::Text("Status: "BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(proc.st));
+            ImGui::SameLine();
+            HelpMarker("P: Parity\nN: Negative\nO: Overflow\nP: Parity\n");
+            ImGui::Text("              P  O C N Z");
+
+            
+        ImGui::End();
+
 
 
         // Rendering
@@ -122,12 +228,13 @@ int main(int, char**)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
 
-
+        
 
 
     }
+    /* #endregion */
 
-    // Cleanup
+    /* #region SDL and OpenGl Cleanup */
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -135,6 +242,8 @@ int main(int, char**)
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
+    /* #endregion */
 
     return 0;
 }
+

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "proc.hpp"
+#include "cosproc.hpp"
 #include <stdlib.h>
 
 uint8_t MemoryRead(uint16_t address){
@@ -14,6 +14,6 @@ void MemoryWrite(uint16_t address, uint8_t value){
 }
 
 int main(){
-     proc chip = proc(MemoryRead, MemoryWrite);
-     chip.run(5);   
+     cosproc chip = cosproc(MemoryRead, MemoryWrite);
+     chip.run(5); 
 }

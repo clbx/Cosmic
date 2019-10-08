@@ -5,6 +5,8 @@
 *.synctex.gz
 cosmic
 .vscode/
+imgui.ini
+
 
 # Prerequisites
 *.d

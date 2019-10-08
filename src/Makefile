@@ -1,5 +1,5 @@
 EXE = cosmic
-SOURCES = envmain.cpp
+SOURCES = envmain.cpp cosproc.cpp
 SOURCES += ../lib/imgui/imgui_impl_sdl.cpp ../lib/imgui/imgui_impl_opengl3.cpp
 SOURCES += ../lib/imgui/imgui.cpp ../lib/imgui/imgui_demo.cpp ../lib/imgui/imgui_draw.cpp ../lib/imgui/imgui_widgets.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
@@ -22,7 +22,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 endif
 
 ifeq ($(UNAME_S), Darwin) #APPLE
-	ECHO_MESSAGE = "Mac OS X"
+	ECHO_MESSAGE = "macOS"
 	LIBS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
 	LIBS += -L/usr/local/lib -L/opt/local/lib
 
@@ -64,10 +64,9 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 	rm -f imgui.ini
-	rm -f $(OBJS)
 
 simple:
-	g++ -o cosmic proc.cpp term.cpp
+	g++ -o cosmic cosproc.cpp term.cpp
 
 clean:
 	rm -f $(EXE) $(OBJS)

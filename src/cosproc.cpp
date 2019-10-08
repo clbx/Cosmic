@@ -1,22 +1,22 @@
 /**
- * @file proc.cpp
+ * @file cosproc.cpp
  * 
  * 
  * 
  * 
  */
 
-#include "proc.hpp"
+#include "cosproc.hpp"
 
-proc::proc(BusRead r, BusWrite w)
+cosproc::cosproc(BusRead r, BusWrite w)
 {
 	Write = (BusWrite)w;
 	Read = (BusRead)r;
 	Instruction instruction;
 
 	//Populate instruction set
-	instruction.addressing = &proc::immediate;
-	instruction.opcode = &proc::NOP;
+	instruction.addressing = &cosproc::immediate;
+	instruction.opcode = &cosproc::NOP;
 	InstructionSet[0x00] = instruction;
 
 	reset();
@@ -24,7 +24,7 @@ proc::proc(BusRead r, BusWrite w)
 	return;
 }
 
-void proc::reset()
+void cosproc::reset()
 {
 	memset(r,0,sizeof(r));
 	pc = 0;
@@ -35,7 +35,7 @@ void proc::reset()
 }
 
 
-void proc::run(uint32_t n)
+void cosproc::run(uint32_t n)
 {
 	uint8_t opcode;
 	Instruction currentInstruction;
@@ -54,7 +54,7 @@ void proc::run(uint32_t n)
 	}
 }
 
-void proc::execute(Instruction i)
+void cosproc::execute(Instruction i)
 {
 	uint16_t src = (this->*i.addressing)();
 	(this->*i.opcode)(src);
@@ -62,7 +62,7 @@ void proc::execute(Instruction i)
 
 /** -= ADDRESSING MODES =- **/
 
-uint16_t proc::immediate()
+uint16_t cosproc::immediate()
 {
     printf("Immediate Addressing\n");
 	return pc;
@@ -75,7 +75,7 @@ uint16_t proc::immediate()
  * Immeditate
  * 1 byte
  */
-void proc::NOP(uint16_t src)
+void cosproc::NOP(uint16_t src)
 {
 	printf("NOP\n");
     return;
