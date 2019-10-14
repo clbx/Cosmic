@@ -52,9 +52,27 @@ class cosproc{
         uint16_t absolute();
         uint16_t relative();
         uint16_t indirect();
+        void dregister();
 
-        // -= OPCODES =-
+        // -= OPCODES =-  R = Register mode, X = 16-bit Mode
         void NOP(uint16_t src);
+        void HCF(uint16_t src);
+        void PUSH(uint16_t src);
+        void POP(uint16_t src);
+        void SWP(uint16_t src);
+        void ADD(uint16_t src);
+        void ADDR();
+        void ADDX(uint16_t src);
+        void SUB(uint16_t src);
+        void SUBR();
+        void SUBX(uint16_t src);
+        void MUL(uint16_t src);
+        void MULR();
+        void MULX(uint16_t src);
+        void DIV(uint16_t src);
+        void DIVR();
+        void DIVX(uint16_t src);
+
 
 
     public:
@@ -67,7 +85,7 @@ class cosproc{
         //Public for System Usage
         cosproc(BusRead r, BusWrite w);
         void reset();
-        void run(uint32_t n);
+        void cycle();
         void execute(Instruction i);
 
 };

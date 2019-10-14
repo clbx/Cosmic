@@ -18,6 +18,15 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	instruction.addressing = &cosproc::immediate;
 	instruction.opcode = &cosproc::NOP;
 	InstructionSet[0x00] = instruction;
+	instruction.addressing = &cosproc::immediate;
+	instruction.opcode = &cosproc::HCF;
+	InstructionSet[0x01] = instruction;
+	instruction.addressing = &cosproc::immediate;
+	instruction.opcode = &cosproc::PUSH;
+	InstructionSet[0x02] = instruction;
+	instruction.addressing = &cosproc::immediate;
+	instruction.opcode = &cosproc::POP;
+	InstructionSet[0x03] = instruction;
 
 	reset();
 
@@ -28,30 +37,18 @@ void cosproc::reset()
 {
 	memset(r,0,sizeof(r));
 	pc = 0;
-    sp = 0;
+    sp = 255;
     st = 0;
 
 	return;
 }
 
 
-void cosproc::run(uint32_t n)
+void cosproc::cycle()
 {
-	uint8_t opcode;
-	Instruction currentInstruction;
-
-	while(n-- > 0)
-	{
-		// fetch
-        printf("fetch\n");
-		opcode = Read(pc);
-        printf("decode\n");
-		// decode
-		currentInstruction = InstructionSet[opcode];
-        printf("execute\n");
-		// execute
-		execute(currentInstruction);
-	}
+	uint8_t opcode = Read(pc); //Fetch
+	Instruction currentInstruction = InstructionSet[opcode]; //Decode
+	execute(currentInstruction); //Execute
 }
 
 void cosproc::execute(Instruction i)
@@ -74,9 +71,60 @@ uint16_t cosproc::immediate()
  * 0x00 NOP
  * Immeditate
  * 1 byte
+ * 
+ * No Operation
  */
-void cosproc::NOP(uint16_t src)
-{
+void cosproc::NOP(uint16_t src){
 	printf("NOP\n");
+	pc++;
     return;
 }
+
+/**
+ * 0x01 HCF
+ * Immediate
+ * 1 Byte
+ * 
+ * Halt and Catch Fire
+ * Stops execution
+ */
+void cosproc::HCF(uint16_t src){
+	printf("HCF\n");
+	return;
+}
+
+/**
+ * 0x02 PUSH
+ * Immediate
+ * 1 Byte
+ * 
+ * Pushes the Accumulator to the Stack
+ */
+void cosproc::PUSH(uint16_t src){
+	Write(sp,r[0]);
+	sp--;
+	pc++;
+}
+
+/** 0x03 POP
+ * Immediate
+ * 1 Byte
+ * 
+ * Pops the stack to the Accumulator
+ */
+void cosproc::POP(uint16_t src){
+	r[0] = Read(sp);
+	sp ++;
+	pc++;
+}
+
+/** 0x04 SWP
+ * Register
+ * 2 Bytes  OP Regsiter
+ * 
+ * Swaps
+ */
+void cosproc::SWP(uint16_t src){
+	//fill
+}
+

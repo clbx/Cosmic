@@ -16,6 +16,8 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_memory_editor.h"
+
 #include "cosproc.hpp"
 
 /* #region some dank Macros */
@@ -44,17 +46,18 @@
 * that avoids using a centralized stationary memory location. 
 */
 
+uint8_t memory[256] = { };
+
 void MemoryWrite(uint16_t address, uint8_t value){
         //TODO: Actually put memory here
-        printf("%X\n",address);
-        printf("%X\n", value);
+        memory[address] = value;
+        printf("Wrote %X to %X\n",value,address);
 }
 
 uint8_t MemoryRead(uint16_t address){
-    printf(" READ: %X\n",address);
-    return 0x00;
+    printf(" READ: %X from %X\n",memory[address],address);
+    return memory[address];
 }
-
 
 /* #endregion */
 
@@ -72,6 +75,8 @@ static void HelpMarker(const char* desc)
         ImGui::EndTooltip();
     }
 }
+
+static MemoryEditor ram_edit;
 /* #endregion */
 
 int main()
@@ -149,6 +154,8 @@ int main()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
+        //ImGui::ShowTestWindow();
+
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
                 if(ImGui::MenuItem("Load")){}
@@ -167,15 +174,14 @@ int main()
             ImGui::EndMainMenuBar();
         }
 
-        ImGui::ShowTestWindow();
-
+        
         ImGui::SetNextWindowPos(ImVec2(1080,20), ImGuiCond_Once);
         ImGui::Begin("Debug");
             ImVec2 mousePos = ImGui::GetMousePos();
             ImGui::Text("%f, %f",mousePos.x,mousePos.y);
         ImGui::End();
 
-        ImGui::SetNextWindowSize(ImVec2(225,350),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(290,350),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(10,30),ImGuiCond_Once);
         ImGui::Begin("Status");
             ImGui::Text("Registers");
@@ -197,16 +203,15 @@ int main()
             //Right Side
             ImGui::NextColumn();
                 ImGui::Text("PC: %X (%d)",proc.pc,proc.pc);
-                ImGui::Text("SP: %X (%d)",proc.sp,proc.sp);
-                    
+                ImGui::Text("SP: %X (%d)",proc.sp,proc.sp); 
             ImGui::Columns(1);
             ImGui::Separator();
             ImGui::Columns(2, "16bitreg", false);
-            ImGui::Text("A/B: FIX (FIX)");
-            ImGui::Text("E/F: FIX (FIX)");
+            ImGui::Text("A/B: %X (%d)",(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]));
+            ImGui::Text("E/F: %X (%d)",(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]));
             ImGui::NextColumn();
-            ImGui::Text("C/D: FIX (FIX)");
-            ImGui::Text("G/H: FIX (FIX)");
+            ImGui::Text("C/D: %X (%d)",(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]));
+            ImGui::Text("G/H: %X (%d)",(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]));
             ImGui::Columns(1);
 
             ImGui::Separator();
@@ -214,11 +219,20 @@ int main()
             ImGui::SameLine();
             HelpMarker("P: Parity\nN: Negative\nO: Overflow\nP: Parity\n");
             ImGui::Text("              P  O C N Z");
-
             
         ImGui::End();
 
+        ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
+        ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*256);
 
+        ImGui::SetNextWindowSize(ImVec2(250,65),ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
+        ImGui::Begin("Control");
+            if(ImGui::Button("Step")){
+                proc.cycle();
+            }
+        ImGui::End();
 
         // Rendering
         ImGui::Render();
