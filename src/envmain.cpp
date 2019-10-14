@@ -18,7 +18,7 @@
 
 #include "cosproc.hpp"
 
-#pragma region //Some Dank Macros
+
 #define BYTE_TO_BINARY_PATTERN "%c %c %c %c  %c %c %c %c"
 #define BYTE_TO_BINARY(byte)  \
   (byte & 0x80 ? '1' : '0'), \
@@ -57,9 +57,6 @@ uint8_t MemoryRead(uint16_t address){
 }
 
 
-/* #endregion */
-
-/* #region ImGui Helpers */
 
 static void HelpMarker(const char* desc)
 {
@@ -76,12 +73,10 @@ static void HelpMarker(const char* desc)
 
 
 static MemoryEditor ram_edit;
-/* #endregion */
 
 int main()
 {
 
-    #pragma region //SDL and OpenGL Init
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
@@ -124,16 +119,15 @@ int main()
 
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    #pragma endregion
 
 
-    #pragma region //System setup
+
+    //System setup
 
     cosproc proc = cosproc(MemoryRead, MemoryWrite);    
 
-    #pragma endregion
 
-    #pragma region //ImGui Main Loop
+
     bool done = false;
     while (!done)
     {
@@ -256,9 +250,7 @@ int main()
 
 
     }
-    #pragma endregion
 
-    #pragma region //SDL and OpenGl Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -266,7 +258,6 @@ int main()
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    #pragma endregion
 
     return 0;
 }
