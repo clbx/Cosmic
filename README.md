@@ -8,7 +8,7 @@
 
 
 <p align="center">
-<a href="https://action-badges.now.sh"><img src="https://action-badges.now.sh/clbx/cosmic" /></a>
+<a href="https://travis-ci.org/clbx/Cosmic"><img src="https://travis-ci.org/clbx/Cosmic.svg?branch=master"/></a>
 </p>
 
 Cosmic is a fully emulated computer architecture that provides a full environment to use the Cosmic Processor, specialized devices, ROM, RAM, graphics, and more. The cosmic processor can also be used on a Raspberry Pi to interface with real-world devices. The cosmic system is all entirely accessible in a rich GUI interface that allows for full customization of the system environment and code execution.*
