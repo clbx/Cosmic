@@ -12,5 +12,5 @@ jobs:
     - name: make
       run: | 
         cd src
-        make simple
+        make
 
