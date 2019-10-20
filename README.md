@@ -1,8 +1,8 @@
 # Cosmic
-
 <p align="center">
-    [![Build Status](https://travis-ci.org/clbx/Cosmic.svg?branch=master)](https://travis-ci.org/clbx/Cosmic)
+    <a target="_blank" rel="noopener noreferrer"><img width="300" src="./doc/img/logo.png" alt="Cosmic Logo"></a>
 <br></p>
+
 
 ----
 
