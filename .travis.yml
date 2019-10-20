@@ -3,6 +3,7 @@ compiler: gcc
 sudo: required
 os: linux
 before-install:
+- sudo apt update
 - sudo apt install libsdl2-dev
 script:
 - cd src
