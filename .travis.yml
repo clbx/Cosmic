@@ -5,7 +5,5 @@ os: linux
 before-install:
 - sudo apt install libsdl2-dev
 script:
-- ls
-- pwd
-- cd /src
+- cd src
 - make
