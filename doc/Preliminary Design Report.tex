@@ -31,35 +31,43 @@ carmank@etown.edu}
 
 \section{Design Constraints \textbackslash Problem Definition}
 
-Cosmic is a fully simulated computer architecture. We wanted to create a system where everything was built from the ground up. A true "homebrew" computer  in software. While many similar devices and programs exist, none are quite the same as they all either use off the shelf components or are very simple and underdeveloped. Because of this Cosmic holds a unique position as a project that hasn't been taken before on a similar scale that we want to implement it. These projects hold a lot of interest in retro-computing groups and will have a huge impact on the education of these concepts as a simple device that does it all is very easy to understand when simple readable code can be examined. 
+Cosmic is a fully simulated 8-bit microcomputer architecture. We wanted to create a system where everything was built from the ground up. A true "homebrew" computer  in software. While many similar devices and programs exist, they all either use off the shelf components or are very simple and underdeveloped. These types of projects hold a lot of interest in retro-computing groups because they are simple devices with easy to understand code which teach low level computing concepts.
 
-Our design is rather simple. Implemented in C++ Cosmic is broken down into the same way a hardware design would be. Each piece of hardware is it's own class. The CPU, RAM, Graphics, I/O would all be separate chips on a physical machine and they are being treated the same way in the software. This allows for the same modularity that the hardware would provide. Using callbacks and memory pointers, we are able to have a true data and address bus that is connected to all of the appropriate chips with a mother class that acts similarly to the motherboard of a physical machine, routing data to where it needs to go. 
+Our design is rather simple. Using C++, Cosmic is broken down into the same way a hardware design would be. Each piece of hardware is it's own class. The CPU, RAM, Graphics, and I/O that would all be separate chips on a physical machine are treated the same way in the software. This allows for the same modularity that the hardware would provide. Using callbacks and memory pointers, we are able to have a true data and address bus that is connected to all of the appropriate chips with a mother class that acts similarly to the motherboard of a physical machine, routing data to where it needs to go. 
 
-To use the Cosmic system, a GUI is being implemented using ImGUI, a very easy to use, very flexible GUI framework. Using this everything going on inside of Cosmic is view-able to the user. Memory, registers, ROM, processor states are all view-able at any given time for analysis. This allows for the user to change data during run time and watch the results.
+To use the Cosmic system, a GUI is being implemented using ImGUI, an easy to use and flexible GUI framework. Using this, everything going on inside of Cosmic is view-able to the user. Memory, registers, ROM, processor states are all view-able at any given time for analysis which allows for the user to change data during run time and watch the results.
+
+Our main design constraint focuses on limiting the number of instructions we include in our RISC-like instruction set. Our goal is to include no more than 50 total instructions for the CPU to keep things simple, yet usable. Normally when creating a processor in software, timing is the most important part of the design. Since Cosmic's design is derived from the Zilos Z80 and MOS 6502 microprocessors but not emulating them, timing is not a constraint. However, we do plan to constrain Cosmic to the power and capabilities of these two processors.
 
 
 \section{Timeline \textbackslash Schedule}
 
 \subsection{Fall Semester - Designing the Cosmic System}
-By the end of the fall semester we plan to have the processor and underlying system (memory, graphics, etc.) completed. The simulation environment will also be at a point where it can fully support the system and run programs written in machine code. By the end of the fall semester we want to start on writing an Assembler to make the targets of the spring semester much easier to finish.
+By the end of the fall semester, we plan to have the processor and underlying system (memory, graphics, etc.) completed. The simulation environment will be at a point where it can fully support the system and run programs written in machine code. Also, we want to start on writing an Assembler to make the targets of the spring semester much easier to finish.
 
-\subsection{Spring Semester - Writing Software the Supports or Targets Cosmic}
-With the system itself being finished in the fall semester, the spring semester is mostly dedicated to writing software to run on the system. The first goal is to write an assembler so all subsequent work is much easier. Once the assembler is in a usable state, work will begin on the kernel for the system and basic software to go along with it.
+\subsection{Spring Semester - Writing Software for Cosmic}
+With the system itself being finished in the fall semester, the spring semester will be mostly dedicated to writing software to run on the system. The first goal is to write an assembler so all subsequent work is much easier. Once the assembler is in a usable state, work will begin on the kernel and basic software to go along with it.
 
+Along the way, we will also be doing vigorous testing to make sure that all of the preceding components work flawlessly.
 
-Along the way we will also be doing vigorous testing to make sure that all of the preceding components work flawlessly
 
 \section{Budget}
 
-Our current budget is \$0. Since our entire project is in software, nothing needs to be bought. Later on we plan on adding interfacing with the GPIO pins on the Raspberry Pi. However, we already have all of the hardware we would need for that
+Our current budget is \$0. Since our entire project is in software, nothing needs to be bought. Later on, if time allows, we aspire to add interfacing with the GPIO pins of a Raspberry Pi, but all the required hardware is readily available in the Computer Engineering Lab already.
+
+
 \section{Social, Ethical, and Environmental Impacts} 
 
 \subsection{Social Impacts}
 
-Our project doesn't have any direct social impacts. It's a project that many people will find interesting and could be useful in an education environment since it shows everything that is going on.
+Our project doesn't have any direct social impacts. It's a project that many people will find interesting and that could be useful in an educational environment since it shows everything that is going on.
 
 \subsection{Ethical Impacts}
 
-The biggest ethical factor of our project is about the code itself. We decided to keep the project 100\% open source. We think this is important for a project like this. All of the libraries, included and not are also all open source.
+The biggest ethical factor of our project is about the code itself. We decided to keep the project 100\% open source. We think this is important for a project like this to allow others to learn from our design. All of the libraries included are also all open source.
+
+\subsection{Environmental Impacts}
+
+Our project will have no impact on the environment, as it will be written entirely in software. If time allows for us to interface with the Raspberry Pis, all of the hardware used will be completely reusable afterwards.
 
 \end{document}
