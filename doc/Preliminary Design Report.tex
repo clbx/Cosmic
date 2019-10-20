@@ -31,12 +31,23 @@ carmank@etown.edu}
 
 \section{Design Constraints \textbackslash Problem Definition}
 
+Cosmic is a fully simulated computer architecture. We wanted to create a system where everything was built from the ground up. A true "homebrew" computer  in software. While many similar devices and programs exist, none are quite the same as they all either use off the shelf components or are very simple and underdeveloped. Because of this Cosmic holds a unique position as a project that hasn't been taken before on a similar scale that we want to implement it. These projects hold a lot of interest in retro-computing groups and will have a huge impact on the education of these concepts as a simple device that does it all is very easy to understand when simple readable code can be examined. 
+
+Our design is rather simple. Implemented in C++ Cosmic is broken down into the same way a hardware design would be. Each piece of hardware is it's own class. The CPU, RAM, Graphics, I/O would all be separate chips on a physical machine and they are being treated the same way in the software. This allows for the same modularity that the hardware would provide. Using callbacks and memory pointers, we are able to have a true data and address bus that is connected to all of the appropriate chips with a mother class that acts similarly to the motherboard of a physical machine, routing data to where it needs to go. 
+
+To use the Cosmic system, a GUI is being implemented using ImGUI, a very easy to use, very flexible GUI framework. Using this everything going on inside of Cosmic is view-able to the user. Memory, registers, ROM, processor states are all view-able at any given time for analysis. This allows for the user to change data during run time and watch the results.
+
 
 \section{Timeline \textbackslash Schedule}
 
-\subsection{Designing and Developing the Cosmic Systems}
+\subsection{Fall Semester - Designing the Cosmic System}
+By the end of the fall semester we plan to have the processor and underlying system (memory, graphics, etc.) completed. The simulation environment will also be at a point where it can fully support the system and run programs written in machine code. By the end of the fall semester we want to start on writing an Assembler to make the targets of the spring semester much easier to finish.
 
-\subsection{Writing Software that Targets or Supports Cosmic}
+\subsection{Spring Semester - Writing Software the Supports or Targets Cosmic}
+With the system itself being finished in the fall semester, the spring semester is mostly dedicated to writing software to run on the system. The first goal is to write an assembler so all subsequent work is much easier. Once the assembler is in a usable state, work will begin on the kernel for the system and basic software to go along with it.
+
+
+Along the way we will also be doing vigorous testing to make sure that all of the preceding components work flawlessly
 
 \section{Budget}
 
