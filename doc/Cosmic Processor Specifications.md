@@ -12,9 +12,9 @@
 
   **A**, **B**, **C**, **D**, **E**, **F**, **G**, **H**
 
-  **AB**,**CD**, **EF,** **GH**, can be grouped together to be used as 4 16-bit registers. [**maybe**]
+  **AB**,**CD**, **EF,** **GH**, can be grouped together to be used as 4 16-bit registers.
 
-  **A** is the accumulator in 8-bit operations, A/B becomes Accumulator in 16-bit operations 
+  **A** is the accumulator in 8-bit operations, **A/B** becomes Accumulator in 16-bit operations 
 
 * 1x, 16-bit Stack Pointer
 
@@ -28,14 +28,14 @@
 
   ```
   7  bit  0
-  xxxx xxxx
+  xxIP OCNZ
   |||| ||||
   |||| |||+-- (Z) Zero
   |||| ||+--- (N) Negative, high if result is negative
   |||| |+---- (C) Carry/Borrow, result if overflow
   |||| +----- (O) Overflow, result if overflows carry
   |||+------- (P) Parity, checks parity
-  ||+--------  X
+  ||+-------- (I) Interrupt disable
   |+---------  X
   +----------  X
   ```
@@ -46,26 +46,24 @@
 
 ----
 
-Bolded instructions are 16-bit
-
-| Hi\Lo    | 0x00 | 0x01 | 0x02 | 0x03 | 0x04     | 0x05    | 0x06     | 0x07     | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C     | 0x0D    | 0x0E     | 0x0F     |
-| -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- | ---- | ---- | ---- | ---- | -------- | ------- | -------- | -------- |
-| **0x00** | NOP  | HCF  | PUSH | POP  | SWP      |         |          |          |      |      |      |      |          |         |          |          |
-| **0x10** | ADD# | ADD  | ADD@ | ADDR | **ADD#** | **ADD** | **ADD@** | **ADDR** | SUB# | SUB  | SUB@ | SUBR | **SUB#** | **SUB** | **SUB@** | **SUBR** |
-| **0x20** | MUL# | MUL  | MUL@ | MULR | **MUL#** | **MUL** | **MUL@** | **MULR** | DIV# | DIV  | DIV@ | DIVR | **DIV#** | **DIV** | **DIV@** | **DIVR** |
-| **0x30** | MOV  | MOV  | MOV  | MOV  | MOV      | MOV     | MOV      | MOV      | MOV  | MOV  | MOV  | MOV  | MOV      | MOV     | MOV      | MOV      |
-| **0x40** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0x50** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0x60** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0x70** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0x80** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0x90** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xA0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xB0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xC0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xD0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xE0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
-| **0xF0** |      |      |      |      |          |         |          |          |      |      |      |      |          |         |          |          |
+| Hi\Lo    | 0x00        | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
+| -------- | ----------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| **0x00** | [NOP](#NOP) | HCF  | PUSH | POP  | SWP  |      |      |      |      |      |      |      |      |      |      |      |
+| **0x10** | ADD         | ADD  | ADD  | ADD  | ADDX | ADDX | ADDX | ADDX | SUB  | SUB  | SUB  | SUB  | SUBX | SUBX | SUBX | SUBX |
+| **0x20** | MUL         | MUL  | MUL  | MUL  | MULX | MULX | MULX | MULX | DIV  | DIV  | DIV  | DIV  | DIVX | DIVX | DIVX | DIVX |
+| **0x30** | MOV         | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  |      |      |      |      |
+| **0x40** | MOVX        | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX |      |      |      |      |
+| **0x50** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x60** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x70** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x80** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0x90** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xA0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xB0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xC0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xD0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xE0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| **0xF0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 
 ### Adressing Modes
 
@@ -83,81 +81,99 @@ Bolded instructions are 16-bit
 
 ## Arithmetic and Logic Operations
 
-### ADD/ADDX 
+<a name="ADD"></a>
 
-Add value with carry
+### ADD/ADDX
 
-Flags Affected: Zero, Overflow. 
+Add memory to accumulator
 
-| Assembler           | Effect                 | Bytes | Opcode |
-| ------------------- | ---------------------- | ----- | ------ |
-| ADD #oper           | A = A + #oper          | 2     | 0x10   |
-| ADD oper            | A = A + mem[oper]      | 3     | 0x11   |
-| ADD @oper           | A = A + mem[mem[oper]] | 3     | 0x12   |
-| ADD RX              | A = A + RX             | 2     | 0x13   |
-| **16bit** ADD #oper | A = A + #oper          | 3     | 0x14   |
-| **16bit** ADD oper  | A = A + mem[oper]      | 3     | 0x15   |
-| **16bit** ADD @oper | A = A + mem[mem[oper]] | 3     | 0x16   |
-| **16bit** ADD RXX   | A = A + RXX            | 2     | 0x17   |
+```````
+A = A + Data										x x I P  O C N Z
+																- - - -  + + + +
+```````
 
-### SUB
+| Addressing      | Assembler  | Opcode | Bytes                                 |
+| --------------- | ---------- | ------ | ------------------------------------- |
+| Immediate       | ADD #oper  | 0x10   | 2 `` opcode value ``                  |
+| Absolute        | ADD oper   | 0x11   | 3 ``opcode locationHigh locationLow`` |
+| Indirect        | ADD @oper  | 0x12   | 3 ``opcode locationHigh locationLow`` |
+| Register        | ADD RX     | 0x13   | 2 ``opcode register``                 |
+| 16bit Immediate | ADDX #oper | 0x14   | 3 ``opcode valueHigh valueLow``       |
+| 16bit Absolute  | ADDX oper  | 0x15   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Indirect  | ADDX @oper | 0x16   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Register  | ADDX RX    | 0x17   | 2 ``opcode register``                 |
 
-Subtraction
+<a name="SUB"></a>
 
-Flags Affected: 
+### SUB/SUBX
 
-| Assembler           | Effect                 | Bytes | Opcode |
-| ------------------- | ---------------------- | ----- | ------ |
-| SUB #oper           | A = A - #oper          | 2     | 0x18   |
-| SUB oper            | A = A - mem[oper]      | 2     | 0x19   |
-| SUB @oper           | A = A - mem[mem[oper]] | 2     | 0x1A   |
-| SUB RX              | A = A - RX             | 2     | 0x1B   |
-| **16bit** SUB #oper | A = A - #oper          | 3     | 0x1C   |
-| **16bit** SUB oper  | A = A - mem[oper]      | 3     | 0x1D   |
-| **16bit** SUB @oper | A = A - mem[mem[oper]] | 3     | 0x1E   |
-| **16bit** SUB RXX   | A = A - RXX            | 2     | 0x1F   |
+Subtract memory from accumualtor
+
+```
+A = A - Data										x x I P  O C N Z
+																- - - -  + + + +
+```
+
+| Addressing      | Assembler  | Opcode | Bytes                                 |
+| --------------- | ---------- | ------ | ------------------------------------- |
+| Immediate       | SUB #oper  | 0x18   | 2 ``opcode value``                    |
+| Absolute        | SUB oper   | 0x19   | 3 ``opcode locationHigh locationLow`` |
+| Indirect        | SUB @oper  | 0x1A   | 3 ``opcode locationHigh locationLow`` |
+| Register        | SUB RX     | 0x1B   | 2 ``opcode register``                 |
+| 16bit Immediate | SUBX #oper | 0x1C   | 3 ``opcode valueHigh valueLow``       |
+| 16bit Absolute  | SUBX oper  | 0x1D   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Indirect  | SUBX @oper | 0x1E   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Register  | SUBX RX    | 0x1F   | 2 ``opcode register``                 |
 
 ###  
 
-### MUL
+<a name="MUL"></a>
 
-Multiplication
+### MUL/MULX
 
-Flags Affected: 
+Multiplies the accumulator
 
-| Assembler           | Effect                 | Bytes | Opcode |
-| ------------------- | ---------------------- | ----- | ------ |
-| MUL #oper           | A = A * #oper          | 2     | 0x20   |
-| MUL oper            | A = A * mem[oper]      | 2     | 0x21   |
-| MUL @oper           | A = A * mem[mem[oper]] | 2     | 0x22   |
-| MUL RX              | A = A * RX             | 2     | 0x23   |
-| **16bit** MUL #oper | A = A * #oper          | 3     | 0x24   |
-| **16bit** MUL oper  | A = A * mem[oper]      | 3     | 0x25   |
-| **16bit** MUL @oper | A = A * mem[mem[oper]] | 3     | 0x26   |
-| **16bit** MUL RXX   | A = A * RXX            | 2     | 0x27   |
+```
+A = A * Data										x x I P  O C N Z
+																- - - -  + + + +
+```
 
-### 
+| Addressing      | Assembler  | Opcode | Bytes                                 |
+| --------------- | ---------- | ------ | ------------------------------------- |
+| Immediate       | MUL #oper  | 0x20   | 2 ``opcode value``                    |
+| Absolute        | MUL oper   | 0x21   | 3 ``opcode locationHigh locationLow`` |
+| Indirect        | MUL @oper  | 0x22   | 3 ``opcode locationHigh locationLow`` |
+| Register        | MUL RX     | 0x23   | 2 ``opcode register``                 |
+| 16bit Immediate | MULX #oper | 0x24   | 3 ``opcode valueHigh valueLow``       |
+| 16bit Absolute  | MULX oper  | 0x25   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Indirect  | MULX @oper | 0x26   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Register  | MULX RX    | 0x27   | 2 ``opcode register``                 |
 
-### 
+
+
+<a name="DIV"></a>
 
 ### DIV
 
-Division, puts remainder in B **What about 16-bit?**
+Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
-Flags Affected: 
+```
+A = A / D,B = R.    					x x I P  O C N Z
+															- - - -  + + + +
+```
 
-| Assembler           | Effect                 | Bytes | Opcode |
-| ------------------- | ---------------------- | ----- | ------ |
-| DIV #oper           | A = A / #oper          | 2     | 0x28   |
-| DIV oper            | A = A / mem[oper]      | 2     | 0x29   |
-| DIV @oper           | A = A / mem[mem[oper]] | 2     | 0x2A   |
-| DIV RX              | A = A / RX             | 2     | 0x2B   |
-| **16bit** DIV #oper | A = A / #oper          | 3     | 0x2C   |
-| **16bit** DIV oper  | A = A / mem[oper]      | 3     | 0x2D   |
-| **16bit** DIV @oper | A = A / mem[mem[oper]] | 3     | 0x2E   |
-| **16bit** DIV RXX   | A = A / RXX            | 2     | 0x2F   |
+| Addressing      | Assembler  | Opcode | Bytes                                 |
+| --------------- | ---------- | ------ | ------------------------------------- |
+| Immediate       | DIV #oper  | 0x28   | 2 ``opcode value``                    |
+| Absolute        | DIV oper   | 0x29   | 3 ``opcode locationHigh locationLow`` |
+| Indirect        | DIV @oper  | 0x2A   | 3 ``opcode locationHigh locationLow`` |
+| Register        | DIV RX     | 0x2B   | 2 ``opcode register``                 |
+| 16bit Immediate | DIVX #oper | 0x2C   | 3 ``opcode valueHigh valueLow``       |
+| 16bit Absolute  | DIVX oper  | 0x2D   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Indirect  | DIVX @oper | 0x2E   | 3 ``opcode locationHigh locationLow`` |
+| 16bit Register  | DIVX RX    | 0x2F   | 2 ``opcode register``                 |
 
-### 
+###   
 
 ### SHL
 
@@ -245,76 +261,111 @@ Halt and Catch Fire
 
 Stops execution of the machine entirely 
 
-| Assembler | Effect        | Bytes | Opcode |
-| --------- | ------------- | ----- | ------ |
-| HCF       | Stops Machine | 1     | 0x01   |
-
-###  
-
 ## Data Handling and Memory Operations
 
-### MOV
+<a name="MOV"></a>
 
-Move memory
+### MOV/MOVX
 
-| Assembler        | Effect                          | Bytes | Opcode |
-| ---------------- | ------------------------------- | ----- | ------ |
-| MOV #oper,A      | A = #oper                       |       | 0x30   |
-| MOV #oper,R#     | R#= #oper                       |       | 0x31   |
-| MOV #oper,oper   | mem[oper] = #oper               |       | 0x32   |
-| MOV #oper,@oper  | mem[mem[oper]] = #oper          |       | 0x33   |
-| MOV R#, A        | A = R#                          |       | 0x34   |
-| MOV R#, R#       | R# = R#                         |       | 0x35   |
-| MOV R#, oper     | mem[oper] = R#                  |       | 0x36   |
-| MOV R#, @oper    | mem[mem[oper]] = R#             |       | 0x37   |
-| MOV oper,A       | A = mem[oper]                   |       | 0x38   |
-| MOV oper, R#     | R# = mem[oper]                  |       | 0x39   |
-| MOV oper, oper   | mem[oper] = mem[oper]           |       | 0x3A   |
-| MOV oper,@oper   | mem[mem[oper]] = mem[oper]      |       | 0x3B   |
-| MOV @oper, A     | A = [mem[mem[oper]]             |       | 0x3C   |
-| MOV @oper,R#     | R# = [mem[mem[oper]]]           |       | 0x3D   |
-| MOV @oper, oper  | mem[oper] = mem[mem[oper]]      |       | 0x3E   |
-| MOV @oper, @oper | mem[mem[oper]] = mem[mem[oper]] |       | 0x3F   |
+Copies memory from one location to another
+
+```
+Loc = Data.          					x x I P  O C N Z
+															- - - -  - - + +
+```
+
+| Addressing                       | Assembler         | Opcode | Bytes                                      |
+| -------------------------------- | ----------------- | ------ | ------------------------------------------ |
+| Immediate -> **Absolute**        | MOV #oper, oper   |        | 4 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Absolute**         | MOV oper, oper    |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Absolute**         | MOV @oper, oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Absolute**         | MOV RX, oper      |        | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Indirect**        | MOV #oper, @oper  |        | 5 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Indirect**         | MOV oper, @oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Indirect**         | MOV @oper, @oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Indirect**         | MOV RX, @oper     |        | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Register**        | MOV #oper, RX     |        | 3 ``opcode val reg``                       |
+| Absolute -> **Register**         | MOV oper, RX      |        | 4 ``opcode locHigh locLow reg``            |
+| Indirect -> **Register**         | MOV @oper, RX     |        | 4 ``opcode locHigh locLow reg``            |
+| Register -> **Register**         | MOV RX, RX        |        | 3 ``opcode reg reg``                       |
+| 16 bit Immediate -> **Absolute** | MOVX #oper, oper  |        | 5 ``opcode valHigh valLow locHigh locLow`` |
+| 16 bit Absolute -> **Absolute**  | MOVX oper, oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Indirect -> **Absolute**  | MOVX @oper, oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Register -> **Absolute**  | MOVX RX, oper     |        | 4 ``opcode reg dstHigh dstLow``            |
+| 16 bit Immediate -> **Indirect** | MOVX #oper, @oper |        | 5 ``opcode valHigh valLow dstHigh dstLow`` |
+| 16 bit Absolute -> **Indirect**  | MOVX oper, @oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Indirect -> **Indirect**  | MOVX @oper, @oper |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Register -> **Indirect**  | MOVX RX, @oper    |        | 4 ``opcode reg srcHigh srcLow``            |
+| 16 bit Immediate -> **Register** | MOVX #oper, RX    |        | 4 ``opcode valHigh valLow reg``            |
+| 16 bit Absolute -> **Register**  | MOVX oper, RX     |        | 4 ``opcode srcHigh srcLow reg``            |
+| Indirect -> **Register**         | MOVX @oper, RX    |        | 4 ``opcode srcHigh srcLow reg``            |
+| Register -> **Register**         | MOVX RX, RX       |        | 3 ``opcode reg reg``                       |
 
 ### 
+
+_Note: This is where the principals of RISC start to break down in favor of a more fleshed out instruction set_. In a true RISC instruction set each target addressing mode would be it's own instruction, but that's annoying. 
+
+<a name="SWP"></a>
 
 ### SWP
 
-Swap register with accumulator
+Swap registers
 
-| Assembler | Effect                              | Bytes | Opcode |
-| --------- | ----------------------------------- | ----- | ------ |
-| SWP R#    | Swaps register with the accumulator | 2     | 0x04   |
+```
+R1 <-> R2   	        				x x I P  O C N Z
+															- - - -  - - + +
+```
 
-### 
+| Addressing | Assembler  | Opcode | Bytes                  |
+| ---------- | ---------- | ------ | ---------------------- |
+| Register   | SWP R1, R2 |        | 3 ``opcode reg1 reg2`` |
+
+<a name="PUSH"></a>
 
 ### PUSH
 
-Push to stack
+Pushes value in accumulator to the stack
 
-| Assembler | Effect                      | Bytes | Opcode |
-| --------- | --------------------------- | ----- | ------ |
-| PUSH      | Pushes accumulator to stack | 1     | 0x02   |
+```
+sp[++i] = A 					x x I P  O C N Z
+											- - - -  - - + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | PUSH      |        | 1 ``opcode`` |
+
+<a name="POP"></a>
 
 ### POP
 
-Pop from stack
+Pops value from stack into the accumulator
 
-| Assembler | Effect                           | Bytes | Opcode |
-| --------- | -------------------------------- | ----- | ------ |
-| POP       | Pops top of stack to accumulator | 1     | 0x03   |
+```
+sp[i--] = A    					x x I P  O C N Z
+												- - - -  - - + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | POP       |        | 1 ``opcode`` |
 
 ### 
+
+<a name="NOP"></a>
 
 ### NOP
 
 No Operation
 
-Flags Affected: None
+```
+Nothing Happened!   					x x I P  O C N Z
+															- - - -  - - - - 
+```
 
-| Assembler | Effect  | Bytes | Opcode |
-| --------- | ------- | ----- | ------ |
-| NOP       | Nothing | 1     | 0x00   |
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | NOP       | 0x00   | 1 ``opcode`` |
 
 ### 
 
