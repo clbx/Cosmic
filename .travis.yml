@@ -1,28 +1,21 @@
 language: cpp
 
 os:
-  - osx
   - linux
-
+  - osx
+  
 compiler:
   - gcc
   - clang
 
 sudo: required
 
-addons:
-  apt:
-    packages:
-      - libsdl2-dev
-      update: true
-  homebrew:
-    packages:
-      - sdl2
-      update: true
 
 addons:
   apt:
     packages: libsdl2-dev
+  brew:
+    packages: sdl2
 
 script:
 - cd src
