@@ -65,19 +65,29 @@
 | **0xE0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 | **0xF0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
 
-### Adressing Modes
+### 8-bit Addressing Modes
 
-**Implied:** Opcode has a defined source or destination no operand is needed
+**Immediate:** Data is given directly in the operand.
 
-**Immediate:** Data is given directly in operand
-
-**Absolute:** A position in memory is given, the data is there
-
-**Relative:** The data given is an offset to a certain value.
+**Absolute:** A position in memory is given, the data is there.
 
 **Indirect:** A position in memory is given, the data is at the position described.
 
-**Extended Adressing Modes?:** For use with paired 8-bit registers for 16-bit functionality.
+**Register:** A register is given that contains the data.
+
+**Relative:** The data given is an offset of a certain value.
+
+**Implied:** Opcode has a defined source or destination and no operand is needed.
+
+### 16-bit Addressing Modes
+
+**Immediate Ext:** Data is given directly in the operand.
+
+**Absolute Ext:** A position in memory is given, the data is there. The following byte of data is concatenated with the initial byte to form the 16-bit value.
+
+**Indirect Ext:** A position in memory is given, the data is at the position described. The following byte of data is concatenated with the initial byte to form the 16-bit value.
+
+**Register Ext:** A register pair is provided that contains the data.
 
 ## Arithmetic and Logic Operations
 
