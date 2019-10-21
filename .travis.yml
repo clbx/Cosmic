@@ -12,8 +12,6 @@ sudo: required
 
 
 addons:
-  apt:
-    packages: libsdl2-dev
   brew:
     packages: sdl2
 
