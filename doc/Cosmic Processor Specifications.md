@@ -46,24 +46,24 @@
 
 ----
 
-| Hi\Lo    | 0x00        | 0x01 | 0x02 | 0x03 | 0x04 | 0x05 | 0x06 | 0x07 | 0x08 | 00x9 | 0x0A | 0x0B | 0x0C | 0x0D | 0x0E | 0x0F |
-| -------- | ----------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| **0x00** | [NOP](#NOP) | HCF  | PUSH | POP  | SWP  |      |      |      |      |      |      |      |      |      |      |      |
-| **0x10** | ADD         | ADD  | ADD  | ADD  | ADDX | ADDX | ADDX | ADDX | SUB  | SUB  | SUB  | SUB  | SUBX | SUBX | SUBX | SUBX |
-| **0x20** | MUL         | MUL  | MUL  | MUL  | MULX | MULX | MULX | MULX | DIV  | DIV  | DIV  | DIV  | DIVX | DIVX | DIVX | DIVX |
-| **0x30** | MOV         | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  | MOV  |      |      |      |      |
-| **0x40** | MOVX        | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX | MOVX |      |      |      |      |
-| **0x50** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x60** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x70** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x80** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0x90** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xA0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xB0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xC0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xD0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xE0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
-| **0xF0** |             |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+| Hi\Lo    | 0x00         | 0x01         | 0x02          | 0x03         | 0x04         | 0x05         | 0x06         | 0x07         | 0x08         | 00x9         | 0x0A         | 0x0B         | 0x0C         | 0x0D         | 0x0E         | 0x0F         |
+| -------- | ------------ | ------------ | ------------- | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
+| **0x00** | [NOP](#NOP)  | [HCF](#HCF)  | [PUSH](#PUSH) | [POP](#POP)  | [SWP](#SWP)  |              |              |              |              |              |              |              |              |              |              |              |
+| **0x10** | [ADD](#ADD)  | [ADD](#ADD)  | [ADD](#ADD)   | [ADD](#ADD)  | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) |
+| **0x20** | [MUL](#MUL)  | [MUL](#MUL)  | [MUL](#MUL)   | [MUL](#MUL)  | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) |
+| **0x30** | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  |              |              |              |              |
+| **0x40** | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) |              |              |              |              |
+| **0x50** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0x60** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0x70** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0x80** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0x90** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xA0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xB0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xC0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xD0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xE0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0xF0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
 
 ### 8-bit Addressing Modes
 
