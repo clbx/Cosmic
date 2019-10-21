@@ -16,6 +16,6 @@ addons:
     
     
 script:
-- if [$TRAVIS_OS_NAME=osx]; then brew install sdl2;
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install sdl2; fi
 - cd src
 - make
