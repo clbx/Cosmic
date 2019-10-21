@@ -39,12 +39,7 @@ void cosproc::cycle()
 {
 	uint8_t opcode = Read(pc); //Fetch
 	Opcode currentInstruction = InstructionSet[opcode]; //Decode
-	execute(currentInstruction); //Execute
-}
-
-void cosproc::execute(Opcode i)
-{
-	(this->*i)();
+	(this->*currentInstruction)(); //Execute
 }
 
 /** -= OPCODES =- **/
@@ -56,9 +51,7 @@ void cosproc::execute(Opcode i)
  * No Operation
  */
 void cosproc::NOP(){
-	printf("NOP\n");
 	pc++;
-    return;
 }
 
 /**
@@ -69,8 +62,7 @@ void cosproc::NOP(){
  * Stops execution
  */
 void cosproc::HCF(){
-	printf("HCF\n");
-	return;
+	//fill
 }
 
 /**
@@ -80,9 +72,7 @@ void cosproc::HCF(){
  * Pushes the Accumulator to the Stack
  */
 void cosproc::PUSH(){
-	Write(sp,r[0]);
-	sp--;
-	pc++;
+	//fill
 }
 
 /** 0x03 POP
@@ -90,9 +80,7 @@ void cosproc::PUSH(){
  * Pops the stack to the Accumulator
  */
 void cosproc::POP(){
-	r[0] = Read(sp);
-	sp ++;
-	pc++;
+	//fill
 }
 
 /** SWP

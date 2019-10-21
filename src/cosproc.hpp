@@ -39,12 +39,8 @@ class cosproc{
 
     
 
-        // -= OPCODES =-  R = Register mode, X = 16-bit Mode
-        void NOP();
-        void HCF();
-        void PUSH();
-        void POP();
-        void SWP();
+        // -= OPCODES =-
+        void NOP();void HCF();void PUSH();void POP();void SWP();
    
 
 
@@ -59,6 +55,5 @@ class cosproc{
         cosproc(BusRead r, BusWrite w);
         void reset();
         void cycle();
-        void execute(Opcode i);
 
 };

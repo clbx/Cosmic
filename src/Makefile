@@ -2,6 +2,7 @@ EXE = cosmic
 SOURCES = envmain.cpp cosproc.cpp
 SOURCES += ../lib/imgui/imgui_impl_sdl.cpp ../lib/imgui/imgui_impl_opengl3.cpp
 SOURCES += ../lib/imgui/imgui.cpp ../lib/imgui/imgui_demo.cpp ../lib/imgui/imgui_draw.cpp ../lib/imgui/imgui_widgets.cpp
+
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 
@@ -64,6 +65,7 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 	rm -f imgui.ini
+
 
 simple:
 	g++ -o cosmic cosproc.cpp term.cpp

@@ -236,6 +236,7 @@ int main()
             if(ImGui::Button("Step")){
                 proc.cycle();
             }
+            ImGui::SameLine();
             if(ImGui::Button("Reset")){
                 proc.reset();
             }
