@@ -13,11 +13,11 @@ sudo: required
 addons:
   apt:
     packages:
-      libsdl2-dev
-
-before-install:
-  - if ["$TRAVIS_OS_NAME" = "osx"]; then brew update; fi
-  - if ["$TRAVIS_OS_NAME" = "osx"]; then brew install sdl2; fi
+      - libsdl2-dev
+  homebrew:
+    packages:
+      - sdl2
+      update: true
 
 script:
 - cd src
