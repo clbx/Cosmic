@@ -92,13 +92,13 @@ Flags Affected: Zero, Overflow.
 | Assembler           | Effect                 | Bytes | Opcode |
 | ------------------- | ---------------------- | ----- | ------ |
 | ADD #oper           | A = A + #oper          | 2     | 0x10   |
-| ADD oper            | A = A + mem[oper]      | 2     | 0x11   |
-| ADD @oper           | A = A + mem[mem[oper]] | 2     | 0x12   |
+| ADD oper            | A = A + mem[oper]      | 3     | 0x11   |
+| ADD @oper           | A = A + mem[mem[oper]] | 3     | 0x12   |
 | ADD RX              | A = A + RX             | 2     | 0x13   |
 | **16bit** ADD #oper | A = A + #oper          | 3     | 0x14   |
 | **16bit** ADD oper  | A = A + mem[oper]      | 3     | 0x15   |
 | **16bit** ADD @oper | A = A + mem[mem[oper]] | 3     | 0x16   |
-| **16bit** ADD RXX   | A = A + RXX            | 2     | 0x27   |
+| **16bit** ADD RXX   | A = A + RXX            | 2     | 0x17   |
 
 ### SUB
 

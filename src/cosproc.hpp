@@ -33,46 +33,19 @@ class cosproc{
         BusRead Read;
         
         //Instruction encoding pointers
-        typedef void (cosproc::*Opcode)(uint16_t);
-        typedef uint16_t (cosproc::*Addressing)();
+        typedef void (cosproc::*Opcode)();
 
-        //Instruction encoding
-        typedef struct Instruction{
-            Opcode opcode;
-            Addressing addressing;
-        } Instruction;
+        Opcode InstructionSet[256];
 
-        Instruction InstructionSet[256];
-
-        
-
-        // -= ADDRESSING MODES =-
-        uint16_t implied();
-        uint16_t immediate();
-        uint16_t absolute();
-        uint16_t relative();
-        uint16_t indirect();
-        void dregister();
+    
 
         // -= OPCODES =-  R = Register mode, X = 16-bit Mode
-        void NOP(uint16_t src);
-        void HCF(uint16_t src);
-        void PUSH(uint16_t src);
-        void POP(uint16_t src);
-        void SWP(uint16_t src);
-        void ADD(uint16_t src);
-        void ADDR();
-        void ADDX(uint16_t src);
-        void SUB(uint16_t src);
-        void SUBR();
-        void SUBX(uint16_t src);
-        void MUL(uint16_t src);
-        void MULR();
-        void MULX(uint16_t src);
-        void DIV(uint16_t src);
-        void DIVR();
-        void DIVX(uint16_t src);
-
+        void NOP();
+        void HCF();
+        void PUSH();
+        void POP();
+        void SWP();
+   
 
 
     public:
@@ -86,6 +59,6 @@ class cosproc{
         cosproc(BusRead r, BusWrite w);
         void reset();
         void cycle();
-        void execute(Instruction i);
+        void execute(Opcode i);
 
 };
