@@ -14,6 +14,7 @@ addons:
   apt:
     packages:
       - libsdl2-dev
+      update: true
   homebrew:
     packages:
       - sdl2
