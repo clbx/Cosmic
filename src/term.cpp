@@ -5,7 +5,6 @@
 uint8_t MemoryRead(uint16_t address){
     printf(" READ: %X\n",address);
     return 0x00;
-
 }
 
 void MemoryWrite(uint16_t address, uint8_t value){

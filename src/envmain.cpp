@@ -230,11 +230,14 @@ int main()
         ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
         ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*256);
 
-        ImGui::SetNextWindowSize(ImVec2(250,65),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(250,80),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
                 proc.cycle();
+            }
+            if(ImGui::Button("Reset")){
+                proc.reset();
             }
         ImGui::End();
 
