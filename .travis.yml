@@ -1,9 +1,19 @@
 language: cpp
-compiler: gcc
+compiler:
+  - gcc
+  - clang
+
 sudo: required
-os: linux
+
+addons:
+  apt:
+    packages:
+      libsdl2-dev
+
+before-install:
+  - if ["$TRAVIS_OS_NAME" = "osx"]; then brew update; fi
+  - if ["$TRAVIS_OS_NAME" = "osx"]; then brew install sdl2; fi
+
 script:
-- sudo apt update
-- sudo apt install libsdl2-dev
 - cd src
 - make
