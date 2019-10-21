@@ -10,11 +10,12 @@ compiler:
 
 sudo: required
 
-
 addons:
-  brew:
-    packages: sdl2
-
+  apt:
+    packages: libsdl2-dev
+    
+    
 script:
+- if [$TRAVIS_OS_NAME=osx]; then brew install sdl2;
 - cd src
 - make
