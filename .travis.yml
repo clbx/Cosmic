@@ -20,6 +20,12 @@ addons:
       - sdl2
       update: true
 
+addons:
+  apt:
+    packages: libsdl2-dev
+  brew:
+    packages: sdl2
+
 script:
 - cd src
 - make
