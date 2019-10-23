@@ -12,12 +12,22 @@ cosproc::cosproc(BusRead r, BusWrite w)
 {
 	Write = (BusWrite)w;
 	Read = (BusRead)r;
+	Instruction instruction;
+
 
 	//Populate instruction set
-	InstructionSet[0x00] = &cosproc::NOP;
-	InstructionSet[0x01] = &cosproc::HCF;
-	InstructionSet[0x02] = &cosproc::PUSH;
-	InstructionSet[0x03] = &cosproc::POP;
+	instruction.addressing = &cosproc::IMP;
+	instruction.opcode = &cosproc::NOP;
+	InstructionSet[0x00] = instruction;
+	instruction.addressing = &cosproc::IMP;
+	instruction.opcode = &cosproc::HCF;
+	InstructionSet[0x01] = instruction;
+	instruction.addressing = &cosproc::IMP;
+	instruction.opcode = &cosproc::PUSH;
+	InstructionSet[0x02] = instruction;
+	instruction.addressing = &cosproc::IMP;
+	instruction.opcode = &cosproc::POP;
+	InstructionSet[0x03] = instruction;
 
 	reset();
 
@@ -38,56 +48,83 @@ void cosproc::reset()
 void cosproc::cycle()
 {
 	uint8_t opcode = Read(pc); //Fetch
-	Opcode currentInstruction = InstructionSet[opcode]; //Decode
-	(this->*currentInstruction)(); //Execute
+	Instruction currentInstruction = InstructionSet[opcode]; //Decode
+	execute(currentInstruction); //Execute
+}
+
+void cosproc::execute(Instruction i)
+{
+	uint16_t src = (this->*i.addressing)();
+	(this->*i.opcode)(src);
+}
+
+/** -= ADDRESSING MODES =- **/
+
+uint16_t cosproc::IMP()
+{
+    printf("Implied ");
+	return 0;
 }
 
 /** -= OPCODES =- **/
 
 /**
  * 0x00 NOP
+ * Immeditate
  * 1 byte
  * 
  * No Operation
  */
-void cosproc::NOP(){
+void cosproc::NOP(uint16_t src){
+	printf("NOP\n");
 	pc++;
+    return;
 }
 
 /**
  * 0x01 HCF
+ * Immediate
  * 1 Byte
  * 
  * Halt and Catch Fire
  * Stops execution
  */
-void cosproc::HCF(){
-	//fill
+void cosproc::HCF(uint16_t src){
+	printf("HCF\n");
+	return;
 }
 
 /**
  * 0x02 PUSH
- * 1 byte
+ * Immediate
+ * 1 Byte
  * 
  * Pushes the Accumulator to the Stack
  */
-void cosproc::PUSH(){
-	//fill
+void cosproc::PUSH(uint16_t src){
+	Write(sp,r[0]);
+	sp--;
+	pc++;
 }
 
 /** 0x03 POP
+ * Immediate
+ * 1 Byte
  * 
  * Pops the stack to the Accumulator
  */
-void cosproc::POP(){
-	//fill
+void cosproc::POP(uint16_t src){
+	r[0] = Read(sp);
+	sp ++;
+	pc++;
 }
 
-/** SWP
- * 2 Bytes: OP Regsiter
+/** 0x04 SWP
+ * Register
+ * 2 Bytes  OP Regsiter
  * 
  * Swaps
  */
-void cosproc::SWP(){
+void cosproc::SWP(uint16_t src){
 	//fill
 }
