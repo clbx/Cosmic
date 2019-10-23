@@ -84,7 +84,7 @@ class cosproc{
         uint16_t pc; //Program Counter
         uint16_t sp; //Stack Pointer
         uint8_t r[8]; // General Registers
-        uint8_t st; //Status Register
+        bool st[8]; //Status Register
 
         //Public for System Usage
         cosproc(BusRead r, BusWrite w);

@@ -219,10 +219,23 @@ int main()
             ImGui::Columns(1);
 
             ImGui::Separator();
-            ImGui::Text("Status: " BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(proc.st));
+            ImGui::Text("Status: ");
+            for(int i = 0; i < 8; i++){
+                if(i == 4){
+                    ImGui::SameLine();
+                    ImGui::Text(" ");
+                }
+                ImGui::SameLine();
+                if(proc.st[i]){
+                    ImGui::Text("1");
+                }
+                else{
+                    ImGui::Text("0");
+                }
+            }
             ImGui::SameLine();
             HelpMarker("P: Parity\nN: Negative\nO: Overflow\nP: Parity\n");
-            ImGui::Text("              P  O C N Z");
+            ImGui::Text("                P   O C N Z");
             
         ImGui::End();
 
