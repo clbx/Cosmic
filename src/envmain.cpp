@@ -250,8 +250,12 @@ int main()
                 proc.cycle();
             }
             ImGui::SameLine();
-            if(ImGui::Button("Reset")){
+            if(ImGui::Button("Status Reset")){
                 proc.reset();
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Memory Reset")){
+                memset(memory,0,sizeof(memory));
             }
         ImGui::End();
 
