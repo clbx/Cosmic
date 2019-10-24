@@ -33,13 +33,13 @@ class cosproc{
         BusRead Read;
         
         //Instruction encoding pointers
-        typedef void (cosproc::*Opcode)(uint16_t);
         typedef uint16_t (cosproc::*Addressing)();
-
+        typedef void (cosproc::*Opcode)(uint16_t);
+        
         //Instruction encoding
         typedef struct Instruction{
-            Opcode opcode;
             Addressing addressing;
+            Opcode opcode;
         } Instruction;
 
         Instruction InstructionSet[256];
