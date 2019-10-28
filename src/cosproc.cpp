@@ -15,10 +15,12 @@ cosproc::cosproc(BusRead r, BusWrite w)
 
 	//Fill InstructionSet with Undefined Opcodes so it don't crash no mo'
 	for(int i = 0;i < 0xFF; i++){
-		InstructionSet[i] = (Instruction){&cosproc::IMP,&cosproc::UND};
+		InstructionSet[i] = (Instruction){&cosproc::IMP,&cosproc::UND,"Undefined",1};
 	}
 
 	//Populate instruction set
+
+	/*
 	InstructionSet[0x00] = (Instruction){&cosproc::IMP,&cosproc::NOP};
 	InstructionSet[0x01] = (Instruction){&cosproc::IMP,&cosproc::HCF};
 	InstructionSet[0x02] = (Instruction){&cosproc::IMP,&cosproc::PUSH};
@@ -33,6 +35,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x15] = (Instruction){&cosproc::ABS,&cosproc::ADDX};
 	InstructionSet[0x16] = (Instruction){&cosproc::IND,&cosproc::ADDX};
 	InstructionSet[0x17] = (Instruction){&cosproc::REG,&cosproc::ADDXR};
+	*/
 
 
 
