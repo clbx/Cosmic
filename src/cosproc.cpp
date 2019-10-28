@@ -38,9 +38,12 @@ cosproc::cosproc(BusRead r, BusWrite w)
 
 
 
+
+
+
+
 	reset();
 
-	return;
 }
 
 void cosproc::reset()
@@ -256,8 +259,6 @@ void cosproc::ADDXR(uint16_t src){
 
 		pc+=2;
 	}
-
-
 
 }
 

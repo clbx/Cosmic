@@ -37,9 +37,12 @@ class cosproc{
         typedef void (cosproc::*Opcode)(uint16_t);
         
         //Instruction encoding
-        typedef struct Instruction{
+        typedef struct {
             Addressing addressing;
             Opcode opcode;
+            //TODO: get mnemonics and cycles in instruction struct :( 
+            //char* mnemonic;
+            //int cycles;
         } Instruction;
 
         Instruction InstructionSet[256];
@@ -60,22 +63,40 @@ class cosproc{
         void PUSH(uint16_t src); //Push to stack
         void POP(uint16_t src); //Pop from stack
         void SWP(uint16_t src); //Swap registers
+
         void ADD(uint16_t src); //Add
         void ADDR(uint16_t src); //Add from Register
         void ADDX(uint16_t src); //Add from 16 bit value
         void ADDXR(uint16_t src); //Add from 16 bit register
+
         void SUB(uint16_t src); //Subtract
         void SUBR(uint16_t src); //Subtract from Register
         void SUBX(uint16_t src); //Subtract from 16 bit value
         void SUBXR(uint16_t src); //Subtract from 16bit register
+
         void MUL(uint16_t src); //Multiply
         void MULR(uint16_t src); //Multiply from register
         void MULX(uint16_t src); //Multuply from 16 bit value
         void MULXR(uint16_t src); //Multiply from 16bit register
+
         void DIV(uint16_t src); //Divide
         void DIVR(uint16_t src); //Divide from register
         void DIVX(uint16_t src); //Divide from 16 bit value
         void DIVXR(uint16_t src); //Divide from 16bit register
+
+        void MOVA(uint16_t src);  //Move to Absolute
+        void MOVAR(uint16_t src); //Move to Absolute from Register
+        void MOVI(uint16_t src);  //Move to Indriect
+        void MOVIR(uint16_t src); //Move to Indirect from Register
+        void MOVR(uint16_t src);  //Move to to Reigster
+        void MOVRR(uint16_t src); //Move to Reigster from Register
+
+        void MOVAX(uint16_t src);  //Move 16 bit to Absolute
+        void MOVAXR(uint16_t src); //Move 16 bit to Absolute from Register
+        void MOVIX(uint16_t src);  //Move 16 bit to Indirect
+        void MOVIXR(uint16_t src); //Move 16 bit to Indirect from Register
+        void MOVXR(uint16_t src);  //Move 16 bit to Register
+        void MOVXRR(uint16_t src); //Move 16 bit to Register from Register
 
 
 
