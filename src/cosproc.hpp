@@ -42,7 +42,7 @@ class cosproc{
             Opcode opcode;
             //TODO: get mnemonics and cycles in instruction struct :( 
             char* mnemonic;
-            int cycles;
+            int bytes;
         } Instruction;
 
         Instruction InstructionSet[256];
