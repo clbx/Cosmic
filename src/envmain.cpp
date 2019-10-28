@@ -165,8 +165,7 @@ int main()
             ImGui::EndMainMenuBar();
         }
 
-
-        ImGui::ShowTestWindow();
+    
 
 
         /**  -= Debug Window =-
@@ -239,11 +238,20 @@ int main()
             
         ImGui::End();
 
+
+        /**  -= Memory Editor =-
+        *  Shows and allows the editing of
+        *  Memory
+        */
         ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
         ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*256);
 
-        ImGui::SetNextWindowSize(ImVec2(250,80),ImGuiCond_Once);
+
+        /**  -= Control Window =-
+        *   Control the Processor.
+        */
+        ImGui::SetNextWindowSize(ImVec2(250,60),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
