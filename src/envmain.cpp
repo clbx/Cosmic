@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <GL/gl3w.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
@@ -56,6 +59,31 @@ uint8_t MemoryRead(uint16_t address){
     return memory[address];
 }
 
+
+//TODO: Fix this once proper memory is added
+void LoadIntoMemory(char* filepath){
+    std::ifstream File;
+    File.open(filepath);
+    int i = 0;
+
+    while(!File.eof()){
+        File >> memory[i];
+        i++;
+    }
+
+    File.close();
+}
+
+//TODO: Fix this once proper memory is added
+void DumpMemory(char* filepath){
+    std::ofstream File;
+    File.open(filepath);
+    for(int i = 0; i < 256; i++){
+        File << memory[i];
+    }
+
+    File.close();
+}
 
 
 static void HelpMarker(const char* desc)
@@ -165,7 +193,7 @@ int main()
             ImGui::EndMainMenuBar();
         }
 
-    
+
 
 
         /**  -= Debug Window =-
@@ -251,19 +279,54 @@ int main()
         /**  -= Control Window =-
         *   Control the Processor.
         */
-        ImGui::SetNextWindowSize(ImVec2(250,60),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(475,60),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
                 proc.cycle();
             }
             ImGui::SameLine();
-            if(ImGui::Button("Status Reset")){
+            if(ImGui::Button("Processor Reset")){
                 proc.reset();
             }
             ImGui::SameLine();
             if(ImGui::Button("Memory Reset")){
                 memset(memory,0,sizeof(memory));
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Load Binary"))
+                ImGui::OpenPopup("Load Binary");
+            if (ImGui::BeginPopupModal("Load Binary",NULL))
+            {
+                ImGui::Text("Insert Filepath Here: ");
+                static char filepath[128] = "";
+                ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
+                if (ImGui::Button("Open")){
+                    LoadIntoMemory(filepath);
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                    ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Dump Memory"))
+                ImGui::OpenPopup("Dump Memory");
+            if (ImGui::BeginPopupModal("Dump Memory",NULL))
+            {
+                ImGui::Text("Insert Filepath Here: ");
+                static char filepath[128] = "";
+                ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
+                if (ImGui::Button("Save")){
+                    DumpMemory(filepath);
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                    ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
             }
         ImGui::End();
 
