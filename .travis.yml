@@ -5,6 +5,7 @@ matrix:
     - os: linux
       sudo: required
       before_install:
+        - sudo apt update
         - sudo apt install libsdl2-dev
     - os: osx
       before_install:
