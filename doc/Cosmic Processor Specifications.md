@@ -286,30 +286,30 @@ Loc = Data.          					x x I P  O C N Z
 
 | Addressing                       | Assembler         | Opcode | Bytes                                      |
 | -------------------------------- | ----------------- | ------ | ------------------------------------------ |
-| Immediate -> **Absolute**        | MOV #oper, oper   |        | 4 ``opcode value dstHigh dstLow``          |
-| Absolute -> **Absolute**         | MOV oper, oper    |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Indirect -> **Absolute**         | MOV @oper, oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Register -> **Absolute**         | MOV RX, oper      |        | 4 ``opcode reg dstHigh dstLow``            |
-| Immediate -> **Indirect**        | MOV #oper, @oper  |        | 5 ``opcode value dstHigh dstLow``          |
-| Absolute -> **Indirect**         | MOV oper, @oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Indirect -> **Indirect**         | MOV @oper, @oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Register -> **Indirect**         | MOV RX, @oper     |        | 4 ``opcode reg dstHigh dstLow``            |
-| Immediate -> **Register**        | MOV #oper, RX     |        | 3 ``opcode val reg``                       |
-| Absolute -> **Register**         | MOV oper, RX      |        | 4 ``opcode locHigh locLow reg``            |
-| Indirect -> **Register**         | MOV @oper, RX     |        | 4 ``opcode locHigh locLow reg``            |
-| Register -> **Register**         | MOV RX, RX        |        | 3 ``opcode reg reg``                       |
-| 16 bit Immediate -> **Absolute** | MOVX #oper, oper  |        | 5 ``opcode valHigh valLow locHigh locLow`` |
-| 16 bit Absolute -> **Absolute**  | MOVX oper, oper   |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Indirect -> **Absolute**  | MOVX @oper, oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Register -> **Absolute**  | MOVX RX, oper     |        | 4 ``opcode reg dstHigh dstLow``            |
-| 16 bit Immediate -> **Indirect** | MOVX #oper, @oper |        | 5 ``opcode valHigh valLow dstHigh dstLow`` |
-| 16 bit Absolute -> **Indirect**  | MOVX oper, @oper  |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Indirect -> **Indirect**  | MOVX @oper, @oper |        | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Register -> **Indirect**  | MOVX RX, @oper    |        | 4 ``opcode reg srcHigh srcLow``            |
-| 16 bit Immediate -> **Register** | MOVX #oper, RX    |        | 4 ``opcode valHigh valLow reg``            |
-| 16 bit Absolute -> **Register**  | MOVX oper, RX     |        | 4 ``opcode srcHigh srcLow reg``            |
-| Indirect -> **Register**         | MOVX @oper, RX    |        | 4 ``opcode srcHigh srcLow reg``            |
-| Register -> **Register**         | MOVX RX, RX       |        | 3 ``opcode reg reg``                       |
+| Immediate -> **Absolute**        | MOV #oper, oper   | 0x30   | 4 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Absolute**         | MOV oper, oper    | 0x31   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Absolute**         | MOV @oper, oper   | 0x32   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Absolute**         | MOV RX, oper      | 0x33   | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Indirect**        | MOV #oper, @oper  | 0x34   | 5 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Indirect**         | MOV oper, @oper   | 0x35   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Indirect**         | MOV @oper, @oper  | 0x36   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Indirect**         | MOV RX, @oper     | 0x37   | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Register**        | MOV #oper, RX     | 0x38   | 3 ``opcode val reg``                       |
+| Absolute -> **Register**         | MOV oper, RX      | 0x39   | 4 ``opcode locHigh locLow reg``            |
+| Indirect -> **Register**         | MOV @oper, RX     | 0x3A   | 4 ``opcode locHigh locLow reg``            |
+| Register -> **Register**         | MOV RX, RX        | 0x3B   | 3 ``opcode reg reg``                       |
+| 16 bit Immediate -> **Absolute** | MOVX #oper, oper  | 0x40   | 5 ``opcode valHigh valLow locHigh locLow`` |
+| 16 bit Absolute -> **Absolute**  | MOVX oper, oper   | 0x41   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Indirect -> **Absolute**  | MOVX @oper, oper  | 0x42   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Register -> **Absolute**  | MOVX RX, oper     | 0x43   | 4 ``opcode reg dstHigh dstLow``            |
+| 16 bit Immediate -> **Indirect** | MOVX #oper, @oper | 0x44   | 5 ``opcode valHigh valLow dstHigh dstLow`` |
+| 16 bit Absolute -> **Indirect**  | MOVX oper, @oper  | 0x45   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Indirect -> **Indirect**  | MOVX @oper, @oper | 0x46   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16 bit Register -> **Indirect**  | MOVX RX, @oper    | 0x47   | 4 ``opcode reg srcHigh srcLow``            |
+| 16 bit Immediate -> **Register** | MOVX #oper, RX    | 0x48   | 4 ``opcode valHigh valLow reg``            |
+| 16 bit Absolute -> **Register**  | MOVX oper, RX     | 0x49   | 4 ``opcode srcHigh srcLow reg``            |
+| Indirect -> **Register**         | MOVX @oper, RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
+| Register -> **Register**         | MOVX RX, RX       | 0x4B   | 3 ``opcode reg reg``                       |
 
 ### 
 

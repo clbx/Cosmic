@@ -174,11 +174,18 @@ int main()
         ImGui::NewFrame();
 
         //ImGui::ShowTestWindow();
-
+        
+        std::string menu_action = "";
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
-                if(ImGui::MenuItem("Load")){}
-                if(ImGui::MenuItem("Save","CTRL+S")){}
+                //Load File Into Memory
+                if(ImGui::MenuItem("Load into Memory")){
+                    menu_action = "loadbin";
+                }   
+                //Dump Memory to a File
+                if(ImGui::MenuItem("Dump Memory")){
+                    menu_action = "dumpmem";
+                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")){
@@ -193,6 +200,38 @@ int main()
             ImGui::EndMainMenuBar();
         }
 
+        if(menu_action == "loadbin"){ImGui::OpenPopup("Load Binary");}
+        if(menu_action == "dumpmem"){ImGui::OpenPopup("Dump Memory");}
+
+        if (ImGui::BeginPopupModal("Load Binary",NULL)){
+            ImGui::Text("Insert Filepath Here: ");
+            static char filepath[128] = "";
+            ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
+            if (ImGui::Button("Open")){
+                LoadIntoMemory(filepath);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopupModal("Dump Memory",NULL)){
+            ImGui::Text("Insert Filepath Here: ");
+            static char filepath[128] = "";
+            ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
+            if (ImGui::Button("Save")){
+                DumpMemory(filepath);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
 
 
 
@@ -279,7 +318,7 @@ int main()
         /**  -= Control Window =-
         *   Control the Processor.
         */
-        ImGui::SetNextWindowSize(ImVec2(475,60),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(300,60),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
@@ -293,41 +332,7 @@ int main()
             if(ImGui::Button("Memory Reset")){
                 memset(memory,0,sizeof(memory));
             }
-
-            ImGui::SameLine();
-            if (ImGui::Button("Load Binary"))
-                ImGui::OpenPopup("Load Binary");
-            if (ImGui::BeginPopupModal("Load Binary",NULL))
-            {
-                ImGui::Text("Insert Filepath Here: ");
-                static char filepath[128] = "";
-                ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-                if (ImGui::Button("Open")){
-                    LoadIntoMemory(filepath);
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Cancel"))
-                    ImGui::CloseCurrentPopup();
-                ImGui::EndPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Dump Memory"))
-                ImGui::OpenPopup("Dump Memory");
-            if (ImGui::BeginPopupModal("Dump Memory",NULL))
-            {
-                ImGui::Text("Insert Filepath Here: ");
-                static char filepath[128] = "";
-                ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-                if (ImGui::Button("Save")){
-                    DumpMemory(filepath);
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Cancel"))
-                    ImGui::CloseCurrentPopup();
-                ImGui::EndPopup();
-            }
+                
         ImGui::End();
 
         // Rendering

@@ -41,7 +41,7 @@ class cosproc{
             Addressing addressing;
             Opcode opcode;
             //TODO: get mnemonics and cycles in instruction struct :( 
-            char* mnemonic;
+            const char* mnemonic;
             int bytes;
         } Instruction;
 
