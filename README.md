@@ -57,7 +57,7 @@ pacman -S git mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/m
 ```
 Add MinGW to your Path
 
-``
+```
 cd Cosmic
 cd src
 make
