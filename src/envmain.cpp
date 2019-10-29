@@ -18,6 +18,7 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_memory_editor.h"
+#include "imgui_logger.h"
 
 #include "cosproc.hpp"
 
@@ -49,13 +50,13 @@
 uint8_t memory[256] = { };
 
 void MemoryWrite(uint16_t address, uint8_t value){
-        //TODO: Actually put memory here
-        memory[address] = value;
-        printf("Wrote %X to %X\n",value,address);
+    //TODO: Actually put memory here
+    memory[address] = value;
+    printf("Wrote %X to %X\n",value,address);
 }
 
 uint8_t MemoryRead(uint16_t address){
-    printf(" READ: %X from %X\n",memory[address],address);
+    printf("READ: %X from %X\n",memory[address],address);
     return memory[address];
 }
 
@@ -313,6 +314,7 @@ int main()
         ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
         ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*256);
+        ram_edit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
 
 
         /**  -= Control Window =-
