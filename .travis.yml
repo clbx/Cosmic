@@ -1,16 +1,17 @@
+  
 language: cpp
 
 matrix:
   include:
     - os: linux
-      addons:
-        apt:
-          - libsdl2-dev
+      sudo: required
+      before_install:
+        - sudo apt update
+        - sudo apt install libsdl2-dev
     - os: osx
-      addons:
-        homebrew:
-          packages:
-            - sdl2
+      before_install:
+        - brew update
+        - brew install sdl2
 
 script:
 - cd src
