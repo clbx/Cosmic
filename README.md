@@ -27,6 +27,43 @@ Along with plenty of prewritten software and a simple OS cosmic is in league wit
 Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank) at Elizabethtown College. All academically required reports and documentation is in the ``/doc`` folder.
 
 ----
+## Installation Instructions
+
+### Linux
+
+Install SDL2 using your distros package manager
+```
+cd Cosmic
+cd src
+make
+```
+### Mac
+Install SDL2
+```
+brew install sdl2
+```
+Then make
+```
+cd Cosmic
+cd src
+make
+```
+
+### Windows (Unsupported)
+Windows requires MSYS2/MinGW
+Install the following packages:
+```
+pacman -S git mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_ttf mingw64/mingw-w64-x86_64-SDL2_net mingw64/mingw-w64-x86_64-cmake make
+```
+Add MinGW to your Path
+
+```
+cd Cosmic
+cd src
+make
+```
+
+----
 
 ``/lib`` contains some included software:
 *  [ImGui](https://github.com/ocornut/imgui) is a GUI library used for the interface, along with a slightly modified memory editor addon. This is under the MIT License and the license file is included accordingly
