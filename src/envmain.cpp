@@ -37,7 +37,6 @@
 
 
 /*Probably will be moved elsewhere in the future becauese it doesn't belong here */
-
 /**
 * -= Memory and Address Bus=-
 *  
@@ -103,11 +102,9 @@ static void HelpMarker(const char* desc)
 
 static MemoryEditor ram_edit;
 
-int main()
-{
+int main(int argc, char** argv){
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
@@ -130,8 +127,7 @@ int main()
 
 
     bool err = gl3wInit() != 0;
-    if (err)
-    {
+    if (err){
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
         return 1;
     }
@@ -158,11 +154,9 @@ int main()
 
 
     bool done = false;
-    while (!done)
-    {
+    while (!done){
         SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
+        while (SDL_PollEvent(&event)){
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
                 done = true;
