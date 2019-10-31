@@ -10,6 +10,7 @@
 #include <iostream>
 #include <time.h>
 #include <cstring>
+#include <string>
 #include <map>
 
 
@@ -36,16 +37,8 @@ class cosproc{
         typedef uint16_t (cosproc::*Addressing)();
         typedef void (cosproc::*Opcode)(uint16_t);
         
-        //Instruction encoding
-        typedef struct {
-            Addressing addressing;
-            Opcode opcode;
-            //TODO: get mnemonics and cycles in instruction struct :( 
-            const char* mnemonic;
-            int bytes;
-        } Instruction;
+        
 
-        Instruction InstructionSet[256];
 
         
 
@@ -107,10 +100,22 @@ class cosproc{
         uint8_t r[8]; // General Registers
         bool st[8]; //Status Register
 
+        
+        typedef struct {
+            Addressing addressing;
+            Opcode opcode;
+            const char* mnemonic;
+            int bytes;
+        } Instruction;
+
+        Instruction InstructionSet[256];
+        
+
         //Public for System Usage
         cosproc(BusRead r, BusWrite w);
         void reset();
         void cycle();
         void execute(Instruction i);
+
 
 };
