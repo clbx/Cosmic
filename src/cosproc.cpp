@@ -62,14 +62,6 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x4B] = (Instruction){&cosproc::REG,&cosproc::MOVXRR,"MOVX RX, RX",3};
 
 
-
-
-
-
-
-
-
-
 	reset();
 
 }
@@ -90,11 +82,13 @@ void cosproc::reset()
 
 void cosproc::cycle()
 {
+	
 	uint8_t opcode = Read(pc); //Fetch
 	Instruction currentInstruction = InstructionSet[opcode]; //Decode
 	execute(currentInstruction); //Execute
 	printf("%s\n",currentInstruction.mnemonic); //Write Debug
 	pc += currentInstruction.bytes; //Writeback
+
 }
 
 void cosproc::execute(Instruction i)
@@ -277,7 +271,7 @@ void cosproc::ADDXR(uint16_t src){
 
 /* 0x30-0x32 MOV Absolute */
 void cosproc::MOVA(uint16_t src){
-
+	
 }
 
 /* 0x33 MOV Absolute from Reigster */

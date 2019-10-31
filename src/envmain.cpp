@@ -18,6 +18,7 @@
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_memory_editor.h"
+#include "imgui_logger.h"
 
 #include "cosproc.hpp"
 
@@ -151,9 +152,9 @@ int main()
 
 
     //System setup
+    
 
     cosproc proc = cosproc(MemoryRead, MemoryWrite);    
-
 
 
     bool done = false;
@@ -239,7 +240,7 @@ int main()
         *  This window holds debug info
         *       About the gui.
         */
-        ImGui::SetNextWindowPos(ImVec2(1080,20), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(630,30), ImGuiCond_Once);
         ImGui::Begin("Debug");
             ImVec2 mousePos = ImGui::GetMousePos();
             ImGui::Text("%f, %f",mousePos.x,mousePos.y);
@@ -324,6 +325,7 @@ int main()
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
                 proc.cycle();
+                
             }
             ImGui::SameLine();
             if(ImGui::Button("Processor Reset")){
@@ -335,6 +337,21 @@ int main()
             }
                 
         ImGui::End();
+
+
+        static Logger log;
+
+        // For the demo: add a debug button _BEFORE_ the normal log window contents
+        // We take advantage of a rarely used feature: multiple calls to Begin()/End() are appending to the _same_ window.
+        // Most of the contents of the window will be added by the log.Draw() call.
+        
+        ImGui::Begin("Debug Logger");
+        ImGui::End();
+
+        // Actually call in the regular Log helper (which will Begin() into the same window as we just did)
+        ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(845,30),ImGuiCond_Once);
+        log.Draw("Debug Logger");
 
         // Rendering
         ImGui::Render();
