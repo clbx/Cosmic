@@ -56,9 +56,9 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	*/
 
 	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVRI,"MOV #oper, RX",3};
-	// InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
-	// InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
-	// InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
+	InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
+	InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
+	InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
 
 	reset();
 
@@ -223,12 +223,11 @@ void cosproc::ADDX(uint16_t src){
 /* 0x17 ADDXR  */
 void cosproc::ADDXR(uint16_t src){
 	uint16_t data;
-	int src2 = src; //Just so compiler doesn't yell
 
 	if(src % 2 == 0){
-		data = ((r[src] << 8) | r[++src2]);
+		data = ((r[src] << 8) | r[src+1]);
 	}else{
-		data = ((r[--src] << 8) | r[src2]);
+		data = ((r[src-1] << 8) | r[src]);
 	}
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
@@ -309,12 +308,11 @@ void cosproc::SUBX(uint16_t src){
 /* 0x1F SUBXR  */
 void cosproc::SUBXR(uint16_t src){
 	uint16_t data;
-	int src2 = src; //Just so compiler doesn't yell
 
 	if(src % 2 == 0){
-		data = ((r[src] << 8) | r[++src2]);
+		data = ((r[src] << 8) | r[src+1]);
 	}else{
-		data = ((r[--src] << 8) | r[src2]);
+		data = ((r[src-1] << 8) | r[src]);
 	}
 
 	unsigned int temp = ((r[0] << 8) | r[1] ) - data;
@@ -339,7 +337,7 @@ void cosproc::MOVAI(uint16_t src){
 	Write(dst,Read(src)); //Write value of memory at destination
 }
 
-/* 0x31-0x32 MOV to Absolute from Absolute/Indirect*/
+/* 0x31-0x32 MOV to Absolute from Absolute/Indirect */
 void cosproc::MOVA(uint16_t src){
 	uint16_t dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get destination
 	Write(dst,Read(src)); //Write value of memory at destination
@@ -353,7 +351,15 @@ void cosproc::MOVAR(uint16_t src){
 
 /* 0x38 MOV to Register from Immediate */
 void cosproc::MOVRI(uint16_t src){
-	uint8_t data = Read(src++);
-	uint8_t dst = Read(src);
-	r[dst] = data;
+	r[Read(src+1)] = Read(src);
+}
+
+/* 0x39-0x3A MOV to Register from Absolute/Indirect */
+void cosproc:: MOVR(uint16_t src){
+	r[Read(pc+3)] = Read(src);
+}
+
+/* 0x3B MOV to Register from Register */
+void cosproc::MOVRR(uint16_t src){
+	r[Read(src+1)] = r[Read(src)];
 }
