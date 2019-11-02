@@ -37,10 +37,10 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x18] = (Instruction){&cosproc::IMM,&cosproc::SUB,"SUB #oper",2};
 	InstructionSet[0x19] = (Instruction){&cosproc::ABS,&cosproc::SUB,"SUB oper",3};
 	InstructionSet[0x1A] = (Instruction){&cosproc::IND,&cosproc::SUB,"SUB @oper",3};
-	// InstructionSet[0x1B] = (Instruction){&cosproc::REG,&cosproc::SUBR,"SUB RX",2};
-	// InstructionSet[0x1C] = (Instruction){&cosproc::IMM,&cosproc::SUBX,"SUBX #oper",3};
-	// InstructionSet[0x1D] = (Instruction){&cosproc::ABS,&cosproc::SUBX,"SUBX oper",3};
-	// InstructionSet[0x1E] = (Instruction){&cosproc::IND,&cosproc::SUBX,"SUBX @oper",3};
+	InstructionSet[0x1B] = (Instruction){&cosproc::REG,&cosproc::SUBR,"SUB RX",2};
+	InstructionSet[0x1C] = (Instruction){&cosproc::IMM,&cosproc::SUBX,"SUBX #oper",3};
+	InstructionSet[0x1D] = (Instruction){&cosproc::ABS,&cosproc::SUBX,"SUBX oper",3};
+	InstructionSet[0x1E] = (Instruction){&cosproc::IND,&cosproc::SUBX,"SUBX @oper",3};
 	// InstructionSet[0x1F] = (Instruction){&cosproc::REG,&cosproc::SUBXR,"SUBX RX",2};
 
 
@@ -277,7 +277,7 @@ void cosproc::ADDXR(uint16_t src){
 
 }
 
-/* 0x18-0x1F SUB */
+/* 0x18-0x1A SUB */
 void cosproc::SUB(uint16_t src){
 	uint8_t data = Read(src);
 	unsigned int temp = r[0] - data;
@@ -293,8 +293,86 @@ void cosproc::SUB(uint16_t src){
 	
 	//Set Value
 	r[0] = temp & 0xFF;
-
 }
+
+/* 0x1B SUBR */
+void cosproc::SUBR(uint16_t src){
+	uint8_t data = r[src];
+	unsigned int temp = r[0] - data;
+
+	//Set Zero
+	st[0] = temp == 0;
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x80) != 0;
+	
+	//Set Value
+	r[0] = temp & 0xFF;
+}
+
+/* 0x1C-0x1E SUBX */
+void cosproc::SUBX(uint16_t src){
+	uint8_t dataHigh = Read(src++);
+	uint8_t dataLow = Read(src);
+
+	uint16_t data = ((dataHigh << 8) | dataLow);
+
+	unsigned int temp =  ((r[0] << 8) | r[1] ) - data;
+
+	//Set Zero
+	st[0] = temp == 0;
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	//Set Value
+	r[0] = temp & 0xFF00 >> 8;
+	r[1] = temp & 0x00FF;
+}
+
+// /* 0x1F SUBXR */
+// void cosproc::SUBXR(uint16_t src){
+
+// 	//TODO: FIX ME IM GARBAGE
+// 	int reg = 0; 
+// 	switch(src){
+// 		case 0:
+// 		case 1:
+// 			reg = 0; break;
+// 		case 2:
+// 		case 3:
+// 			reg = 1; break;
+// 		case 4:
+// 		case 5:
+// 			reg = 2; break;
+// 		case 6:
+// 		case 7:
+// 			reg = 3; break;
+
+// 		uint8_t dataHigh = r[reg*2];
+// 		uint8_t dataLow = r[reg*2+1];
+// 		uint16_t data = ((dataHigh << 8) | dataLow);
+
+// 		unsigned int temp =  ((r[0] << 8) | r[1] ) - data;
+
+// 		//Set Zero
+// 		st[0] = temp == 0;
+// 		//Set Negative
+// 		st[1] = temp >= 0x8000;
+// 		//Set Carry
+// 		st[2] = temp > 0xFFFF;
+// 		//Set Overflow
+// 		st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+// 		//Set Value
+// 		r[0] = temp & 0xFF00 >> 8;
+// 		r[1] = temp & 0x00FF;
+// 	}
+// }
 
 /* 0x30-0x32 MOV Absolute */
 void cosproc::MOVA(uint16_t src){
