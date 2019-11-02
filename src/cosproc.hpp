@@ -77,19 +77,13 @@ class cosproc{
         void DIVX(uint16_t src); //Divide from 16 bit value
         void DIVXR(uint16_t src); //Divide from 16bit register
 
+        void MOVAI(uint16_t src); //Move to Absolute from Immediate
         void MOVA(uint16_t src);  //Move to Absolute
         void MOVAR(uint16_t src); //Move to Absolute from Register
-        void MOVI(uint16_t src);  //Move to Indriect
-        void MOVIR(uint16_t src); //Move to Indirect from Register
-        void MOVR(uint16_t src);  //Move to to Reigster
-        void MOVRR(uint16_t src); //Move to Reigster from Register
 
-        void MOVAX(uint16_t src);  //Move 16 bit to Absolute
-        void MOVAXR(uint16_t src); //Move 16 bit to Absolute from Register
-        void MOVIX(uint16_t src);  //Move 16 bit to Indirect
-        void MOVIXR(uint16_t src); //Move 16 bit to Indirect from Register
-        void MOVXR(uint16_t src);  //Move 16 bit to Register
-        void MOVXRR(uint16_t src); //Move 16 bit to Register from Register
+        void MOVII(uint16_t src); //Move to Indirect from Immediate
+        void MOVI(uint16_t src);  //Move to Indirect
+        void MOVIR(uint16_t src); //Move to Indirect from Register
 
 
 
