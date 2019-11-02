@@ -286,12 +286,11 @@ int runGUI(){
                 ImGui::Text("SP: %X (%d)",proc.sp,proc.sp); 
             ImGui::Columns(1);
             ImGui::Separator();
-            ImGui::Columns(2, "16bitreg", false);
-            ImGui::Text("A/B: %X (%d)",(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]));
-            ImGui::Text("E/F: %X (%d)",(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]));
-            ImGui::NextColumn();
-            ImGui::Text("C/D: %X (%d)",(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]));
-            ImGui::Text("G/H: %X (%d)",(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]));
+            ImGui::Columns(1, "16bitreg", false);
+            ImGui::Text("A/B: %X (%d) (%hd)",(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]));
+            ImGui::Text("C/D: %X (%d) (%hd)",(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]));
+            ImGui::Text("E/F: %X (%d) (%hd)",(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]));
+            ImGui::Text("G/H: %X (%d) (%hd)",(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]));
             ImGui::Columns(1);
 
             ImGui::Separator();
