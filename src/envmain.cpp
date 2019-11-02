@@ -102,8 +102,23 @@ static void HelpMarker(const char* desc)
 
 static MemoryEditor ram_edit;
 
-int main(int argc, char** argv){
+void runCMD(char* filepath){
+    LoadIntoMemory(filepath);
+    //TODO: Fix when memory is not only 256bytes
+    int k = 0; 
+    for(int i = 0; i < 256/8; i++){
+        for(int j = 0; j < 8; j++){
+            printf("%X ",memory[k]);
+            k++;
+        }
+        printf("\n");
+    }
 
+    DumpMemory("dump.bin");
+
+}
+
+int runGUI(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
@@ -371,3 +386,14 @@ int main(int argc, char** argv){
     return 0;
 }
 
+
+int main(int argc, char** argv){
+
+    if(argc > 1){
+        runCMD(argv[1]);
+    }else{
+        runGUI();
+    }
+
+    
+}
