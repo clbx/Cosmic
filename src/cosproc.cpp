@@ -41,8 +41,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x1C] = (Instruction){&cosproc::IMM,&cosproc::SUBX,"SUBX #oper",3};
 	InstructionSet[0x1D] = (Instruction){&cosproc::ABS,&cosproc::SUBX,"SUBX oper",3};
 	InstructionSet[0x1E] = (Instruction){&cosproc::IND,&cosproc::SUBX,"SUBX @oper",3};
-	// InstructionSet[0x1F] = (Instruction){&cosproc::REG,&cosproc::SUBXR,"SUBX RX",2};
-
+	InstructionSet[0x1F] = (Instruction){&cosproc::REG,&cosproc::SUBXR,"SUBX RX",2};
 
 	InstructionSet[0x30] = (Instruction){&cosproc::IMM,&cosproc::MOVAI,"MOV #oper, oper",4};
 	InstructionSet[0x31] = (Instruction){&cosproc::ABS,&cosproc::MOVA,"MOV oper, oper",5};
@@ -56,6 +55,10 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x37] = (Instruction){&cosproc::REG,&cosproc::MOVIR,"MOV RX, @oper",4};
 	*/
 
+	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVRI,"MOV #oper, RX",3};
+	// InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
+	// InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
+	// InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
 
 	reset();
 
@@ -174,7 +177,6 @@ void cosproc::ADD(uint16_t src){
 	
 	//Set Value
 	r[0] = temp & 0xFF;
-
 }
 
 /* 0x13 ADD */
@@ -194,18 +196,13 @@ void cosproc::ADDR(uint16_t src){
 	
 	//Set Value
 	r[0] = temp & 0xFF;
-
-
 }
 
 /* 0x14-0x16 ADDX */
 void cosproc::ADDX(uint16_t src){
 	uint8_t dataHigh = Read(src);
 	uint8_t dataLow = Read(src+1);
-
-
 	uint16_t data = ((dataHigh << 8) | dataLow);
-
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
 
@@ -217,52 +214,37 @@ void cosproc::ADDX(uint16_t src){
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
 	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
 	//Set Value
 	r[0] = temp & 0xFF00 >> 8;
 	r[1] = temp & 0x00FF;
-
-
 }
 
 /* 0x17 ADDXR  */
 void cosproc::ADDXR(uint16_t src){
+	uint16_t data;
+	int src2 = src; //Just so compiler doesn't yell
 
-	//TODO: FIX ME IM GARBAGE
-	int reg = 0; 
-	switch(src){
-		case 0:
-		case 1:
-			reg = 0; break;
-		case 2:
-		case 3:
-			reg = 1; break;
-		case 4:
-		case 5:
-			reg = 2; break;
-		case 6:
-		case 7:
-			reg = 3; break;
-
-		uint8_t dataHigh = r[reg*2];
-		uint8_t dataLow = r[reg*2+1];
-		uint16_t data = ((dataHigh << 8) | dataLow);
-
-		unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
-
-		//Set Zero
-		st[0] = temp == 0;
-		//Set Negative
-		st[1] = temp >= 0x8000;
-		//Set Carry
-		st[2] = temp > 0xFFFF;
-		//Set Overflow
-		st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
-		//Set Value
-		r[0] = temp & 0xFF00 >> 8;
-		r[1] = temp & 0x00FF;
-
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[++src2]);
+	}else{
+		data = ((r[--src] << 8) | r[src2]);
 	}
 
+	unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
+
+	//Set Zero
+	st[0] = temp == 0;
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
+	//Set Value
+	r[0] = temp & 0xFF00 >> 8;
+	r[1] = temp & 0x00FF;
 }
 
 /* 0x18-0x1A SUB */
@@ -318,6 +300,34 @@ void cosproc::SUBX(uint16_t src){
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
 	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
+	//Set Value
+	r[0] = temp & 0xFF00 >> 8;
+	r[1] = temp & 0x00FF;
+}
+
+/* 0x1F SUBXR  */
+void cosproc::SUBXR(uint16_t src){
+	uint16_t data;
+	int src2 = src; //Just so compiler doesn't yell
+
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[++src2]);
+	}else{
+		data = ((r[--src] << 8) | r[src2]);
+	}
+
+	unsigned int temp = ((r[0] << 8) | r[1] ) - data;
+
+	//Set Zero
+	st[0] = temp == 0;
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
 	//Set Value
 	r[0] = temp & 0xFF00 >> 8;
 	r[1] = temp & 0x00FF;
@@ -341,3 +351,9 @@ void cosproc::MOVAR(uint16_t src){
 	Write(dst,r[src-1]);  //Write the value of the register to the location
 }
 
+/* 0x38 MOV to Register from Immediate */
+void cosproc::MOVRI(uint16_t src){
+	uint8_t data = Read(src++);
+	uint8_t dst = Read(src);
+	r[dst] = data;
+}

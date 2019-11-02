@@ -85,6 +85,10 @@ class cosproc{
         void MOVI(uint16_t src);  //Move to Indirect
         void MOVIR(uint16_t src); //Move to Indirect from Register
 
+        void MOVRI(uint16_t src); //Move to Register from Immediate
+        void MOVR(uint16_t src);  //Move to Register
+        void MOVRR(uint16_t src); //Move to Register from Register
+
 
 
     public:
