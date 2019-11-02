@@ -280,7 +280,6 @@ void cosproc::ADDXR(uint16_t src){
 /* 0x18-0x1F SUB */
 void cosproc::SUB(uint16_t src){
 	uint8_t data = Read(src);
-
 	unsigned int temp = r[0] - data;
 
 	//Set Zero
@@ -300,11 +299,13 @@ void cosproc::SUB(uint16_t src){
 /* 0x30-0x32 MOV Absolute */
 void cosproc::MOVA(uint16_t src){
 	
+
+
 }
 
 /* 0x33 MOV Absolute from Reigster */
 void cosproc::MOVAR(uint16_t src){
-
+	
 }
 
 /* 0x34-0x36 MOV Indirect */
@@ -312,14 +313,14 @@ void cosproc::MOVI(uint16_t src){
 
 }
 
-/* 0x37 MOV Indrecit from Register */
+/* 0x37 MOV Indirect from Register */
 void cosproc::MOVIR(uint16_t src){
 
 }
 
 /* 0x38-0x3A MOV Register */
 void cosproc::MOVR(uint16_t src){
-
+	
 }
 
 /* 0x3B MOV Register from Register */

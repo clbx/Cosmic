@@ -255,16 +255,16 @@ int main(int argc, char** argv){
             ImGui::Separator();
             ImGui::Columns(2,"8bitreg");    
             //Left Side
-            ImGui::SetColumnWidth(0,130);
+            ImGui::SetColumnWidth(0,145);
                 ImGui::Text("General Registers");
-                ImGui::Text("A: %X (%d)",proc.r[0],proc.r[0]);
-                ImGui::Text("B: %X (%d)",proc.r[1],proc.r[1]);
-                ImGui::Text("C: %X (%d)",proc.r[2],proc.r[2]);
-                ImGui::Text("D: %X (%d)",proc.r[3],proc.r[3]);
-                ImGui::Text("E: %X (%d)",proc.r[4],proc.r[4]);
-                ImGui::Text("F: %X (%d)",proc.r[5],proc.r[5]);
-                ImGui::Text("G: %X (%d)",proc.r[6],proc.r[6]);
-                ImGui::Text("H: %X (%d)",proc.r[7],proc.r[7]);
+                ImGui::Text("A: %X (%d) (%hhd)",proc.r[0],proc.r[0],proc.r[0]);
+                ImGui::Text("B: %X (%d) (%hhd)",proc.r[1],proc.r[1],proc.r[1]);
+                ImGui::Text("C: %X (%d) (%hhd)",proc.r[2],proc.r[2],proc.r[2]);
+                ImGui::Text("D: %X (%d) (%hhd)",proc.r[3],proc.r[3],proc.r[3]);
+                ImGui::Text("E: %X (%d) (%hhd)",proc.r[4],proc.r[4],proc.r[4]);
+                ImGui::Text("F: %X (%d) (%hhd)",proc.r[5],proc.r[5],proc.r[5]);
+                ImGui::Text("G: %X (%d) (%hhd)",proc.r[6],proc.r[6],proc.r[6]);
+                ImGui::Text("H: %X (%d) (%hhd)",proc.r[7],proc.r[7],proc.r[7]);
             //Right Side
             ImGui::NextColumn();
                 ImGui::Text("PC: %X (%d)",proc.pc,proc.pc);
@@ -281,8 +281,8 @@ int main(int argc, char** argv){
 
             ImGui::Separator();
             ImGui::Text("Status: ");
-            for(int i = 0; i < 8; i++){
-                if(i == 4){
+            for(int i = 7; i >= 0; i--){
+                if(i == 3){
                     ImGui::SameLine();
                     ImGui::Text(" ");
                 }
@@ -295,8 +295,8 @@ int main(int argc, char** argv){
                 }
             }
             ImGui::SameLine();
-            HelpMarker("P: Parity\nN: Negative\nO: Overflow\nP: Parity\n");
-            ImGui::Text("                P   O C N Z");
+            HelpMarker("I: Interrupt\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
+            ImGui::Text("              I P   O C N Z");
             
         ImGui::End();
 
