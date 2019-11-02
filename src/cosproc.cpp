@@ -44,31 +44,17 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	// InstructionSet[0x1F] = (Instruction){&cosproc::REG,&cosproc::SUBXR,"SUBX RX",2};
 
 
-	InstructionSet[0x30] = (Instruction){&cosproc::IMM,&cosproc::MOVA,"MOV #oper, oper",4};
+	InstructionSet[0x30] = (Instruction){&cosproc::IMM,&cosproc::MOVAI,"MOV #oper, oper",4};
 	InstructionSet[0x31] = (Instruction){&cosproc::ABS,&cosproc::MOVA,"MOV oper, oper",5};
 	InstructionSet[0x32] = (Instruction){&cosproc::IND,&cosproc::MOVA,"MOV @oper, oper",5};
 	InstructionSet[0x33] = (Instruction){&cosproc::REG,&cosproc::MOVAR,"MOV RX, oper",4};
-	InstructionSet[0x34] = (Instruction){&cosproc::IMM,&cosproc::MOVI,"MOV #oper, @oper",5};
+
+	/*
+	InstructionSet[0x34] = (Instruction){&cosproc::IMM,&cosproc::MOVII,"MOV #oper, @oper",4};
 	InstructionSet[0x35] = (Instruction){&cosproc::ABS,&cosproc::MOVI,"MOV oper, @oper",5};
 	InstructionSet[0x36] = (Instruction){&cosproc::IND,&cosproc::MOVI,"MOV @oper, @oper",5};
 	InstructionSet[0x37] = (Instruction){&cosproc::REG,&cosproc::MOVIR,"MOV RX, @oper",4};
-	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVR,"MOV #oper, RX",3};
-	InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
-	InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
-	InstructionSet[0x3B] = (Instruction){&cosproc::REG,&cosproc::MOVRR,"MOV RX, RX",3};
-
-	InstructionSet[0x40] = (Instruction){&cosproc::IMM,&cosproc::MOVAX,"MOVX #oper, oper",5};
-	InstructionSet[0x41] = (Instruction){&cosproc::ABS,&cosproc::MOVAX,"MOVX oper, oper",5};
-	InstructionSet[0x42] = (Instruction){&cosproc::IND,&cosproc::MOVAX,"MOVX @oper, oper",5};
-	InstructionSet[0x43] = (Instruction){&cosproc::REG,&cosproc::MOVAXR,"MOVX RX, oper",4};
-	InstructionSet[0x44] = (Instruction){&cosproc::IMM,&cosproc::MOVIX,"MOVX #oper, @oper",5};
-	InstructionSet[0x45] = (Instruction){&cosproc::ABS,&cosproc::MOVIX,"MOVX oper, @oper",5};
-	InstructionSet[0x46] = (Instruction){&cosproc::IND,&cosproc::MOVIX,"MOVX @oper, @oper",5};
-	InstructionSet[0x47] = (Instruction){&cosproc::REG,&cosproc::MOVIXR,"MOVX RX, @oper",5};
-	InstructionSet[0x48] = (Instruction){&cosproc::IMM,&cosproc::MOVXR,"MOVX #oper, RX",4};
-	InstructionSet[0x49] = (Instruction){&cosproc::ABS,&cosproc::MOVXR,"MOVX oper, RX",4};
-	InstructionSet[0x4A] = (Instruction){&cosproc::IND,&cosproc::MOVXR,"MOVX @oper, RX",4};
-	InstructionSet[0x4B] = (Instruction){&cosproc::REG,&cosproc::MOVXRR,"MOVX RX, RX",3};
+	*/
 
 
 	reset();
@@ -102,7 +88,9 @@ void cosproc::cycle()
 
 void cosproc::execute(Instruction i)
 {
+	printf("Addressing:\n");
 	uint16_t src = (this->*i.addressing)();
+	printf("Execution:\n");
 	(this->*i.opcode)(src);
 }
 
@@ -120,14 +108,14 @@ uint16_t cosproc::IMM(){
 }
 
 uint16_t cosproc::ABS(){
-	//TOOD: Make me pretty
 	uint16_t val =  (Read(pc+1) << 8 | Read(pc+2)); //Return 16bit address of where to look at data
 	return val;
 }
 
 uint16_t cosproc::IND(){
-	//TOOD: Make me pretty too
-	uint16_t val = Read(Read(pc+1) << 8 | Read(pc+2));
+	uint16_t srcHigh = Read(pc+1) << 8 | Read(pc+2);
+	uint16_t srcLow = srcHigh+1;
+	uint16_t val = (Read(srcHigh) << 8 | Read(srcLow));
 	return val;
 
 }
@@ -297,64 +285,21 @@ void cosproc::SUB(uint16_t src){
 
 }
 
-/* 0x30-0x32 MOV Absolute */
+/* 0x30 MOV to Absolute from Immediate */
+void cosproc::MOVAI(uint16_t src){
+	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get destination
+	Write(dst,Read(src)); //Write value of memory at destination
+}
+
+/* 0x31-0x32 MOV to Absolute from Absolute/Indirect*/
 void cosproc::MOVA(uint16_t src){
-	
+	uint16_t dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get destination
+	Write(dst,Read(src)); //Write value of memory at destination
 }
 
-/* 0x33 MOV Absolute from Reigster */
+/* 0x33 MOV to Absolute from Reigster */
 void cosproc::MOVAR(uint16_t src){
-
+	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the destination in a 16bit
+	Write(dst,r[src-1]);  //Write the value of the register to the location
 }
-
-/* 0x34-0x36 MOV Indirect */
-void cosproc::MOVI(uint16_t src){
-
-}
-
-/* 0x37 MOV Indrecit from Register */
-void cosproc::MOVIR(uint16_t src){
-
-}
-
-/* 0x38-0x3A MOV Register */
-void cosproc::MOVR(uint16_t src){
-
-}
-
-/* 0x3B MOV Register from Register */
-void cosproc::MOVRR(uint16_t src){
-
-}
-
-/* 0x40-0x42 MOV 16 Bit Absolute */
-void cosproc::MOVAX(uint16_t src){
-
-}
-
-/*0x43 MOV 16 Bit Absolute from Register*/
-void cosproc::MOVAXR(uint16_t src){
-
-}
-
-/*0x44-0x46 MOV 16 Bit Indirect */
-void cosproc::MOVIX(uint16_t src){
-
-}
-
-/*0x47 MOV 16 Bit Indirect from Reigster*/
-void cosproc::MOVIXR(uint16_t src){
-
-}
-
-/*0x48-0x4A MOV 16 Bit Register */
-void cosproc::MOVXR(uint16_t src){
-
-}
-
-/*0x4B MOV 16 Bit Register from Register */
-void cosproc::MOVXRR(uint16_t src){
-
-}
-
 

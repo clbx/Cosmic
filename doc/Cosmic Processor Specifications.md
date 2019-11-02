@@ -290,7 +290,7 @@ Loc = Data.          					x x I P  O C N Z
 | Absolute -> **Absolute**         | MOV oper, oper    | 0x31   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
 | Indirect -> **Absolute**         | MOV @oper, oper   | 0x32   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
 | Register -> **Absolute**         | MOV RX, oper      | 0x33   | 4 ``opcode reg dstHigh dstLow``            |
-| Immediate -> **Indirect**        | MOV #oper, @oper  | 0x34   | 5 ``opcode value dstHigh dstLow``          |
+| Immediate -> **Indirect**        | MOV #oper, @oper  | 0x34   | 4 ``opcode value dstHigh dstLow``          |
 | Absolute -> **Indirect**         | MOV oper, @oper   | 0x35   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
 | Indirect -> **Indirect**         | MOV @oper, @oper  | 0x36   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
 | Register -> **Indirect**         | MOV RX, @oper     | 0x37   | 4 ``opcode reg dstHigh dstLow``            |
