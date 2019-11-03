@@ -349,6 +349,10 @@ void cosproc::MOVAR(uint16_t src){
 	Write(dst,r[src-1]);  //Write the value of the register to the location
 }
 
+
+
+
+
 /* 0x38 MOV to Register from Immediate */
 void cosproc::MOVRI(uint16_t src){
 	r[Read(src+1)] = Read(src);

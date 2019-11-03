@@ -114,8 +114,6 @@ void runCMD(char* filepath){
         printf("\n");
     }
 
-    DumpMemory("dump.bin");
-
 }
 
 int runGUI(){
@@ -287,10 +285,10 @@ int runGUI(){
             ImGui::Columns(1);
             ImGui::Separator();
             ImGui::Columns(1, "16bitreg", false);
-            ImGui::Text("A/B: %X (%d) (%hd)",(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]));
-            ImGui::Text("C/D: %X (%d) (%hd)",(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]));
-            ImGui::Text("E/F: %X (%d) (%hd)",(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]));
-            ImGui::Text("G/H: %X (%d) (%hd)",(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]));
+            ImGui::Text("A/B: %X (%d) (%hd)",(proc.r[0] << 8 | proc.r[1]),(proc.r[0] << 8 | proc.r[1]),(short)(proc.r[0] << 8 | proc.r[1]));
+            ImGui::Text("C/D: %X (%d) (%hd)",(proc.r[2] << 8 | proc.r[3]),(proc.r[2] << 8 | proc.r[3]),(short)(proc.r[2] << 8 | proc.r[3]));
+            ImGui::Text("E/F: %X (%d) (%hd)",(proc.r[4] << 8 | proc.r[5]),(proc.r[4] << 8 | proc.r[5]),(short)(proc.r[4] << 8 | proc.r[5]));
+            ImGui::Text("G/H: %X (%d) (%hd)",(proc.r[6] << 8 | proc.r[7]),(proc.r[6] << 8 | proc.r[7]),(short)(proc.r[6] << 8 | proc.r[7]));
             ImGui::Columns(1);
 
             ImGui::Separator();
