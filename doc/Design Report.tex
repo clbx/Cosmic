@@ -1,0 +1,94 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{verbatim}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+
+
+\title{
+ Cosmic\\Design Report}
+
+\author{\IEEEauthorblockN{Clay Buxton}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+buxtonc@etown.edu}
+\and
+\IEEEauthorblockN{Kevin Carman}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+carmank@etown.edu}
+
+}
+
+\maketitle
+
+\section{Design Methodology}
+
+
+
+\section{Design Choices}
+\subsection{Bitness}
+The "bitness" of a chip is traditionally the size of the data bus. An 8 bit chip can address 8 bits of data at one time, a 16 can address 16 bits and so on.
+
+We were mainly between a 8 bit design and a 18 bit design. 32 and 64 were not considered as they did not exist during the time that the chips that cosmic is similar to were made.
+
+\begin{center}
+ \begin{tabular}{||c|c|c|c|c||} 
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ 8 Bit & 5 &  8&  10 & \cellcolor{blue!25}51\\
+ \hline
+ 16 Bit &  10 & 4 &  5 & \cellcolor{blue!25}48\\
+ \hline
+\end{tabular}
+\end{center}
+
+8 bit was chosen mainly due to it being more relevant to the class of chips Cosmic is made to fit in with, those of the early 80's and late 70's. 16 Bit would have been slightly more work to implement, but would have been much more useful to use.
+
+\subsection{Registers vs Zero Page vs In-Memory Registers}
+
+\subsection{16-Bit Register Mode}
+16 Bit register mode is when 2 of the 8 bit registers can be used together to act as a 16 bit value. This can also be done for certain in-memory instructions as well. 
+
+\begin{center}
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ No 16 Bit mode & 4 &  8&  10 & \cellcolor{blue!25}48\\
+ \hline
+ 16 Bit mode &  10 & 6 &  10 & \cellcolor{blue!25}62\\
+ \hline
+\end{tabular}
+\end{center}
+
+
+
+\subsection{Opcode Selection}
+\subsection{Addressing functions}
+\subsection{GUI Backend}
+\subsection{Signed vs. Unsigned Data}
+\subsection{Supported Systems}
+
+
+
+
+
+
+
+\end{document}
