@@ -48,12 +48,10 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x32] = (Instruction){&cosproc::IND,&cosproc::MOVA,"MOV @oper, oper",5};
 	InstructionSet[0x33] = (Instruction){&cosproc::REG,&cosproc::MOVAR,"MOV RX, oper",4};
 
-	/*
 	InstructionSet[0x34] = (Instruction){&cosproc::IMM,&cosproc::MOVII,"MOV #oper, @oper",4};
 	InstructionSet[0x35] = (Instruction){&cosproc::ABS,&cosproc::MOVI,"MOV oper, @oper",5};
 	InstructionSet[0x36] = (Instruction){&cosproc::IND,&cosproc::MOVI,"MOV @oper, @oper",5};
 	InstructionSet[0x37] = (Instruction){&cosproc::REG,&cosproc::MOVIR,"MOV RX, @oper",4};
-	*/
 
 	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVRI,"MOV #oper, RX",3};
 	InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
@@ -333,25 +331,38 @@ void cosproc::SUBXR(uint16_t src){
 
 /* 0x30 MOV to Absolute from Immediate */
 void cosproc::MOVAI(uint16_t src){
-	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get destination
+	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit destination
 	Write(dst,Read(src)); //Write value of memory at destination
 }
 
 /* 0x31-0x32 MOV to Absolute from Absolute/Indirect */
 void cosproc::MOVA(uint16_t src){
-	uint16_t dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get destination
+	uint16_t dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get the 16bit destination
 	Write(dst,Read(src)); //Write value of memory at destination
 }
 
 /* 0x33 MOV to Absolute from Reigster */
 void cosproc::MOVAR(uint16_t src){
-	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the destination in a 16bit
+	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit destination
 	Write(dst,r[src-1]);  //Write the value of the register to the location
 }
 
+/* 0x34 MOV to Indirect from Immediate */
+void cosproc::MOVII(uint16_t src){
+	uint16_t pre_dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit pre-destination
+	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
+	Write(dst, Read(src));
+}
 
+/* 0x35-0x36 MOV to Indirect from Absolute/Indirect */
+void cosproc::MOVI(uint16_t src){
 
+}
 
+/* 0x37 MOV to Indirect from Register */
+void cosproc::MOVIR(uint16_t src){
+
+}
 
 /* 0x38 MOV to Register from Immediate */
 void cosproc::MOVRI(uint16_t src){
