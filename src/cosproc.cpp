@@ -425,7 +425,10 @@ void cosproc::MOVXII(uint16_t src){
 
 /* 0x45-0x46 MOVX to Indirect from Absolute/Indirect */
 void cosproc::MOVXI(uint16_t src){
-	
+	uint16_t pre_dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get the 16bit pre-destination
+	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
+	Write(dst,Read(src));
+	Write(dst+1,Read(src+1));
 }
 
 /* 0x47 MOVX to Indirect from Register */
