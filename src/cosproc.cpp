@@ -397,22 +397,22 @@ void cosproc::MOVRR(uint16_t src){
 /* 0x40 MOVX to Absolute from Immediate */
 void cosproc::MOVXAI(uint16_t src){
 	uint16_t dst = ((Read(src+2) << 8 | Read(src+3))); //Get the 16bit destination
-	Write(dst,Read(src));
-	Write(dst+1,Read(src+1));
+	Write(dst, Read(src));
+	Write(dst+1, Read(src+1));
 }
 
 /* 0x41-0x42 MOVX to Absolute from Absolute/Indirect */
 void cosproc::MOVXA(uint16_t src){
 	uint16_t dst = ((Read(pc+3) << 8 | Read(pc+4))); //Get the 16bit destination
-	Write(dst,Read(src));
-	Write(dst+1,Read(src+1));
+	Write(dst, Read(src));
+	Write(dst+1, Read(src+1));
 }
 
 /* 0x43 MOVX to Absolute from Register */
 void cosproc::MOVXAR(uint16_t src){
 	uint16_t dst = ((Read(pc+2) << 8 | Read(pc+3))); //Get the 16bit destination
-	Write(dst,r[src]);
-	Write(dst+1,r[src+1]);
+	Write(dst, r[src]);
+	Write(dst+1, r[src+1]);
 }
 
 /* 0x44 MOVX to Indirect from Immediate */
@@ -427,13 +427,16 @@ void cosproc::MOVXII(uint16_t src){
 void cosproc::MOVXI(uint16_t src){
 	uint16_t pre_dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get the 16bit pre-destination
 	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
-	Write(dst,Read(src));
-	Write(dst+1,Read(src+1));
+	Write(dst, Read(src));
+	Write(dst+1, Read(src+1));
 }
 
 /* 0x47 MOVX to Indirect from Register */
 void cosproc::MOVXIR(uint16_t src){
-	
+	uint16_t pre_dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit pre-destination
+	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
+	Write(dst, r[src]);
+	Write(dst+1, r[src+1]);
 }
 
 /* 0x48 MOVX to Register from Immediate */
