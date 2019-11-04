@@ -40,7 +40,10 @@
   +----------  X
   ```
 
-  
+## Memory Mapping
+
+
+## Interrupt Handling
 
 ## Instruction Set
 
@@ -185,22 +188,27 @@ A = A / D,B = R.    					x x I P  O C N Z
 
 ###   
 
+<a name="SHL"></a>
 ### SHL
 
 Shift Left
 
+<a name="SHR"></a>
 ### SHR
 
 Shift Right
 
+<a name="INC"></a>
 ### INC
 
 Increment
 
+<a name="DEC"></a>
 ### DEC
 
 Decrement
 
+<a name="AND"></a>
 ### AND
 
 AND Memory with the Accumulator
@@ -218,7 +226,7 @@ data & A = A 					x x I P  O C N Z
 | Register   | AND RX    |        | 2 ``opcode`` ``register``                     |
 
 
-
+<a name="OR"></a>
 ### OR
 
 OR Memory with the Accumulator
@@ -236,7 +244,7 @@ data | A = A 					x x I P  O C N Z
 | Register   | OR RX     |        | 2 ``opcode`` ``register``                     |
 
 
-
+<a name="XOR"></a>
 ### XOR 
 
 XOR Memory with the Accumulator
@@ -254,7 +262,7 @@ data ^ A = A 					x x I P  O C N Z
 | Register   | XOR RX    |        | 2 ``opcode`` ``register``                     |
 
 
-
+<a name="CMP"></a>
 ### CMP
 
 Compare memory with the Accumulator _**Need to come back and see what we want to do for signed numbers**_
@@ -272,7 +280,7 @@ Compare memory with the Accumulator _**Need to come back and see what we want to
 | Register   | CMP RX    |        | 2 ``opcode`` ``register``                     |
 
 
-
+<a name="ASR"></a>
 ### ASR
 
 Arithmetic Shift Right
@@ -281,46 +289,52 @@ Arithmetic Shift Right
 
 ## Control Flow Operations
 
+<a name="JMP"></a>
 ### JMP
 
 Jump
 
+<a name="JEZ"></a>
 **JEZ**
 
 Jump Equals Zero
 
+<a name="JNZ"></a>
 **JNZ**
 
 Jump Not Equals Zero
 
+<a name="JCC"></a>
 ### JCC
 
 Jump on Carry Clear
 
+<a name="JCS"></a>
 ### JCS
 
 Jump on Carry Set
 
+<a name="JNR"></a>
 ### JNR
 
 Jump on negative result
 
-### INT
-
-Interrupt handling
-
+<a name="SID"></a>
 ### SID
 
 Set interrupt disable
 
+<a name="CALL"></a>
 ### CALL
 
 Call subroutine at location
 
+<a name="RET"></a>
 ### RET
 
 Returns from subroutine
 
+<a name="HCF"></a>
 ### HCF
 
 Halt and Catch Fire
