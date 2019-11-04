@@ -441,7 +441,9 @@ void cosproc::MOVXIR(uint16_t src){
 
 /* 0x48 MOVX to Register from Immediate */
 void cosproc::MOVXRI(uint16_t src){
-	
+	int reg = Read(pc+3);
+	r[reg] = Read(src);
+	r[reg+1] = Read(src+1);
 }
 
 /* 0x49-0x4A MOVX to Register from Absolute/Indirect */
