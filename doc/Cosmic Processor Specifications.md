@@ -203,19 +203,75 @@ Decrement
 
 ### AND
 
-Bitwise AND
+AND Memory with the Accumulator
+
+```
+data & A = A 					x x I P  O C N Z
+											- - - -  - - - +
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | AND #oper |        | 2 ``opcode`` ``value``                        |
+| Absolute   | AND oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | AND @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | AND RX    |        | 2 ``opcode`` ``register``                     |
+
+
 
 ### OR
 
-Bitwise OR
+OR Memory with the Accumulator
+
+```
+data | A = A 					x x I P  O C N Z
+											- - - -  - - - +
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | OR #oper  |        | 2 ``opcode`` ``value``                        |
+| Absolute   | OR oper   |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | OR @oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | OR RX     |        | 2 ``opcode`` ``register``                     |
+
+
 
 ### XOR 
 
-Bitwise XOR
+XOR Memory with the Accumulator
+
+```
+data ^ A = A 					x x I P  O C N Z
+											- - - -  - - - +
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | XOR #oper |        | 2 ``opcode`` ``value``                        |
+| Absolute   | XOR oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | XOR @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | XOR RX    |        | 2 ``opcode`` ``register``                     |
+
+
 
 ### CMP
 
-Compare
+Compare memory with the Accumulator _**Need to come back and see what we want to do for signed numbers**_
+
+```
+             					x x I P  O C N Z
+											- - - -  - + + +
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | CMP #oper |        | 2 ``opcode`` ``value``                        |
+| Absolute   | CMP oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | CMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | CMP RX    |        | 2 ``opcode`` ``register``                     |
+
+
 
 ### ASR
 
