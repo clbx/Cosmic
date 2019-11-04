@@ -403,7 +403,9 @@ void cosproc::MOVXAI(uint16_t src){
 
 /* 0x41-0x42 MOVX to Absolute from Absolute/Indirect */
 void cosproc::MOVXA(uint16_t src){
-	
+	uint16_t dst = ((Read(pc+3) << 8 | Read(pc+4))); //Get the 16bit destination
+	Write(dst,Read(src));
+	Write(dst+1,Read(src+1));
 }
 
 /* 0x43 MOVX to Absolute from Register */
