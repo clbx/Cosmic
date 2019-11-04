@@ -23,7 +23,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x01] = (Instruction){&cosproc::IMP,&cosproc::HCF,"HCF",0};
 	InstructionSet[0x02] = (Instruction){&cosproc::IMP,&cosproc::PUSH,"PUSH",1};
 	InstructionSet[0x03] = (Instruction){&cosproc::IMP,&cosproc::POP,"POP",1};
-	InstructionSet[0x04] = (Instruction){&cosproc::IMP,&cosproc::SWP,"SWP",3}; //On the chopping block
+	InstructionSet[0x04] = (Instruction){&cosproc::IMP,&cosproc::SWP,"SWP",3};
 	
 	InstructionSet[0x10] = (Instruction){&cosproc::IMM,&cosproc::ADD,"ADD #oper",2};
 	InstructionSet[0x11] = (Instruction){&cosproc::ABS,&cosproc::ADD,"ADD oper",3};
@@ -163,9 +163,10 @@ void cosproc::POP(uint16_t src){
 
 /* 0x04 SWP*/
 void cosproc::SWP(uint16_t src){
-	//fill
+	uint8_t temp = r[Read(pc+1)];
+	r[Read(pc+1)] = r[Read(pc+2)];
+	r[Read(pc+2)] = temp;
 }
-
 
 //TOOD: Less code reuse
 /* 0x10-0x12 ADD */

@@ -57,7 +57,7 @@ class cosproc{
         void POP(uint16_t src);  //Pop from stack
         void SWP(uint16_t src);  //Swap registers
 
-        void ADD(uint16_t src);  //Add
+        void ADD(uint16_t src);   //Add
         void ADDR(uint16_t src);  //Add from Register
         void ADDX(uint16_t src);  //Add from 16 bit value
         void ADDXR(uint16_t src); //Add from 16 bit register
