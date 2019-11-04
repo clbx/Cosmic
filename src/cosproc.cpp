@@ -455,5 +455,7 @@ void cosproc::MOVXR(uint16_t src){
 
 /* 0x4B MOVX to Register from Register */
 void cosproc::MOVXRR(uint16_t src){
-	
+	int reg = Read(pc+2);
+	r[reg] = r[src];
+	r[reg+1] = r[src+1];
 }
