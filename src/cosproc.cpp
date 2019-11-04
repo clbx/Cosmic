@@ -356,7 +356,9 @@ void cosproc::MOVII(uint16_t src){
 
 /* 0x35-0x36 MOV to Indirect from Absolute/Indirect */
 void cosproc::MOVI(uint16_t src){
-
+	uint16_t pre_dst = ((Read(pc+3) << 8) | Read(pc+4)); //Get the 16bit pre-destination
+	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
+	Write(dst, Read(src));
 }
 
 /* 0x37 MOV to Indirect from Register */
