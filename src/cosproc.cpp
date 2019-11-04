@@ -59,7 +59,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x40] = (Instruction){&cosproc::IMM,&cosproc::MOVXAI,"MOVX #oper, oper",5};
 	InstructionSet[0x41] = (Instruction){&cosproc::ABS,&cosproc::MOVXA,"MOVX oper, oper",5};
 	InstructionSet[0x42] = (Instruction){&cosproc::IND,&cosproc::MOVXA,"MOVX @oper, oper",5};
-	InstructionSet[0x43] = (Instruction){&cosproc::IMM,&cosproc::MOVXAR,"MOVX RX, oper",4};
+	InstructionSet[0x43] = (Instruction){&cosproc::REG,&cosproc::MOVXAR,"MOVX RX, oper",4};
 	InstructionSet[0x44] = (Instruction){&cosproc::IMM,&cosproc::MOVXII,"MOVX #oper, @oper",5};
 	InstructionSet[0x45] = (Instruction){&cosproc::ABS,&cosproc::MOVXI,"MOVX oper, @oper",5};
 	InstructionSet[0x46] = (Instruction){&cosproc::IND,&cosproc::MOVXI,"MOVX @oper, @oper",5};
@@ -67,7 +67,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x48] = (Instruction){&cosproc::IMM,&cosproc::MOVXRI,"MOVX #oper, RX",4};
 	InstructionSet[0x49] = (Instruction){&cosproc::ABS,&cosproc::MOVXR,"MOVX oper, RX",4};
 	InstructionSet[0x4A] = (Instruction){&cosproc::IND,&cosproc::MOVXR,"MOVX @oper, RX",4};
-	InstructionSet[0x4B] = (Instruction){&cosproc::IMM,&cosproc::MOVXRR,"MOVX RX, RX",3};
+	InstructionSet[0x4B] = (Instruction){&cosproc::REG,&cosproc::MOVXRR,"MOVX RX, RX",3};
 
 	reset();
 
@@ -410,7 +410,9 @@ void cosproc::MOVXA(uint16_t src){
 
 /* 0x43 MOVX to Absolute from Register */
 void cosproc::MOVXAR(uint16_t src){
-	
+	uint16_t dst = ((Read(pc+2) << 8 | Read(pc+3))); //Get the 16bit destination
+	Write(dst,r[src]);
+	Write(dst+1,r[src+1]);
 }
 
 /* 0x44 MOVX to Indirect from Immediate */
