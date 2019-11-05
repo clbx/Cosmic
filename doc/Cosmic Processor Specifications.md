@@ -1,4 +1,4 @@
-# Cosmic Processor Specifications (Coz502)
+# Cosmic Processor Specifications
 
 -------
 
