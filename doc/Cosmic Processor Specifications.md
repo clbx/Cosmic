@@ -12,11 +12,11 @@
 
   **A**, **B**, **C**, **D**, **E**, **F**, **G**, **H**
 
-  **AB**,**CD**, **EF,** **GH**, can be grouped together to be used as 4 16-bit registers.
+  **AB**, **CD**, **EF**, and **GH**, can be grouped together to be used as 4x 16-bit registers.
 
   **A** is the accumulator in 8-bit operations, **A/B** becomes Accumulator in 16-bit operations 
 
-* 1x, 16-bit Stack Pointer
+* 1x 16-bit Stack Pointer
 
   Stack pointer points to a position in memory for the stack. Can be changed? Increments/Decrements with ``PUSH`` and ``POP`` 
 
@@ -102,7 +102,7 @@ Add memory to accumulator
 
 ```````
 A = A + Data										x x I P  O C N Z
-																- - - -  + + + +
+													- - - -  + + + +
 ```````
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
