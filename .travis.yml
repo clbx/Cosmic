@@ -8,10 +8,10 @@ matrix:
       before_install:
         - sudo apt update
         - sudo apt install libsdl2-dev
-    - os: osx
-      before_install:
-        - brew install sdl2
 
 script:
-- cd src
+- cd test
+- make
+- ./test
+- cd ../src
 - make
