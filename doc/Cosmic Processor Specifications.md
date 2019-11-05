@@ -102,7 +102,7 @@ Add memory to accumulator
 
 ```````
 A = A + Data										x x I P  O C N Z
-													- - - -  + + + +
+											- - - -  + + + +
 ```````
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
@@ -124,7 +124,7 @@ Subtract memory from accumualtor
 
 ```
 A = A - Data										x x I P  O C N Z
-																- - - -  + + + +
+											- - - -  + + + +
 ```
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
@@ -148,7 +148,7 @@ Multiplies the accumulator
 
 ```
 A = A * Data										x x I P  O C N Z
-																- - - -  + + + +
+											- - - -  + + + +
 ```
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
@@ -172,7 +172,7 @@ Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
 ```
 A = A / D,B = R.    					x x I P  O C N Z
-															- - - -  + + + +
+										- - - -  + + + +
 ```
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
@@ -195,7 +195,7 @@ Shift the accumulator left,  sets carry if a high bit gets pushed off.
 
 ```
 A<<        					  x x I P  O C N Z
-											- - - -  - + - -
+						- - - -  - + - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
@@ -211,7 +211,7 @@ Shift the accumulator right.
 
 ```
 A<<        					  x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
@@ -227,7 +227,7 @@ Increment the Accumulator **Do we need Increment/Decrement?**
 
 ```
 x++          					x x I P  O C N Z
-											- - - -  + + + +
+						- - - -  + + + +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
@@ -242,7 +242,7 @@ Decrement the Accumulator **Do we need Increment/Decrement?**
 
 ```
 x--          					x x I P  O C N Z
-											- - - -  + + + +
+						- - - -  + + + +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
@@ -258,7 +258,7 @@ AND Memory with the Accumulator
 
 ```
 data & A = A 					x x I P  O C N Z
-											- - - -  - - - +
+						- - - -  - - - +
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -276,7 +276,7 @@ OR Memory with the Accumulator
 
 ```
 data | A = A 					x x I P  O C N Z
-											- - - -  - - - +
+						- - - -  - - - +
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -294,7 +294,7 @@ XOR Memory with the Accumulator
 
 ```
 data ^ A = A 					x x I P  O C N Z
-											- - - -  - - - +
+						- - - -  - - - +
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -312,7 +312,7 @@ Compare memory with the Accumulator _**Need to come back and see what we want to
 
 ```
              					x x I P  O C N Z
-											- - - -  - + + +
+						- - - -  - + + +
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -331,7 +331,7 @@ Jump to a specified memory location
 
 ```
 pc = data    					x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -347,7 +347,7 @@ Jump equals zero, jump to the given location if the zero flag is set
 
 ```
 if zero; pc = data		x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -363,7 +363,7 @@ Jump not zero, jump to the given location if the zero flag is not set
 
 ```
 if !zero; pc = data		x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -380,7 +380,7 @@ Jump not carry, jump to the given location if the carry flag is not set
 
 ```
 if !carry; pc = data	x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -398,7 +398,7 @@ Jump on carry, jump to the given location if the carry flag is set
 
 ```
 if carry; pc = data		x x I P  O C N Z
-											- - - -  - - - -
+						- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -417,7 +417,7 @@ Jump negative result, jump to the given location if the negative flag is set
 
 ```
 if negative; pc=data  x x I P  O C N Z
-											- - - -  - - - -
+					  - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -436,7 +436,7 @@ Jump on overflow, jump to the given location if the overflow flag is set
 
 ```
 if over; pc = data		x x I P  O C N Z
-											- - - -  - - - -
+                        - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
