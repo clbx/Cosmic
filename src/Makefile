@@ -66,9 +66,5 @@ $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 	rm -f imgui.ini
 
-
-simple:
-	g++ -o cosmic cosproc.cpp term.cpp
-
 clean:
 	rm -f $(EXE) $(OBJS)
