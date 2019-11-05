@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-#define private public //basically the devil, but oh well
 #include "catch-2.hpp"
+#define private public //basically the devil, but oh well
 #include "../src/cosproc.hpp"
 
 
