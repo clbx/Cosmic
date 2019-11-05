@@ -191,22 +191,65 @@ A = A / D,B = R.    					x x I P  O C N Z
 <a name="SHL"></a>
 ### SHL
 
-Shift Left
+Shift the accumulator left,  sets carry if a high bit gets pushed off.
+
+```
+A<<        					  x x I P  O C N Z
+											- - - -  - + - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | SHL       |        | 1 ``opcode`` |
+
+
 
 <a name="SHR"></a>
 ### SHR
 
-Shift Right
+Shift the accumulator right.
+
+```
+A<<        					  x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | SHR       |        | 1 ``opcode`` |
+
+
 
 <a name="INC"></a>
 ### INC
 
-Increment
+Increment the Accumulator **Do we need Increment/Decrement?**
+
+```
+x++          					x x I P  O C N Z
+											- - - -  + + + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | INC       |        | 1 ``opcode`` |
 
 <a name="DEC"></a>
+
 ### DEC
 
-Decrement
+Decrement the Accumulator **Do we need Increment/Decrement?**
+
+```
+x--          					x x I P  O C N Z
+											- - - -  + + + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | DEC       |        | 1 ``opcode`` |
+
+
 
 <a name="AND"></a>
 ### AND
@@ -279,67 +322,193 @@ Compare memory with the Accumulator _**Need to come back and see what we want to
 | Indirect   | CMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | CMP RX    |        | 2 ``opcode`` ``register``                     |
 
-
-<a name="ASR"></a>
-### ASR
-
-Arithmetic Shift Right
-
-
-
 ## Control Flow Operations
 
 <a name="JMP"></a>
 ### JMP
 
-Jump
+Jump to a specified memory location
+
+```
+pc = data    					x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JMP #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JMP oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 <a name="JEZ"></a>
-**JEZ**
+**JZS**
 
-Jump Equals Zero
+Jump equals zero, jump to the given location if the zero flag is set
+
+```
+if zero; pc = data		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JZS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JZS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JZS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 <a name="JNZ"></a>
 **JNZ**
 
-Jump Not Equals Zero
+Jump not zero, jump to the given location if the zero flag is not set
+
+```
+if !zero; pc = data		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JNZ #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNZ oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNZ @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 <a name="JCC"></a>
-### JCC
 
-Jump on Carry Clear
+### JNC
+
+Jump not carry, jump to the given location if the carry flag is not set
+
+```
+if !carry; pc = data	x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JNC #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNC oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNC @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
 
 <a name="JCS"></a>
 ### JCS
 
-Jump on Carry Set
+Jump on carry, jump to the given location if the carry flag is set
+
+```
+if carry; pc = data		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JCS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JCS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JCS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
 
 <a name="JNR"></a>
-### JNR
 
-Jump on negative result
+### JNS
+
+Jump negative result, jump to the given location if the negative flag is set
+
+```
+if negative; pc=data  x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JNS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
+
+<a name="JOV"></a>
+
+### JOS
+
+Jump on overflow, jump to the given location if the overflow flag is set
+
+```
+if over; pc = data		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JOS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JOS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JOS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
 
 <a name="SID"></a>
+
 ### SID
 
-Set interrupt disable
+Set interrupt disable. Toggle maskable interrupts 
+
+```
+interrupt = false 		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | SID       |        | 1 ``opcode`` |
 
 <a name="CALL"></a>
 ### CALL
 
-Call subroutine at location
+Call subroutine at location. Pushes current location onto stack, jumps to new location
+
+```
+push pc; pc = oper		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler  | Opcode | Bytes                                         |
+| ---------- | ---------- | ------ | --------------------------------------------- |
+| Immediate  | CALL #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | CALL oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | CALL @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
 
 <a name="RET"></a>
 ### RET
 
-Returns from subroutine
+Returns from subroutine, pops old location off of stack, jumps back
+
+```
+pc = pop.          		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | RET       |        | 3 ``opcode`` |
 
 <a name="HCF"></a>
 ### HCF
 
-Halt and Catch Fire
+Halt and Catch Fire, Stops execution of the machine entirely 
 
-Stops execution of the machine entirely 
+```
+rip.              		x x I P  O C N Z
+											- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | HCF       |        | 3 ``opcode`` |
+
+
 
 ## Data Handling and Memory Operations
 
