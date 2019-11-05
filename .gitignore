@@ -4,6 +4,8 @@
 *.log
 *.synctex.gz
 cosmic
+test
+cosasm
 .vscode/
 imgui.ini
 

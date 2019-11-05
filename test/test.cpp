@@ -69,3 +69,26 @@ TEST_CASE("indirect","[addressing]"){
     memory[0x11] = 0x20;
     REQUIRE(proc.IND() == 0x0020);
 }
+
+
+TEST_CASE("add","[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite); 
+    resetMemory();
+    //Normal
+    memory[0x01] = 0x01;
+    proc.ADD(0x01);
+    REQUIRE(proc.r[0] == 0x01);
+    REQUIRE(proc.st[0] == false);
+    REQUIRE(proc.st[1] == false);
+    REQUIRE(proc.st[2] == false);
+    REQUIRE(proc.st[3] == false);
+    //Negative
+    memory[0x01] = 0x80;
+    proc.r[0] = 0;
+    proc.ADD(0x01);
+    REQUIRE(proc.r[0] == 0x80);
+    REQUIRE(proc.st[0] == false);
+    REQUIRE(proc.st[1] == true);
+    REQUIRE(proc.st[2] == false);
+    REQUIRE(proc.st[3] == false);
+}

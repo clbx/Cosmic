@@ -1,2 +1,2 @@
 all:
-	gcc -o cosasm cosasm.cpp
+	g++ -o cosasm cosasm.cpp
