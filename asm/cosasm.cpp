@@ -15,7 +15,7 @@ std::string getOpcodeMneomic(std::string line){
 }
 
 uint8_t getOpcode(std::string opcode){
-    
+
 }
 
 
