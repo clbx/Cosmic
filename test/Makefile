@@ -1,2 +1,2 @@
 all:
-	g++ test.cpp  ../src/cosproc.cpp -o test
+	g++ test.cpp -std=c++11 ../src/cosproc.cpp -o test
