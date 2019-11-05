@@ -116,6 +116,8 @@ A = A + Data										x x I P  O C N Z
 | 16bit Indirect  | ADDX @oper | 0x16   | 3 ``opcode locationHigh locationLow`` |
 | 16bit Register  | ADDX RX    | 0x17   | 2 ``opcode register``                 |
 
+
+
 <a name="SUB"></a>
 
 ### SUB/SUBX
@@ -138,7 +140,7 @@ A = A - Data										x x I P  O C N Z
 | 16bit Indirect  | SUBX @oper | 0x1E   | 3 ``opcode locationHigh locationLow`` |
 | 16bit Register  | SUBX RX    | 0x1F   | 2 ``opcode register``                 |
 
-###  
+
 
 <a name="MUL"></a>
 
@@ -172,7 +174,7 @@ Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
 ```
 A = A / D,B = R.    					x x I P  O C N Z
-										- - - -  + + + +
+							- - - -  + + + +
 ```
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
@@ -186,41 +188,46 @@ A = A / D,B = R.    					x x I P  O C N Z
 | 16bit Indirect  | DIVX @oper | 0x2E   | 3 ``opcode locationHigh locationLow`` |
 | 16bit Register  | DIVX RX    | 0x2F   | 2 ``opcode register``                 |
 
-###   
+
 
 <a name="SHL"></a>
+
 ### SHL
 
 Shift the accumulator left,  sets carry if a high bit gets pushed off.
 
 ```
 A<<        					  x x I P  O C N Z
-						- - - -  - + - -
+						  - - - -  - + - +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SHL       |        | 1 ``opcode`` |
+| Implied    | SHLX      |        | 1 ``opcode`` |
 
 
 
 <a name="SHR"></a>
+
 ### SHR
 
 Shift the accumulator right.
 
 ```
 A<<        					  x x I P  O C N Z
-						- - - -  - - - -
+						  - - - -  - - - +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SHR       |        | 1 ``opcode`` |
+| Implied    | SHRX      |        | 1 ``opcode`` |
 
 
 
 <a name="INC"></a>
+
 ### INC
 
 Increment the Accumulator **Do we need Increment/Decrement?**
@@ -233,6 +240,9 @@ x++          					x x I P  O C N Z
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | INC       |        | 1 ``opcode`` |
+| Implied    | INCX      |        | 1 ``opcode`` |
+
+
 
 <a name="DEC"></a>
 
@@ -248,10 +258,12 @@ x--          					x x I P  O C N Z
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | DEC       |        | 1 ``opcode`` |
+| Implied    | DECX      |        | 1 ``opcode`` |
 
 
 
 <a name="AND"></a>
+
 ### AND
 
 AND Memory with the Accumulator
@@ -269,7 +281,9 @@ data & A = A 					x x I P  O C N Z
 | Register   | AND RX    |        | 2 ``opcode`` ``register``                     |
 
 
+
 <a name="OR"></a>
+
 ### OR
 
 OR Memory with the Accumulator
@@ -287,7 +301,9 @@ data | A = A 					x x I P  O C N Z
 | Register   | OR RX     |        | 2 ``opcode`` ``register``                     |
 
 
+
 <a name="XOR"></a>
+
 ### XOR 
 
 XOR Memory with the Accumulator
@@ -305,7 +321,9 @@ data ^ A = A 					x x I P  O C N Z
 | Register   | XOR RX    |        | 2 ``opcode`` ``register``                     |
 
 
+
 <a name="CMP"></a>
+
 ### CMP
 
 Compare memory with the Accumulator _**Need to come back and see what we want to do for signed numbers**_
@@ -322,9 +340,12 @@ Compare memory with the Accumulator _**Need to come back and see what we want to
 | Indirect   | CMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | CMP RX    |        | 2 ``opcode`` ``register``                     |
 
+
+
 ## Control Flow Operations
 
 <a name="JMP"></a>
+
 ### JMP
 
 Jump to a specified memory location
@@ -340,14 +361,17 @@ pc = data    					x x I P  O C N Z
 | Absolute   | JMP oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
+
+
 <a name="JEZ"></a>
+
 **JZS**
 
 Jump equals zero, jump to the given location if the zero flag is set
 
 ```
 if zero; pc = data		x x I P  O C N Z
-						- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -356,14 +380,17 @@ if zero; pc = data		x x I P  O C N Z
 | Absolute   | JZS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JZS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
+
+
 <a name="JNZ"></a>
+
 **JNZ**
 
 Jump not zero, jump to the given location if the zero flag is not set
 
 ```
 if !zero; pc = data		x x I P  O C N Z
-						- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -371,6 +398,8 @@ if !zero; pc = data		x x I P  O C N Z
 | Immediate  | JNZ #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JNZ oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNZ @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
 
 <a name="JCC"></a>
 
@@ -380,7 +409,7 @@ Jump not carry, jump to the given location if the carry flag is not set
 
 ```
 if !carry; pc = data	x x I P  O C N Z
-						- - - -  - - - -
+			- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -392,13 +421,14 @@ if !carry; pc = data	x x I P  O C N Z
 
 
 <a name="JCS"></a>
+
 ### JCS
 
 Jump on carry, jump to the given location if the carry flag is set
 
 ```
 if carry; pc = data		x x I P  O C N Z
-						- - - -  - - - -
+			- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -417,7 +447,7 @@ Jump negative result, jump to the given location if the negative flag is set
 
 ```
 if negative; pc=data  x x I P  O C N Z
-					  - - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -436,7 +466,7 @@ Jump on overflow, jump to the given location if the overflow flag is set
 
 ```
 if over; pc = data		x x I P  O C N Z
-                        - - - -  - - - -
+                        	- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -455,21 +485,24 @@ Set interrupt disable. Toggle maskable interrupts
 
 ```
 interrupt = false 		x x I P  O C N Z
-											- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SID       |        | 1 ``opcode`` |
 
+
+
 <a name="CALL"></a>
+
 ### CALL
 
 Call subroutine at location. Pushes current location onto stack, jumps to new location
 
 ```
 push pc; pc = oper		x x I P  O C N Z
-											- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler  | Opcode | Bytes                                         |
@@ -481,27 +514,31 @@ push pc; pc = oper		x x I P  O C N Z
 
 
 <a name="RET"></a>
+
 ### RET
 
 Returns from subroutine, pops old location off of stack, jumps back
 
 ```
 pc = pop.          		x x I P  O C N Z
-											- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | RET       |        | 3 ``opcode`` |
 
+
+
 <a name="HCF"></a>
+
 ### HCF
 
 Halt and Catch Fire, Stops execution of the machine entirely 
 
 ```
 rip.              		x x I P  O C N Z
-											- - - -  - - - -
+				- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
@@ -520,7 +557,7 @@ Copies memory from one location to another
 
 ```
 Loc = Data.          					x x I P  O C N Z
-															- - - -  - - + +
+							- - - -  - - + +
 ```
 
 | Addressing                       | Assembler         | Opcode | Bytes                                      |
@@ -550,9 +587,9 @@ Loc = Data.          					x x I P  O C N Z
 | Indirect -> **Register**         | MOVX @oper, RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
 | Register -> **Register**         | MOVX RX, RX       | 0x4B   | 3 ``opcode reg reg``                       |
 
-### 
-
 _Note: This is where the principals of RISC start to break down in favor of a more fleshed out instruction set_. In a true RISC instruction set each target addressing mode would be it's own instruction, but that's annoying. 
+
+
 
 <a name="SWP"></a>
 
@@ -562,12 +599,14 @@ Swap registers
 
 ```
 R1 <-> R2   	        				x x I P  O C N Z
-															- - - -  - - + +
+							- - - -  - - + +
 ```
 
 | Addressing | Assembler  | Opcode | Bytes                  |
 | ---------- | ---------- | ------ | ---------------------- |
 | Register   | SWP R1, R2 |        | 3 ``opcode reg1 reg2`` |
+
+
 
 <a name="PUSH"></a>
 
@@ -577,12 +616,14 @@ Pushes value in accumulator to the stack
 
 ```
 sp[++i] = A 					x x I P  O C N Z
-											- - - -  - - + +
+						- - - -  - - + +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | PUSH      |        | 1 ``opcode`` |
+
+
 
 <a name="POP"></a>
 
@@ -592,14 +633,14 @@ Pops value from stack into the accumulator
 
 ```
 sp[i--] = A    					x x I P  O C N Z
-												- - - -  - - + +
+						- - - -  - - + +
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | POP       |        | 1 ``opcode`` |
 
-### 
+
 
 <a name="NOP"></a>
 
@@ -609,14 +650,14 @@ No Operation
 
 ```
 Nothing Happened!   					x x I P  O C N Z
-															- - - -  - - - - 
+							- - - -  - - - - 
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | NOP       | 0x00   | 1 ``opcode`` |
 
-### 
+
 
 ## References
 
