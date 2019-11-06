@@ -3,114 +3,269 @@ import re
 
 
 def ADD(tokens):
-    #Come back and fix, matches partials as well
     pattern = re.compile("ADD (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
-    print((pattern.match(' '.join(tokens))))
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
 
     return False
     
 
 def ADDX(tokens):
     pattern = re.compile("ADDX (([#][0-9,A-F]{1,4})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-3]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group != (' '.join(tokens))):
+        return True
+
+
     return False
 
 def SUB(tokens):
     pattern = re.compile("SUB (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def SUBX(tokens):
     pattern = re.compile("SUBX (([#][0-9,A-F]{1,4})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-3]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def MUL(tokens):
     pattern = re.compile("MUL (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def MULX(tokens):
     pattern = re.compile("MULX (([#][0-9,A-F]{1,4})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-3]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def DIV(tokens):
     pattern = re.compile("DIV (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def DIVX(tokens):
     pattern = re.compile("DIVX (([#][0-9,A-F]{1,4})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-3]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+    
     return False
 
 def SHL(tokens):
+    pattern = re.compile("SHL")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def SHR(tokens):
+    pattern = re.compile("SHR")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def INC(tokens):
+    pattern = re.compile("INC")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def DEC(tokens):
+    pattern = re.compile("INC")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def AND(tokens):
+    pattern = re.compile("AND (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def OR(tokens):
+    pattern = re.compile("OR (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def XOR(tokens):
+    pattern = re.compile("XOR (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
-def CMD(tokens):
+def CMP(tokens):
+    pattern = re.compile("CMP (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JMP(tokens):
+    pattern = re.compile("JMP (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4}))")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JZS(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JNZ(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JNC(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JCS(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JNS(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def JOS(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def SID(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def CALL(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def RET(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def HCF(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def MOV(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def MOVX(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def SWP(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def PUSH(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def POP(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def NOP(tokens):
+    pattern = re.compile("")
+    p = pattern.match(' '.join(tokens))
+    if(p.group() != (' '.join(tokens))):
+        return True
+
     return False
 
 def other(tokens):
@@ -163,7 +318,7 @@ def main():
         elif tokens[0] == "XOR":
             error = XOR(tokens)
         elif tokens[0] == "CMP":
-            error = CMD(tokens)
+            error = CMP(tokens)
         elif tokens[0] == "JMP":
             error = JMP(tokens)
         elif tokens[0] == "JZS":
