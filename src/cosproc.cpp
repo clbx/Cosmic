@@ -597,32 +597,50 @@ void cosproc::DECX(uint16_t src){
 
 /* 0x50-0x52 AND with Accumulator */
 void cosproc::AND(uint16_t src){
-	
+	r[0] &= Read(src);
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x53 AND with Accumulator from register */
 void cosproc::ANDR(uint16_t src){
-	
+	r[0] &= r[src];
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x54-0x56 OR with Accumulator */
 void cosproc::OR(uint16_t src){
-	
+	r[0] |= Read(src);
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x57 OR with Accumulator from register */
 void cosproc::ORR(uint16_t src){
-	
+	r[0] |= Read(src);
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x58-0x5A XOR with Accumulator */
 void cosproc::XOR(uint16_t src){
-	
+	r[0] ^= Read(src);
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x5B XOR with Accumulator from register */
 void cosproc::XORR(uint16_t src){
-	
+	r[0] ^= Read(src);
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x60-0x62 CMP Compare with Accumulator */

@@ -406,7 +406,7 @@ Jump not zero, jump to the given location if the zero flag is not set
 
 ```
 if !zero; pc = data		x x I P  O C N Z
-				- - - -  - - - -
+				    - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
