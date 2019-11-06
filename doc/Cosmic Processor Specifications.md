@@ -168,7 +168,7 @@ A = A * Data										x x I P  O C N Z
 
 <a name="DIV"></a>
 
-### DIV
+### DIV/DIVX
 
 Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
