@@ -87,6 +87,11 @@ class cosproc{
         void MOVR(uint16_t src);  //Move to Register
         void MOVRR(uint16_t src); //Move to Register from Register
 
+        void SHL(uint16_t src);  //Shift the Accumulator left
+        void SHLX(uint16_t src); //Shift the 16-bit Accumulator left
+        void SHR(uint16_t src);  //Shift the Accumulator right
+        void SHRX(uint16_t src); //Shift the 16-bit Accumulator right
+
         void MOVXAI(uint16_t src); //Move to Absolute from Immediate
         void MOVXA(uint16_t src);  //Move to Absolute
         void MOVXAR(uint16_t src); //Move to Absolute from Register
@@ -96,6 +101,26 @@ class cosproc{
         void MOVXRI(uint16_t src); //Move to Register from Immediate
         void MOVXR(uint16_t src);  //Move to Register
         void MOVXRR(uint16_t src); //Move to Register from Register
+
+        void INC(uint16_t src);  //Increment the Accumulator
+        void INCX(uint16_t src); //Increment the 16-bit Accumulator
+        void DEC(uint16_t src);  //Decrement the Accumulator
+        void DECX(uint16_t src); //Decrement the 16-bit Accumulator
+
+        void AND(uint16_t src);  //AND with Accumulator
+        void ANDR(uint16_t src); //AND with Accumulator from register
+
+        void OR(uint16_t src);  //OR with Accumulator
+        void ORR(uint16_t src); //OR with Accumulator from register
+
+        void XOR(uint16_t src);  //XOR with Accumulator
+        void XORR(uint16_t src); //XOR with Accumulator from register
+
+        void CMP(uint16_t src); //Compare with Accumulator
+        void CMPR(uint16_t src); //Compare with Accumulator from register
+        void CMPX(uint16_t src); //Compare with 16-bit Accumulator
+        void CMPXR(uint16_t src); //Compare with 16-bit Accumulator from register
+
 
     public:
         //Public for Debugger Only (Package this up eventually)

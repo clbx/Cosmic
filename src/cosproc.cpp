@@ -56,6 +56,11 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
 	InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
 
+	InstructionSet[0x3C] = (Instruction){&cosproc::IMP,&cosproc::SHL,"SHL",1};
+	InstructionSet[0x3D] = (Instruction){&cosproc::IMP,&cosproc::SHLX,"SHLX",1};
+	InstructionSet[0x3E] = (Instruction){&cosproc::IMP,&cosproc::SHR,"SHR",1};
+	InstructionSet[0x3F] = (Instruction){&cosproc::IMP,&cosproc::SHRX,"SHRX",1};
+
 	InstructionSet[0x40] = (Instruction){&cosproc::IMM,&cosproc::MOVXAI,"MOVX #oper, oper",5};
 	InstructionSet[0x41] = (Instruction){&cosproc::ABS,&cosproc::MOVXA,"MOVX oper, oper",5};
 	InstructionSet[0x42] = (Instruction){&cosproc::IND,&cosproc::MOVXA,"MOVX @oper, oper",5};
@@ -68,6 +73,35 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x49] = (Instruction){&cosproc::ABS,&cosproc::MOVXR,"MOVX oper, RX",4};
 	InstructionSet[0x4A] = (Instruction){&cosproc::IND,&cosproc::MOVXR,"MOVX @oper, RX",4};
 	InstructionSet[0x4B] = (Instruction){&cosproc::REG,&cosproc::MOVXRR,"MOVX RX, RX",3};
+
+	InstructionSet[0x4C] = (Instruction){&cosproc::IMP,&cosproc::INC,"INC",1};
+	InstructionSet[0x4D] = (Instruction){&cosproc::IMP,&cosproc::INCX,"INCX",1};
+	InstructionSet[0x4E] = (Instruction){&cosproc::IMP,&cosproc::DEC,"DEC",1};
+	InstructionSet[0x4F] = (Instruction){&cosproc::IMP,&cosproc::DECX,"DECX",1};
+
+	InstructionSet[0x50] = (Instruction){&cosproc::IMM,&cosproc::AND,"AND #oper",2};
+	InstructionSet[0x51] = (Instruction){&cosproc::ABS,&cosproc::AND,"AND oper",3};
+	InstructionSet[0x52] = (Instruction){&cosproc::IND,&cosproc::AND,"AND @oper",3};
+	InstructionSet[0x53] = (Instruction){&cosproc::REG,&cosproc::ANDR,"AND RX",2};
+
+	InstructionSet[0x54] = (Instruction){&cosproc::IMM,&cosproc::OR,"OR #oper",2};
+	InstructionSet[0x55] = (Instruction){&cosproc::ABS,&cosproc::OR,"OR oper",3};
+	InstructionSet[0x56] = (Instruction){&cosproc::IND,&cosproc::OR,"OR @oper",3};
+	InstructionSet[0x57] = (Instruction){&cosproc::REG,&cosproc::ORR,"OR RX",2};
+
+	InstructionSet[0x58] = (Instruction){&cosproc::IMM,&cosproc::XOR,"XOR #oper",2};
+	InstructionSet[0x59] = (Instruction){&cosproc::ABS,&cosproc::XOR,"XOR oper",3};
+	InstructionSet[0x5A] = (Instruction){&cosproc::IND,&cosproc::XOR,"XOR @oper",3};
+	InstructionSet[0x5B] = (Instruction){&cosproc::REG,&cosproc::XORR,"XOR RX",2};
+
+	InstructionSet[0x60] = (Instruction){&cosproc::IMM,&cosproc::CMP,"CMP #oper",2};
+	InstructionSet[0x61] = (Instruction){&cosproc::ABS,&cosproc::CMP,"CMP oper",3};
+	InstructionSet[0x62] = (Instruction){&cosproc::IND,&cosproc::CMP,"CMP @oper",3};
+	InstructionSet[0x63] = (Instruction){&cosproc::REG,&cosproc::CMPR,"CMP RX",2};
+	InstructionSet[0x64] = (Instruction){&cosproc::IMM,&cosproc::CMPX,"CMPX #oper",3};
+	InstructionSet[0x65] = (Instruction){&cosproc::ABS,&cosproc::CMPX,"CMPX oper",3};
+	InstructionSet[0x66] = (Instruction){&cosproc::IND,&cosproc::CMPX,"CMPX @oper",3};
+	InstructionSet[0x67] = (Instruction){&cosproc::REG,&cosproc::CMPXR,"CMPX RX",2};
 
 	reset();
 
@@ -395,6 +429,26 @@ void cosproc::MOVRR(uint16_t src){
 	r[Read(src+1)] = r[Read(src)];
 }
 
+/* 0x3C SHL Shift the Accumulator left */
+void cosproc::SHL(uint16_t src){
+
+}
+
+/* 0x3D SHLX Shift the 16-bit Accumulator left */
+void cosproc::SHLX(uint16_t src){
+	
+}
+
+/* 0x3E SHL Shift the Accumulator right */
+void cosproc::SHR(uint16_t src){
+
+}
+
+/* 0x3F SHLX Shift the 16-bit Accumulator right */
+void cosproc::SHRX(uint16_t src){
+	
+}
+
 /* 0x40 MOVX to Absolute from Immediate */
 void cosproc::MOVXAI(uint16_t src){
 	uint16_t dst = ((Read(src+2) << 8 | Read(src+3))); //Get the 16bit destination
@@ -459,4 +513,74 @@ void cosproc::MOVXRR(uint16_t src){
 	int reg = Read(pc+2);
 	r[reg] = r[src];
 	r[reg+1] = r[src+1];
+}
+
+/* 0x4C INC Increment the Accumulator */
+void cosproc::INC(uint16_t src){
+
+}
+
+/* 0x4D INC Increment the 16-bit Accumulator */
+void cosproc::INCX(uint16_t src){
+	
+}
+
+/* 0x4E DEC Decrement the Accumulator */
+void cosproc::DEC(uint16_t src){
+
+}
+
+/* 0x4F DECX Decrement the 16-bit Accumulator */
+void cosproc::DECX(uint16_t src){
+	
+}
+
+/* 0x50-0x52 AND with Accumulator */
+void cosproc::AND(uint16_t src){
+	
+}
+
+/* 0x53 AND with Accumulator from register */
+void cosproc::ANDR(uint16_t src){
+	
+}
+
+/* 0x54-0x56 OR with Accumulator */
+void cosproc::OR(uint16_t src){
+	
+}
+
+/* 0x57 OR with Accumulator from register */
+void cosproc::ORR(uint16_t src){
+	
+}
+
+/* 0x58-0x5A XOR with Accumulator */
+void cosproc::XOR(uint16_t src){
+	
+}
+
+/* 0x5B XOR with Accumulator from register */
+void cosproc::XORR(uint16_t src){
+	
+}
+
+/* 0x60-0x62 CMP Compare with Accumulator */
+void cosproc::CMP(uint16_t src){
+	
+}
+
+/* 0x63 CMPR Compare with Accumulator from register*/
+void cosproc::CMPR(uint16_t src){
+	
+}
+
+/* 0x64-0x66 CMPX Compare with 16-bit Accumulator */
+void cosproc::CMPX(uint16_t src){
+	
+}
+
+/* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
+void cosproc::CMPXR(uint16_t src){
+	
 }

@@ -547,7 +547,7 @@ rip.              		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | HCF       |        | 3 ``opcode`` |
+| Implied    | HCF       | 0x01   | 3 ``opcode`` |
 
 
 
@@ -608,7 +608,7 @@ R1 <-> R2   	        				x x I P  O C N Z
 
 | Addressing | Assembler  | Opcode | Bytes                  |
 | ---------- | ---------- | ------ | ---------------------- |
-| Register   | SWP R1, R2 |        | 3 ``opcode reg1 reg2`` |
+| Register   | SWP R1, R2 | 0x04   | 3 ``opcode reg1 reg2`` |
 
 
 
@@ -625,7 +625,7 @@ sp[++i] = A 					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | PUSH      |        | 1 ``opcode`` |
+| Implied    | PUSH      | 0x02   | 1 ``opcode`` |
 
 
 
@@ -642,7 +642,7 @@ sp[i--] = A    					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | POP       |        | 1 ``opcode`` |
+| Implied    | POP       | 0x03   | 1 ``opcode`` |
 
 
 
