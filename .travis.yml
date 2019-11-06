@@ -20,4 +20,3 @@ script:
 - ./test
 - cd ../src
 - make
-- ./cosmic
