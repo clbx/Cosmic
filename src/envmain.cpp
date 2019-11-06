@@ -46,7 +46,7 @@
 * that avoids using a centralized stationary memory location. 
 */
 
-uint8_t memory[256] = { };
+uint8_t memory[65536] = { };
 
 void MemoryWrite(uint16_t address, uint8_t value){
     //TODO: Actually put memory here
@@ -319,7 +319,7 @@ int runGUI(){
         */
         ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
-        ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*256);
+        ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*65536);
         ram_edit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
 
 

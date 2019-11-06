@@ -42,6 +42,18 @@
 
 ## Memory Mapping
 
+It is always assumed that 64K of memory is being used. No reason to not have all addressable memory.
+
+things that need to be in it
+
+* Video Memory
+* ROM
+* Addressing stuff
+
+
+
+
+
 
 ## Interrupt Handling
 

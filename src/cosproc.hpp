@@ -144,6 +144,8 @@ class cosproc{
         cosproc(BusRead r, BusWrite w);
         void reset();
         void cycle();
+        void NMI();   //Non Maskable Interrupt
+        void INTR();  //Interrupt request
         void execute(Instruction i);
 
 
