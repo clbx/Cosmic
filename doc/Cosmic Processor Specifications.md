@@ -194,7 +194,7 @@ A = A / D,B = R.    					x x I P  O C N Z
 
 ### SHL
 
-Shift the accumulator left,  sets carry if a high bit gets pushed off.
+Shift the accumulator left,  sets carry if a high bit gets pushed off. **Might change to allow to shift by more than 1 ie. SHL src, dest where dest is shifted by src**
 
 ```
 A<<        					  x x I P  O C N Z
@@ -212,7 +212,7 @@ A<<        					  x x I P  O C N Z
 
 ### SHR
 
-Shift the accumulator right.
+Shift the accumulator right. **Might change to allow to shift by more than 1 ie. SHR src, dest where dest is shifted by src**
 
 ```
 A<<        					  x x I P  O C N Z
@@ -451,7 +451,7 @@ Jump negative result, jump to the given location if the negative flag is set
 
 ```
 if negative; pc=data  x x I P  O C N Z
-		  - - - -  - - - -
+		      - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
