@@ -1,12 +1,32 @@
 import sys
 import re 
 
+output = bytearray()
 
+#ADD RX
 def ADD(tokens):
     pattern = re.compile("ADD (([#][0-9,A-F]{1,2})|([@][0-9,A-F]{1,4})|([0-9,A-F]{1,4})|([R][0-7]{1}))")
     p = pattern.match(' '.join(tokens))
     if(p.group() != (' '.join(tokens))):
         return True
+
+    #Immediate
+    if(tokens[1][0] == '#'):
+        output.append(0x10)
+        output.append(int(tokens[1][1:]))
+    #Indirect
+    elif(tokens[1][0] == "@"):
+        output.append(0x12)
+        output.append(int(tokens[1][1:]))
+    #Register
+    elif(tokens[1][0] == 'R'):
+        output.append(0x13)
+        output.append(int(tokens[1][1]))
+
+    #Absolute
+    else:
+        output.append(0x11)
+        output.append(int(tokens[1][1:]))
 
     return False
     
@@ -34,6 +54,24 @@ def SUBX(tokens):
     if(p.group() != (' '.join(tokens))):
         return True
     
+    #Immediate
+    if(tokens[1][0] == '#'):
+        output.append(0x18)
+        output.append(int(tokens[1][1:]))
+    #Indirect
+    elif(tokens[1][0] == "@"):
+        output.append(0x20)
+        output.append(int(tokens[1][1:]))
+    #Register
+    elif(tokens[1][0] == 'R'):
+        output.append(0x21)
+        output.append(int(tokens[1][1]))
+
+    #Absolute
+    else:
+        output.append(0x19)
+        output.append(int(tokens[1][1:]))
+
     return False
 
 def MUL(tokens):
@@ -360,6 +398,7 @@ def main():
             print("Syntax error on line ", i+1)
             return
 
+    
         
 
 
@@ -367,7 +406,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
