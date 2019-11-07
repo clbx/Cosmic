@@ -50,6 +50,7 @@ class cosproc{
         uint16_t REG(); //Register Addressing
 
         // -= OPCODES =-  R = Register mode, X = 16-bit Mode
+        /* 0x00-0x0F */
         void UND(uint16_t src);  //Undefined
         void NOP(uint16_t src);  //No Operation
         void HCF(uint16_t src);  //Halt and Catch Fire
@@ -57,6 +58,7 @@ class cosproc{
         void POP(uint16_t src);  //Pop from stack
         void SWP(uint16_t src);  //Swap registers
 
+        /* 0x10-0x1F */
         void ADD(uint16_t src);   //Add
         void ADDR(uint16_t src);  //Add from Register
         void ADDX(uint16_t src);  //Add from 16 bit value
@@ -67,6 +69,7 @@ class cosproc{
         void SUBX(uint16_t src);  //Subtract from 16 bit value
         void SUBXR(uint16_t src); //Subtract from 16bit register
 
+        /* 0x20-0x2F */
         void MUL(uint16_t src);   //Multiply
         void MULR(uint16_t src);  //Multiply from register
         void MULX(uint16_t src);  //Multuply from 16 bit value
@@ -77,6 +80,7 @@ class cosproc{
         void DIVX(uint16_t src);  //Divide from 16 bit value
         void DIVXR(uint16_t src); //Divide from 16bit register
 
+        /* 0x30-0x3F */
         void MOVAI(uint16_t src); //Move to Absolute from Immediate
         void MOVA(uint16_t src);  //Move to Absolute
         void MOVAR(uint16_t src); //Move to Absolute from Register
@@ -87,6 +91,10 @@ class cosproc{
         void MOVR(uint16_t src);  //Move to Register
         void MOVRR(uint16_t src); //Move to Register from Register
 
+        void SHL(uint16_t src);   //Shift the Accumulator left
+        void SHLR(uint16_t src);  //Shift the Accumulator left from Register
+
+        /* 0x40-0x4F */
         void MOVXAI(uint16_t src); //Move to Absolute from Immediate
         void MOVXA(uint16_t src);  //Move to Absolute
         void MOVXAR(uint16_t src); //Move to Absolute from Register
@@ -96,6 +104,37 @@ class cosproc{
         void MOVXRI(uint16_t src); //Move to Register from Immediate
         void MOVXR(uint16_t src);  //Move to Register
         void MOVXRR(uint16_t src); //Move to Register from Register
+
+        void SHLX(uint16_t src);  //Shift the 16-bit Accumulator left
+        void SHLXR(uint16_t src); //Shift the 16-bit Accumulator left from Register
+
+        /* 0x50-0x5F */
+        void AND(uint16_t src);  //AND with Accumulator
+        void ANDR(uint16_t src); //AND with Accumulator from register
+
+        void OR(uint16_t src);  //OR with Accumulator
+        void ORR(uint16_t src); //OR with Accumulator from register
+
+        void XOR(uint16_t src);  //XOR with Accumulator
+        void XORR(uint16_t src); //XOR with Accumulator from register
+
+        void SHR(uint16_t src);   //Shift the Accumulator right
+        void SHRR(uint16_t src);  //Shift the Accumulator right from register
+
+        /* 0x60-0x6F */
+        void CMP(uint16_t src);   //Compare with Accumulator
+        void CMPR(uint16_t src);  //Compare with Accumulator from register
+        void CMPX(uint16_t src);  //Compare with 16-bit Accumulator
+        void CMPXR(uint16_t src); //Compare with 16-bit Accumulator from register
+
+        void INC(uint16_t src);  //Increment the Accumulator
+        void INCX(uint16_t src); //Increment the 16-bit Accumulator
+        void DEC(uint16_t src);  //Decrement the Accumulator
+        void DECX(uint16_t src); //Decrement the 16-bit Accumulator
+
+        void SHRX(uint16_t src);  //Shift the 16-bit Accumulator right
+        void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
+
 
     public:
         //Public for Debugger Only (Package this up eventually)

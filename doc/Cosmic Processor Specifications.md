@@ -66,10 +66,10 @@ things that need to be in it
 | **0x00** | [NOP](#NOP)  | [HCF](#HCF)  | [PUSH](#PUSH) | [POP](#POP)  | [SWP](#SWP)  |              |              |              |              |              |              |              |              |              |              |              |
 | **0x10** | [ADD](#ADD)  | [ADD](#ADD)  | [ADD](#ADD)   | [ADD](#ADD)  | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) |
 | **0x20** | [MUL](#MUL)  | [MUL](#MUL)  | [MUL](#MUL)   | [MUL](#MUL)  | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) |
-| **0x30** | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [SHL](#SHL)  | [SHLX](#SHLX)| [SHR](#SHR)  | [SHRX](#SHRX)|
-| **0x40** | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [INC](#INC)  | [INCX](#INCX)| [DEC](#DEC)  | [DECX](#DECX)|
-| **0x50** | [AND](#AND)  | [AND](#AND)  | [AND](#AND)   | [AND](#AND)  | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  |              |              |              |              |
-| **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMPX)| [CMPX](#CMPX)| [CMPX](#CMPX)| [CMPX](#CMPX)|              |              |              |              |              |              |              |              |
+| **0x30** | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  |
+| **0x40** | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) |
+| **0x50** | [AND](#AND)  | [AND](#AND)  | [AND](#AND)   | [AND](#AND)  | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  |
+| **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMP) | [CMPX](#CMP) | [CMPX](#CMP) | [CMPX](#CMP) | [INC](#INC)  | [INCX](#INC) | [DEC](#DEC)  | [DECX](#DEC) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) |
 | **0x70** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
 | **0x80** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
 | **0x90** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
@@ -123,10 +123,10 @@ A = A + Data										x x I P  O C N Z
 | Absolute        | ADD oper   | 0x11   | 3 ``opcode locationHigh locationLow`` |
 | Indirect        | ADD @oper  | 0x12   | 3 ``opcode locationHigh locationLow`` |
 | Register        | ADD RX     | 0x13   | 2 ``opcode register``                 |
-| 16bit Immediate | ADDX #oper | 0x14   | 3 ``opcode valueHigh valueLow``       |
-| 16bit Absolute  | ADDX oper  | 0x15   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Indirect  | ADDX @oper | 0x16   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Register  | ADDX RX    | 0x17   | 2 ``opcode register``                 |
+| 16-bit Immediate| ADDX #oper | 0x14   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute | ADDX oper  | 0x15   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect | ADDX @oper | 0x16   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register | ADDX RX    | 0x17   | 2 ``opcode register``                 |
 
 
 
@@ -147,10 +147,10 @@ A = A - Data										x x I P  O C N Z
 | Absolute        | SUB oper   | 0x19   | 3 ``opcode locationHigh locationLow`` |
 | Indirect        | SUB @oper  | 0x1A   | 3 ``opcode locationHigh locationLow`` |
 | Register        | SUB RX     | 0x1B   | 2 ``opcode register``                 |
-| 16bit Immediate | SUBX #oper | 0x1C   | 3 ``opcode valueHigh valueLow``       |
-| 16bit Absolute  | SUBX oper  | 0x1D   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Indirect  | SUBX @oper | 0x1E   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Register  | SUBX RX    | 0x1F   | 2 ``opcode register``                 |
+| 16-bit Immediate| SUBX #oper | 0x1C   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute | SUBX oper  | 0x1D   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect | SUBX @oper | 0x1E   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register | SUBX RX    | 0x1F   | 2 ``opcode register``                 |
 
 
 
@@ -171,10 +171,10 @@ A = A * Data										x x I P  O C N Z
 | Absolute        | MUL oper   | 0x21   | 3 ``opcode locationHigh locationLow`` |
 | Indirect        | MUL @oper  | 0x22   | 3 ``opcode locationHigh locationLow`` |
 | Register        | MUL RX     | 0x23   | 2 ``opcode register``                 |
-| 16bit Immediate | MULX #oper | 0x24   | 3 ``opcode valueHigh valueLow``       |
-| 16bit Absolute  | MULX oper  | 0x25   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Indirect  | MULX @oper | 0x26   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Register  | MULX RX    | 0x27   | 2 ``opcode register``                 |
+| 16-bit Immediate| MULX #oper | 0x24   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute | MULX oper  | 0x25   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect | MULX @oper | 0x26   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register | MULX RX    | 0x27   | 2 ``opcode register``                 |
 
 
 
@@ -189,16 +189,16 @@ A = A / D,B = R.    					x x I P  O C N Z
 							- - - -  + + + +
 ```
 
-| Addressing      | Assembler  | Opcode | Bytes                                 |
-| --------------- | ---------- | ------ | ------------------------------------- |
-| Immediate       | DIV #oper  | 0x28   | 2 ``opcode value``                    |
-| Absolute        | DIV oper   | 0x29   | 3 ``opcode locationHigh locationLow`` |
-| Indirect        | DIV @oper  | 0x2A   | 3 ``opcode locationHigh locationLow`` |
-| Register        | DIV RX     | 0x2B   | 2 ``opcode register``                 |
-| 16bit Immediate | DIVX #oper | 0x2C   | 3 ``opcode valueHigh valueLow``       |
-| 16bit Absolute  | DIVX oper  | 0x2D   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Indirect  | DIVX @oper | 0x2E   | 3 ``opcode locationHigh locationLow`` |
-| 16bit Register  | DIVX RX    | 0x2F   | 2 ``opcode register``                 |
+| Addressing       | Assembler  | Opcode | Bytes                                 |
+| ---------------- | ---------- | ------ | ------------------------------------- |
+| Immediate        | DIV #oper  | 0x28   | 2 ``opcode value``                    |
+| Absolute         | DIV oper   | 0x29   | 3 ``opcode locationHigh locationLow`` |
+| Indirect         | DIV @oper  | 0x2A   | 3 ``opcode locationHigh locationLow`` |
+| Register         | DIV RX     | 0x2B   | 2 ``opcode register``                 |
+| 16-bit Immediate | DIVX #oper | 0x2C   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute  | DIVX oper  | 0x2D   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect  | DIVX @oper | 0x2E   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register  | DIVX RX    | 0x2F   | 2 ``opcode register``                 |
 
 
 
@@ -209,14 +209,21 @@ A = A / D,B = R.    					x x I P  O C N Z
 Shift the accumulator left,  sets carry if a high bit gets pushed off.
 
 ```
-A<<        					  x x I P  O C N Z
+A = A << Data        					  x x I P  O C N Z
 						  - - - -  - + - +
 ```
 
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | SHL       | 0x3C   | 1 ``opcode`` |
-| Implied    | SHLX      | 0x3D   | 1 ``opcode`` |
+| Addressing       | Assembler  | Opcode | Bytes                                 |
+| ---------------- | ---------- | ------ | ------------------------------------- |
+| Immediate        | SHL #oper  | 0x3C   | 2 ``opcode value``                    |
+| Absolute         | SHL oper   | 0x3D   | 3 ``opcode locationHigh locationLow`` |
+| Indirect         | SHL @oper  | 0x3E   | 3 ``opcode locationHigh locationLow`` |
+| Register         | SHL RX     | 0x3F   | 2 ``opcode register``                 |
+| 16-bit Immediate | SHLX #oper | 0x4C   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute  | SHLX oper  | 0x4D   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect  | SHLX @oper | 0x4E   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register  | SHLX RX    | 0x4F   | 2 ``opcode register``                 |
+
 
 
 
@@ -227,14 +234,20 @@ A<<        					  x x I P  O C N Z
 Shift the accumulator right.
 
 ```
-A<<        					  x x I P  O C N Z
+A = A >> Data        					  x x I P  O C N Z
 						  - - - -  - - - +
 ```
 
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | SHR       | 0x3E   | 1 ``opcode`` |
-| Implied    | SHRX      | 0x3F   | 1 ``opcode`` |
+| Addressing       | Assembler  | Opcode | Bytes                                 |
+| ---------------- | ---------- | ------ | ------------------------------------- |
+| Immediate        | SHR #oper  | 0x5C   | 2 ``opcode value``                    |
+| Absolute         | SHR oper   | 0x5D   | 3 ``opcode locationHigh locationLow`` |
+| Indirect         | SHR @oper  | 0x5E   | 3 ``opcode locationHigh locationLow`` |
+| Register         | SHR RX     | 0x5F   | 2 ``opcode register``                 |
+| 16-bit Immediate | SHRX #oper | 0x6C   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute  | SHRX oper  | 0x6D   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect  | SHRX @oper | 0x6E   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register  | SHRX RX    | 0x6F   | 2 ``opcode register``                 |
 
 
 
@@ -251,8 +264,8 @@ x++          					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | INC       | 0x4C   | 1 ``opcode`` |
-| Implied    | INCX      | 0x4D   | 1 ``opcode`` |
+| Implied    | INC       | 0x68   | 1 ``opcode`` |
+| Implied    | INCX      | 0x69   | 1 ``opcode`` |
 
 
 
@@ -269,8 +282,8 @@ x--          					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | DEC       | 0x4E   | 1 ``opcode`` |
-| Implied    | DECX      | 0x4F   | 1 ``opcode`` |
+| Implied    | DEC       | 0x6A   | 1 ``opcode`` |
+| Implied    | DECX      | 0x6B   | 1 ``opcode`` |
 
 
 
@@ -405,8 +418,8 @@ if zero; pc = data		x x I P  O C N Z
 Jump not zero, jump to the given location if the zero flag is not set
 
 ```
-if !zero; pc = data		x x I P  O C N Z
-				- - - -  - - - -
+if !zero; pc = data		    x x I P  O C N Z
+				    - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -463,7 +476,7 @@ Jump negative result, jump to the given location if the negative flag is set
 
 ```
 if negative; pc=data  x x I P  O C N Z
-		  - - - -  - - - -
+		      - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -559,7 +572,7 @@ rip.              		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | HCF       |        | 3 ``opcode`` |
+| Implied    | HCF       | 0x01   | 3 ``opcode`` |
 
 
 
@@ -590,18 +603,18 @@ Loc = Data.          					x x I P  O C N Z
 | Absolute -> **Register**         | MOV oper, RX      | 0x39   | 4 ``opcode locHigh locLow reg``            |
 | Indirect -> **Register**         | MOV @oper, RX     | 0x3A   | 4 ``opcode locHigh locLow reg``            |
 | Register -> **Register**         | MOV RX, RX        | 0x3B   | 3 ``opcode reg reg``                       |
-| 16 bit Immediate -> **Absolute** | MOVX #oper, oper  | 0x40   | 5 ``opcode valHigh valLow locHigh locLow`` |
-| 16 bit Absolute -> **Absolute**  | MOVX oper, oper   | 0x41   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Indirect -> **Absolute**  | MOVX @oper, oper  | 0x42   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Register -> **Absolute**  | MOVX RX, oper     | 0x43   | 4 ``opcode reg dstHigh dstLow``            |
-| 16 bit Immediate -> **Indirect** | MOVX #oper, @oper | 0x44   | 5 ``opcode valHigh valLow dstHigh dstLow`` |
-| 16 bit Absolute -> **Indirect**  | MOVX oper, @oper  | 0x45   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Indirect -> **Indirect**  | MOVX @oper, @oper | 0x46   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16 bit Register -> **Indirect**  | MOVX RX, @oper    | 0x47   | 4 ``opcode reg srcHigh srcLow``            |
-| 16 bit Immediate -> **Register** | MOVX #oper, RX    | 0x48   | 4 ``opcode valHigh valLow reg``            |
-| 16 bit Absolute -> **Register**  | MOVX oper, RX     | 0x49   | 4 ``opcode srcHigh srcLow reg``            |
-| Indirect -> **Register**         | MOVX @oper, RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
-| Register -> **Register**         | MOVX RX, RX       | 0x4B   | 3 ``opcode reg reg``                       |
+| 16-bit Immediate -> **Absolute** | MOVX #oper, oper  | 0x40   | 5 ``opcode valHigh valLow locHigh locLow`` |
+| 16-bit Absolute -> **Absolute**  | MOVX oper, oper   | 0x41   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Indirect -> **Absolute**  | MOVX @oper, oper  | 0x42   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Register -> **Absolute**  | MOVX RX, oper     | 0x43   | 4 ``opcode reg dstHigh dstLow``            |
+| 16-bit Immediate -> **Indirect** | MOVX #oper, @oper | 0x44   | 5 ``opcode valHigh valLow dstHigh dstLow`` |
+| 16-bit Absolute -> **Indirect**  | MOVX oper, @oper  | 0x45   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Indirect -> **Indirect**  | MOVX @oper, @oper | 0x46   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Register -> **Indirect**  | MOVX RX, @oper    | 0x47   | 4 ``opcode reg srcHigh srcLow``            |
+| 16-bit Immediate -> **Register** | MOVX #oper, RX    | 0x48   | 4 ``opcode valHigh valLow reg``            |
+| 16-bit Absolute -> **Register**  | MOVX oper, RX     | 0x49   | 4 ``opcode srcHigh srcLow reg``            |
+| 16-bit Indirect -> **Register**  | MOVX @oper, RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
+| 16-bit Register -> **Register**  | MOVX RX, RX       | 0x4B   | 3 ``opcode reg reg``                       |
 
 _Note: This is where the principals of RISC start to break down in favor of a more fleshed out instruction set_. In a true RISC instruction set each target addressing mode would be it's own instruction, but that's annoying. 
 
@@ -620,7 +633,7 @@ R1 <-> R2   	        				x x I P  O C N Z
 
 | Addressing | Assembler  | Opcode | Bytes                  |
 | ---------- | ---------- | ------ | ---------------------- |
-| Register   | SWP R1, R2 |        | 3 ``opcode reg1 reg2`` |
+| Register   | SWP R1, R2 | 0x04   | 3 ``opcode reg1 reg2`` |
 
 
 
@@ -637,7 +650,7 @@ sp[++i] = A 					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | PUSH      |        | 1 ``opcode`` |
+| Implied    | PUSH      | 0x02   | 1 ``opcode`` |
 
 
 
@@ -654,7 +667,7 @@ sp[i--] = A    					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | POP       |        | 1 ``opcode`` |
+| Implied    | POP       | 0x03   | 1 ``opcode`` |
 
 
 
