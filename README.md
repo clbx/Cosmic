@@ -69,7 +69,7 @@ make
 *  [ImGui](https://github.com/ocornut/imgui) is a GUI library used for the interface, along with a slightly modified memory editor addon. This is under the MIT License and the license file is included accordingly
 * [gl3w](https://github.com/skaslev/gl3w) A OpenGL core loader. This is not under a license. 
 
-* [catch2](https://github.com/catchorg/Catch2) is used for testing.
+* [catch2](https://github.com/catchorg/Catch2) is used for testing. This is under the BSL Software License
 
 SDL2 is also required to run Cosmic.
 
