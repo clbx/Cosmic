@@ -57,6 +57,8 @@ class cosproc{
         void PUSH(uint16_t src); //Push to stack
         void POP(uint16_t src);  //Pop from stack
         void SWP(uint16_t src);  //Swap registers
+        void CALL(uint16_t src); //Call subroutine
+        void RET(uint16_t src);  //Return from subroutine
 
         /* 0x10-0x1F */
         void ADD(uint16_t src);   //Add
@@ -134,6 +136,17 @@ class cosproc{
 
         void SHRX(uint16_t src);  //Shift the 16-bit Accumulator right
         void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
+
+        /* 0x70-0x7F */
+        void JMP(uint16_t src); //Jump to a location in memory
+        void JZS(uint16_t src); //Jump if zero flag is set
+        void JNZ(uint16_t src); //Jump if zero flag is not set
+        void JCS(uint16_t src); //Jump if carry flag is set
+        void JNC(uint16_t src); //Jump if carry flag is not set
+
+        /* 0x80-0x8F */
+        void JOS(uint16_t src); //Jump if overflow is set
+        void JNS(uint16_t src); //Jump if overflow is not set
 
 
     public:

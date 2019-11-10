@@ -63,15 +63,15 @@ things that need to be in it
 
 | Hi\Lo    | 0x00         | 0x01         | 0x02          | 0x03         | 0x04         | 0x05         | 0x06         | 0x07         | 0x08         | 00x9         | 0x0A         | 0x0B         | 0x0C         | 0x0D         | 0x0E         | 0x0F         |
 | -------- | ------------ | ------------ | ------------- | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
-| **0x00** | [NOP](#NOP)  | [HCF](#HCF)  | [PUSH](#PUSH) | [POP](#POP)  | [SWP](#SWP)  |              |              |              |              |              |              |              |              |              |              |              |
+| **0x00** | [NOP](#NOP)  | [HCF](#HCF)  | [PUSH](#PUSH) | [POP](#POP)  | [SWP](#SWP)  | [CALL](#CALL)| [CALL](#CALL)| [CALL](#CALL)| [RET](#RET)  |              |              |              |              |              |              |              |
 | **0x10** | [ADD](#ADD)  | [ADD](#ADD)  | [ADD](#ADD)   | [ADD](#ADD)  | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [ADDX](#ADD) | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) |
 | **0x20** | [MUL](#MUL)  | [MUL](#MUL)  | [MUL](#MUL)   | [MUL](#MUL)  | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [MULX](#MUL) | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIV](#DIV)  | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) | [DIVX](#DIV) |
 | **0x30** | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  |
 | **0x40** | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) |
 | **0x50** | [AND](#AND)  | [AND](#AND)  | [AND](#AND)   | [AND](#AND)  | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [OR](#OR)    | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  |
 | **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMP) | [CMPX](#CMP) | [CMPX](#CMP) | [CMPX](#CMP) | [INC](#INC)  | [INCX](#INC) | [DEC](#DEC)  | [DECX](#DEC) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) |
-| **0x70** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
-| **0x80** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
+| **0x70** | [JMP](#JMP)  | [JMP](#JMP)  | [JMP](#JMP)   | [JZS](#JZS)  | [JZS](#JZS)  | [JZS](#JZS)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JCS](#JCS)  | [JCS](#JCS)  | [JCS](#JCS)  | [JNC](#JNC)  | [JNC](#JNC)  | [JNC](#JNC)  |              |
+| **0x80** | [JOS](#JOS)  | [JOS](#JOS)  | [JOS](#JOS)   | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  |              |              |              |              |              |              |              |              |              |              |
 | **0x90** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
 | **0xA0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
 | **0xB0** |              |              |               |              |              |              |              |              |              |              |              |              |              |              |              |              |
@@ -386,15 +386,15 @@ pc = data    					x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JMP #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JMP oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JMP @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JMP #oper | 0x70   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JMP oper  | 0x71   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JMP @oper | 0x72   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
-<a name="JEZ"></a>
+<a name="JZS"></a>
 
-**JZS**
+### JZS
 
 Jump equals zero, jump to the given location if the zero flag is set
 
@@ -405,15 +405,15 @@ if zero; pc = data		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JZS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JZS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JZS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JZS #oper | 0x73   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JZS oper  | 0x74   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JZS @oper | 0x75   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
 <a name="JNZ"></a>
 
-**JNZ**
+### JNZ
 
 Jump not zero, jump to the given location if the zero flag is not set
 
@@ -424,28 +424,9 @@ if !zero; pc = data		    x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JNZ #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JNZ oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JNZ @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-
-
-
-<a name="JCC"></a>
-
-### JNC
-
-Jump not carry, jump to the given location if the carry flag is not set
-
-```
-if !carry; pc = data	x x I P  O C N Z
-			- - - -  - - - -
-```
-
-| Addressing | Assembler | Opcode | Bytes                                         |
-| ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JNC #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JNC oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JNC @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JNZ #oper | 0x76   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNZ oper  | 0x77   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNZ @oper | 0x78   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
@@ -462,32 +443,32 @@ if carry; pc = data		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JCS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JCS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JCS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JCS #oper | 0x79   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JCS oper  | 0x7A   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JCS @oper | 0x7B   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
-<a name="JNR"></a>
+<a name="JNC"></a>
 
-### JNS
+### JNC
 
-Jump negative result, jump to the given location if the negative flag is set
+Jump not carry, jump to the given location if the carry flag is not set
 
 ```
-if negative; pc=data  x x I P  O C N Z
-		      - - - -  - - - -
+if !carry; pc = data	x x I P  O C N Z
+			- - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JNS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JNS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JNS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JNC #oper | 0x7C   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNC oper  | 0x7D   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNC @oper | 0x7E   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
-<a name="JOV"></a>
+<a name="JOS"></a>
 
 ### JOS
 
@@ -500,9 +481,28 @@ if over; pc = data		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes                                         |
 | ---------- | --------- | ------ | --------------------------------------------- |
-| Immediate  | JOS #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | JOS oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | JOS @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | JOS #oper | 0x80   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JOS oper  | 0x81   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JOS @oper | 0x82   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
+
+<a name="JNS"></a>
+
+### JNS
+
+Jump negative result, jump to the given location if the negative flag is set
+
+```
+if negative; pc=data  x x I P  O C N Z
+		      - - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JNS #oper | 0x83   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JNS oper  | 0x84   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JNS @oper | 0x85   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
@@ -536,9 +536,9 @@ push pc; pc = oper		x x I P  O C N Z
 
 | Addressing | Assembler  | Opcode | Bytes                                         |
 | ---------- | ---------- | ------ | --------------------------------------------- |
-| Immediate  | CALL #oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | CALL oper  |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | CALL @oper |        | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Immediate  | CALL #oper | 0x05   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | CALL oper  | 0x06   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | CALL @oper | 0x07   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
 
@@ -555,7 +555,7 @@ pc = pop.          		x x I P  O C N Z
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | RET       |        | 3 ``opcode`` |
+| Implied    | RET       | 0x08   | 3 ``opcode`` |
 
 
 

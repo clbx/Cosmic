@@ -78,7 +78,7 @@ void LoadIntoMemory(char* filepath){
 void DumpMemory(char* filepath){
     std::ofstream File;
     File.open(filepath);
-    for(int i = 0; i < 256; i++){
+    for(int i = 0; i < 65536; i++){
         File << memory[i];
     }
 
