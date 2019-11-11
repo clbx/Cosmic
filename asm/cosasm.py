@@ -3,13 +3,15 @@ import re
 
 output = bytearray()
 
-16bitPattern = re.compile("[A-Z]{3}[X].*$")
+bitnessPattern = re.compile("[A-Z]{3}[X].*$")
 #Addressing Modes
 impliedPattern = re.compile("[A-Z]{3,4}$")
-impliedPattern = re.compile("[A-Z]{3,4} [#][0-9,A-F]{1,4}$")
+immmediatePattern = re.compile("[A-Z]{3,4} [#][0-9,A-F]{1,4}$")
 absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-F]{1,4}$")
 indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
+
+
 
 InstructionSet = {
     'NOP':[0x00],
@@ -27,7 +29,6 @@ InstructionSet = {
     'MULX':[0x24,0x25,0x26,0x27],
     'DIV':[0x28,0x29,0x2A,0x2B],
     'DIVX':[0x2C,0x2D,0x2E,0x2F],
-    #Figure out how I want to do moves
     'SHL':[0x3C,0x3D,0x3E,0x3F],
     'SHLX':[0x4C,0x4D,0x4E,0x4F],
     'AND':[0x50,0x51,0x52,0x53],
@@ -45,6 +46,21 @@ InstructionSet = {
 }
     
 
+def getAddrMode(instruction):
+    if(immmediatePattern.match(instruction)):
+        return 0
+    elif(absolutePattern.match(instruction)):
+        return 1
+    elif(indirectPattern.match(instruction)):
+        return 2
+    elif(registerPattern.match(instruction)):
+        return 3
+    else:
+        return -1
+
+def handleMov(tokens):
+    return 0
+
 
 def main():
     if(len(sys.argv) < 2):
@@ -61,6 +77,32 @@ def main():
         #Tokenize
         tokens = instructions[i].split()
         print(tokens)
+        print(type(InstructionSet))
+
+        
+        #If its any opcode except MOV
+        if(tokens[0] in InstructionSet):
+            #Get Opcode
+            addrMode = getAddrMode(instructions[i])
+            output.append(InstructionSet[tokens[0]][addrMode])
+            #Get Operand(s)
+
+        #If its MOV/MOVX
+        elif(tokens[0] == "MOV" or tokens[0] == "MOVX"):
+            return 0
+
+        #If it's something else! Figure out if its good or not.
+        else:
+            return 0
+
+
+        
+        
+        
+
+
+
+        print(output)
 
     
     outputFile = open('output.bin','w+b')
