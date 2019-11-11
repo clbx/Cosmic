@@ -885,35 +885,47 @@ void cosproc::SHRXR(uint16_t src){
 
 /* 0x70-0x72 JMP from Imm/Abs/Ind */
 void cosproc::JMP(uint16_t src){
-	//TODO
+	pc = ((Read(src) << 8) | Read(src+1)) - 3;
 }
 
 /* 0x73-0x75 JZS from Imm/Abs/Ind */
 void cosproc::JZS(uint16_t src){
-	//TODO
+	if(st[0]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
 
 /* 0x76-0x78 JNZ from Imm/Abs/Ind */
 void cosproc::JNZ(uint16_t src){
-	//TODO
+	if(!st[0]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
 
 /* 0x79-0x7B JCS from Imm/Abs/Ind */
 void cosproc::JCS(uint16_t src){
-	//TODO
+	if(st[2]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
 
 /* 0x7C-0x7E JNC from Imm/Abs/Ind */
 void cosproc::JNC(uint16_t src){
-	//TODO
+	if(!st[2]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
 
 /* 0x80-0x82 JOS from Imm/Abs/Ind */
 void cosproc::JOS(uint16_t src){
-	//TODO
+	if(st[3]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
 
 /* 0x83-0x85 JNS from Imm/Abs/Ind*/
 void cosproc::JNS(uint16_t src){
-	//TODO
+	if(st[1]){
+		pc = ((Read(src) << 8) | Read(src+1)) - 3;
+	}
 }
