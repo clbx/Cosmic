@@ -108,7 +108,7 @@ things that need to be in it
 
 <a name="ADD"></a>
 
-### ADD/ADDX
+### ADD
 
 Add memory to accumulator
 
@@ -132,7 +132,7 @@ A = A + Data										x x I P  O C N Z
 
 <a name="SUB"></a>
 
-### SUB/SUBX
+### SUB
 
 Subtract memory from accumualtor
 
@@ -156,7 +156,7 @@ A = A - Data										x x I P  O C N Z
 
 <a name="MUL"></a>
 
-### MUL/MULX
+### MUL
 
 Multiplies the accumulator
 
@@ -180,7 +180,7 @@ A = A * Data										x x I P  O C N Z
 
 <a name="DIV"></a>
 
-### DIV/DIVX
+### DIV
 
 Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
@@ -210,7 +210,7 @@ Shift the accumulator left,  sets carry if a high bit gets pushed off.
 
 ```
 A = A << Data        					  x x I P  O C N Z
-						  - - - -  - + - +
+						          - - - -  - + - +
 ```
 
 | Addressing       | Assembler  | Opcode | Bytes                                 |
@@ -235,7 +235,7 @@ Shift the accumulator right.
 
 ```
 A = A >> Data        					  x x I P  O C N Z
-						  - - - -  - - - +
+						          - - - -  - - - +
 ```
 
 | Addressing       | Assembler  | Opcode | Bytes                                 |
@@ -580,7 +580,7 @@ rip.              		x x I P  O C N Z
 
 <a name="MOV"></a>
 
-### MOV/MOVX
+### MOV
 
 Copies memory from one location to another
 

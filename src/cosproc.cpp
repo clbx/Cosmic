@@ -47,6 +47,24 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x1E] = (Instruction){&cosproc::IND,&cosproc::SUBX,"SUBX @oper",3};
 	InstructionSet[0x1F] = (Instruction){&cosproc::REG,&cosproc::SUBXR,"SUBX RX",2};
 
+	InstructionSet[0x20] = (Instruction){&cosproc::IMM,&cosproc::MUL,"MUL #oper",2};
+	InstructionSet[0x21] = (Instruction){&cosproc::ABS,&cosproc::MUL,"MUL oper",3};
+	InstructionSet[0x22] = (Instruction){&cosproc::IND,&cosproc::MUL,"MUL @oper",3};
+	InstructionSet[0x23] = (Instruction){&cosproc::REG,&cosproc::MULR,"MUL RX",2};
+	InstructionSet[0x24] = (Instruction){&cosproc::IMM,&cosproc::MULX,"MULX #oper",3};
+	InstructionSet[0x25] = (Instruction){&cosproc::ABS,&cosproc::MULX,"MULX oper",3};
+	InstructionSet[0x26] = (Instruction){&cosproc::IND,&cosproc::MULX,"MULX @oper",3};
+	InstructionSet[0x27] = (Instruction){&cosproc::REG,&cosproc::MULXR,"MULX RX",2};
+
+	InstructionSet[0x28] = (Instruction){&cosproc::IMM,&cosproc::DIV,"DIV #oper",2};
+	InstructionSet[0x29] = (Instruction){&cosproc::ABS,&cosproc::DIV,"DIV oper",3};
+	InstructionSet[0x2A] = (Instruction){&cosproc::IND,&cosproc::DIV,"DIV @oper",3};
+	InstructionSet[0x2B] = (Instruction){&cosproc::REG,&cosproc::DIVR,"DIV RX",2};
+	InstructionSet[0x2C] = (Instruction){&cosproc::IMM,&cosproc::DIVX,"DIVX #oper",3};
+	InstructionSet[0x2D] = (Instruction){&cosproc::ABS,&cosproc::DIVX,"DIVX oper",3};
+	InstructionSet[0x2E] = (Instruction){&cosproc::IND,&cosproc::DIVX,"DIVX @oper",3};
+	InstructionSet[0x2F] = (Instruction){&cosproc::REG,&cosproc::DIVXR,"DIVX RX",2};
+
 	InstructionSet[0x30] = (Instruction){&cosproc::IMM,&cosproc::MOVAI,"MOV #oper, oper",4};
 	InstructionSet[0x31] = (Instruction){&cosproc::ABS,&cosproc::MOVA,"MOV oper, oper",5};
 	InstructionSet[0x32] = (Instruction){&cosproc::IND,&cosproc::MOVA,"MOV @oper, oper",5};
@@ -437,6 +455,46 @@ void cosproc::SUBXR(uint16_t src){
 
 	//Set Zero
 	st[0] = (r[0] << 8 | r[1]) == 0;
+}
+
+/* 0x20-0x22 MUL from Imm/Abs/Ind */
+void cosproc::MUL(uint16_t src){
+
+}
+
+/* 0x23 MUL from register */
+void cosproc::MULR(uint16_t src){
+	
+}
+
+/* 0x24-0x26 MULX from 16-bit Imm/Abs/Ind */
+void cosproc::MULX(uint16_t src){
+
+}
+
+/* 0x27 MULX from 16-bit register */
+void cosproc::MULXR(uint16_t src){
+	
+}
+
+/* 0x28-0x2A DIV from Imm/Abs/Ind */
+void cosproc::DIV(uint16_t src){
+
+}
+
+/* 0x2B DIV from register */
+void cosproc::DIVR(uint16_t src){
+	
+}
+
+/* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
+void cosproc::DIVX(uint16_t src){
+
+}
+
+/* 0x2F DIVX from 16-bit register */
+void cosproc::DIVXR(uint16_t src){
+	
 }
 
 /* 0x30 MOV to Absolute from Immediate */

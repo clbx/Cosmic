@@ -63,13 +63,13 @@ class cosproc{
         /* 0x10-0x1F */
         void ADD(uint16_t src);   //Add
         void ADDR(uint16_t src);  //Add from Register
-        void ADDX(uint16_t src);  //Add from 16 bit value
-        void ADDXR(uint16_t src); //Add from 16 bit register
+        void ADDX(uint16_t src);  //Add from 16-bit value
+        void ADDXR(uint16_t src); //Add from 16-bit register
 
         void SUB(uint16_t src);   //Subtract
         void SUBR(uint16_t src);  //Subtract from Register
-        void SUBX(uint16_t src);  //Subtract from 16 bit value
-        void SUBXR(uint16_t src); //Subtract from 16bit register
+        void SUBX(uint16_t src);  //Subtract from 16-bit value
+        void SUBXR(uint16_t src); //Subtract from 16-bit register
 
         /* 0x20-0x2F */
         void MUL(uint16_t src);   //Multiply
@@ -79,8 +79,8 @@ class cosproc{
 
         void DIV(uint16_t src);   //Divide
         void DIVR(uint16_t src);  //Divide from register
-        void DIVX(uint16_t src);  //Divide from 16 bit value
-        void DIVXR(uint16_t src); //Divide from 16bit register
+        void DIVX(uint16_t src);  //Divide from 16-bit value
+        void DIVXR(uint16_t src); //Divide from 16-bit register
 
         /* 0x30-0x3F */
         void MOVAI(uint16_t src); //Move to Absolute from Immediate
