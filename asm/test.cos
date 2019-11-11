@@ -1,2 +1,1 @@
-ADD 50
-SUB #25
+ADDX FFFF

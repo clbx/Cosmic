@@ -72,37 +72,60 @@ def main():
     instructions = list(inputFile)
     inputFile.close()
 
+    print("Read " + str(len(instructions)) + " lines")
+
+
+
     #Go through the instructions
     for i in range(0, len(instructions)):
         #Tokenize
         tokens = instructions[i].split()
-        print(tokens)
-        print(type(InstructionSet))
 
         
         #If its any opcode except MOV
         if(tokens[0] in InstructionSet):
+            operand = 0
+
             #Get Opcode
             addrMode = getAddrMode(instructions[i])
             output.append(InstructionSet[tokens[0]][addrMode])
-            #Get Operand(s)
+            
+            #Get Operand(s) if it's not implied
+            if(impliedPattern.match(instructions[i])):
+                break
+            
+            #If it's Absolute then we get all of the operands
+            elif(absolutePattern.match(instructions[i])):
+                operand = int(tokens[1],16)
+            
+            #Its immediate, indirect, or register
+            else:
+                operand = int(tokens[1][1:],16)
+
+            
+            if(bitnessPattern.match(instructions[i])):
+                output.append(operand >> 8)
+                output.append(operand & 0xFF)
+            else:
+                output.append(operand)
+
+
 
         #If its MOV/MOVX
         elif(tokens[0] == "MOV" or tokens[0] == "MOVX"):
-            return 0
+            print("hit mov")
+            break;
 
         #If it's something else! Figure out if its good or not.
         else:
-            return 0
+            #Make sure it's not supposed to be an opcode
+            if(impliedPattern.match(tokens[0]) or immmediatePattern.match(tokens[0]) or absolutePattern.match(tokens[0]) or indirectPattern.match(tokens[0]) or registerPattern.match(tokens[0])):
+                print("Syntax Error on line " + str(i+1))
+                return -1
 
 
         
-        
-        
-
-
-
-        print(output)
+    
 
     
     outputFile = open('output.bin','w+b')
