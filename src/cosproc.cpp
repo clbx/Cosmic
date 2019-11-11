@@ -270,12 +270,12 @@ void cosproc::SWP(uint16_t src){
 
 /* 0x05-0x07 CALL */
 void cosproc::CALL(uint16_t src){
-
+	//TODO
 }
 
 /* 0x08 RET */
 void cosproc::RET(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x10-0x12 ADD */
@@ -459,42 +459,42 @@ void cosproc::SUBXR(uint16_t src){
 
 /* 0x20-0x22 MUL from Imm/Abs/Ind */
 void cosproc::MUL(uint16_t src){
-
+	//TODO
 }
 
 /* 0x23 MUL from register */
 void cosproc::MULR(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x24-0x26 MULX from 16-bit Imm/Abs/Ind */
 void cosproc::MULX(uint16_t src){
-
+	//TODO
 }
 
 /* 0x27 MULX from 16-bit register */
 void cosproc::MULXR(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x28-0x2A DIV from Imm/Abs/Ind */
 void cosproc::DIV(uint16_t src){
-
+	//TODO
 }
 
 /* 0x2B DIV from register */
 void cosproc::DIVR(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
 void cosproc::DIVX(uint16_t src){
-
+	//TODO
 }
 
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x30 MOV to Absolute from Immediate */
@@ -553,12 +553,36 @@ void cosproc::MOVRR(uint16_t src){
 
 /* 0x3C-0X3E SHL Shift the Accumulator left from Imm/Abs/Ind */
 void cosproc::SHL(uint16_t src){
+	uint8_t shift = Read(src);
+	if(shift > 8){
+		shift = 8;
+	}
+	uint16_t shifted = r[0] << shift;
 
+	//Set Carry
+	st[2] = (shifted & 0xFF00) != 0;
+
+	r[0] = shifted & 0x00FF;
+	
+	//Set Zero
+	st[0] = r[0] == 0;	
 }
 
 /* 0x3F SHL Shift the Accumulator left from register */
 void cosproc::SHLR(uint16_t src){
+	uint8_t shift = r[src];
+	if(shift > 8){
+		shift = 8;
+	}
+	uint16_t shifted = r[0] << shift;
 
+	//Set Carry
+	st[2] = (shifted & 0xFF00) != 0;
+
+	r[0] = shifted & 0x00FF;
+	
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x40 MOVX to Absolute from Immediate */
@@ -629,12 +653,38 @@ void cosproc::MOVXRR(uint16_t src){
 
 /* 0x4C-0x4E SHLX Shift the 16-bit Accumulator left from Imm/Abs/Ind */
 void cosproc::SHLX(uint16_t src){
+	uint16_t shift = (Read(src) << 8 | Read(src+1));
+	if(shift > 16){
+		shift = 16;
+	}
+	uint32_t shifted = (r[0] << 8 | r[1]) << shift;
+
+	//Set Carry
+	st[2] = (shifted & 0xFFFF0000) != 0;
+
+	r[0] = (shifted & 0x0000FF00) >> 8;
+	r[1] = shifted & 0x000000FF;
 	
+	//Set Zero
+	st[0] = (r[0] == 0) && (r[1] == 0);	
 }
 
 /* 0x4F SHLX Shift the 16-bit Accumulator left from register */
 void cosproc::SHLXR(uint16_t src){
+	uint16_t shift = (r[src] << 8 | r[src+1]);
+	if(shift > 16){
+		shift = 16;
+	}
+	uint32_t shifted = (r[0] << 8 | r[1]) << shift;
+
+	//Set Carry
+	st[2] = (shifted & 0xFFFF0000) != 0;
+
+	r[0] = (shifted & 0x0000FF00) >> 8;
+	r[1] = shifted & 0x000000FF;
 	
+	//Set Zero
+	st[0] = (r[0] == 0) && (r[1] == 0);	
 }
 
 /* 0x50-0x52 AND with Accumulator */
@@ -687,12 +737,18 @@ void cosproc::XORR(uint16_t src){
 
 /* 0x5C-0x5E SHR Shift the Accumulator right from Imm/Abs/Ind */
 void cosproc::SHR(uint16_t src){
-
+	r[0] = r[0] >> Read(src);
+	
+	//Set Zero
+	st[0] = r[0] == 0;	
 }
 
 /* 0x5F SHR Shift the Accumulator right from register */
 void cosproc::SHRR(uint16_t src){
-
+	r[0] = r[0] >> r[src];
+	
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x60-0x62 CMP Compare with Accumulator */
@@ -721,12 +777,12 @@ void cosproc::CMPR(uint16_t src){
 
 /* 0x64-0x66 CMPX Compare with 16-bit Accumulator */
 void cosproc::CMPX(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
 void cosproc::CMPXR(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x68 INC Increment the Accumulator */
@@ -805,45 +861,59 @@ void cosproc::DECX(uint16_t src){
 
 /* 0x6C-0x6E SHRX Shift the 16-bit Accumulator right from Imm/Abs/Ind */
 void cosproc::SHRX(uint16_t src){
+	uint16_t shift = (Read(src) << 8) | Read(src+1);
+	uint16_t temp = ((r[0] << 8) | r[1]) >> shift;
+
+	r[0] = (temp & 0xFF00) >> 8;
+	r[1] = temp & 0x00FF;
 	
+	//Set Zero
+	st[0] = temp == 0;
 }
 
 /* 0x6F SHRX Shift the 16-bit Accumulator right from register */
 void cosproc::SHRXR(uint16_t src){
+	uint16_t shift = (r[src] << 8) | r[src+1];
+	uint16_t temp = ((r[0] << 8) | r[1]) >> shift;
+
+	r[0] = (temp & 0xFF00) >> 8;
+	r[1] = temp & 0x00FF;
 	
+	//Set Zero
+	st[0] = temp == 0;
 }
 
 /* 0x70-0x72 JMP from Imm/Abs/Ind */
 void cosproc::JMP(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x73-0x75 JZS from Imm/Abs/Ind */
 void cosproc::JZS(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x76-0x78 JNZ from Imm/Abs/Ind */
 void cosproc::JNZ(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x79-0x7B JCS from Imm/Abs/Ind */
 void cosproc::JCS(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x7C-0x7E JNC from Imm/Abs/Ind */
 void cosproc::JNC(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x80-0x82 JOS from Imm/Abs/Ind */
 void cosproc::JOS(uint16_t src){
-	
+	//TODO
 }
 
 /* 0x83-0x85 JNS from Imm/Abs/Ind*/
 void cosproc::JNS(uint16_t src){
-	
+	//TODO
 }
