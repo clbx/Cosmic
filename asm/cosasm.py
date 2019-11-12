@@ -1,3 +1,12 @@
+# Cosmic Assembler
+# Author: Clay Buxton
+#
+# Assembles assembly code into machine code
+#
+#
+# I have no idea how to (if you even can) write clean python code
+
+
 import sys
 import re 
 
@@ -11,7 +20,9 @@ absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-F]{1,4}$")
 indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 
+labelPattern = re.compile("[A-Z]{3,4} [A-Z,a-z,0-9]{1,}")
 
+symbolTable = {}
 
 InstructionSet = {
     'NOP':[0x00],
@@ -72,39 +83,74 @@ def main():
     instructions = list(inputFile)
     inputFile.close()
 
+    print("Read " + str(len(instructions)) + " lines")
+
+
+
     #Go through the instructions
     for i in range(0, len(instructions)):
         #Tokenize
-        tokens = instructions[i].split()
-        print(tokens)
-        print(type(InstructionSet))
+        tokens = instructions[i].split()     
 
-        
         #If its any opcode except MOV
-        if(tokens[0] in InstructionSet):
+        if(tokens[0] in InstructionSet):            
+
+            if(labelPattern.match(instructions[i]) and tokens[1] in symbolTable):    
+                tokens[1] = str(symbolTable[tokens[1]])
+                instructions[i] = " ".join(tokens)
+                
             #Get Opcode
             addrMode = getAddrMode(instructions[i])
             output.append(InstructionSet[tokens[0]][addrMode])
-            #Get Operand(s)
+            
+            #Get Operand(s) if it's not implied
+            if(impliedPattern.match(instructions[i])):
+                break
+            
+            
+
+            #If it's Absolute then we get all of the operands
+            elif(absolutePattern.match(instructions[i])):
+                #If operand is 16 bit split the number
+                if(int(tokens[1],16) > 0xFF):
+                    output.append(int(tokens[1][1:],16) >> 8)
+                    output.append(int(tokens[1][1:],16) & 0xFF)
+                else:
+                    output.append(int(tokens[1],16))
+            
+            #Its immediate, indirect, or register
+            else:
+                #If operand is 16 bit split the number
+                if(int(tokens[1][1:],16) > 0xFF):
+                    output.append(int(tokens[1][1:],16) >> 8)
+                    output.append(int(tokens[1][1:],16) & 0xFF)
+                else:
+                    output.append(int(tokens[1][1:],16))
+
+
 
         #If its MOV/MOVX
         elif(tokens[0] == "MOV" or tokens[0] == "MOVX"):
-            return 0
+            print("hit mov")
+            break;
 
         #If it's something else! Figure out if its good or not.
         else:
-            return 0
+            #Make sure it's not supposed to be an opcode
+            if(impliedPattern.match(tokens[0]) or immmediatePattern.match(tokens[0]) or absolutePattern.match(tokens[0]) or indirectPattern.match(tokens[0]) or registerPattern.match(tokens[0])):
+                print("Syntax Error on line " + str(i+1))
+                return -1
+            
+            elif(tokens[0][-1:] == ':'):
+                if(tokens[0][:-1] in symbolTable):
+                    print("Error line " + str(i+1) + ". " + str(tokens[0][:-1]) + " label already exists")
+                symbolTable[tokens[0][:-1]] = len(output)+1
 
-
+            else:
+                print("You put something in line " + str(i+1) + " that is syntactically correct, but isn't so try again")
         
-        
-        
-
-
-
-        print(output)
-
     
+
     outputFile = open('output.bin','w+b')
     outputFile.write(output)
     outputFile.close()
