@@ -499,7 +499,6 @@ void cosproc::MULR(uint16_t src){
 /* 0x24-0x26 MULX from 16-bit Imm/Abs/Ind */
 void cosproc::MULX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
-
 	unsigned int temp =  ((r[0] << 8) | r[1] ) * data;
 
 	//Set Negative
@@ -520,7 +519,6 @@ void cosproc::MULX(uint16_t src){
 /* 0x27 MULX from 16-bit register */
 void cosproc::MULXR(uint16_t src){
 	uint16_t data = ((r[src] << 8) | r[src+1]);
-
 	unsigned int temp =  ((r[0] << 8) | r[1] ) * data;
 
 	//Set Negative
@@ -540,22 +538,80 @@ void cosproc::MULXR(uint16_t src){
 
 /* 0x28-0x2A DIV from Imm/Abs/Ind */
 void cosproc::DIV(uint16_t src){
-	//TODO
+	uint8_t data = Read(src);
+	unsigned int temp = r[0] / data;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x80) != 0;
+	
+	//Set Value
+	r[0] = temp & 0xFF;
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x2B DIV from register */
 void cosproc::DIVR(uint16_t src){
-	//TODO
+	uint8_t data = r[src];
+	unsigned int temp = r[0] / data;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x80) != 0;
+	
+	//Set Value
+	r[0] = temp & 0xFF;
+
+	//Set Zero
+	st[0] = r[0] == 0;
 }
 
 /* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
 void cosproc::DIVX(uint16_t src){
-	//TODO
+	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
+	//Set Value
+	r[0] = (temp & 0xFF00) >> 8;
+	r[1] = temp & 0x00FF;
+
+	//Set Zero
+	st[0] = (r[0] << 8 | r[1]) == 0;
 }
 
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
-	//TODO
+	uint16_t data = ((r[src] << 8) | r[src+1]);
+	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+
+	//Set Value
+	r[0] = (temp & 0xFF00) >> 8;
+	r[1] = temp & 0x00FF;
+
+	//Set Zero
+	st[0] = (r[0] << 8 | r[1]) == 0;
 }
 
 /* 0x30 MOV to Absolute from Immediate */
