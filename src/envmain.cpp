@@ -305,7 +305,8 @@ int runGUI(){
             ImGui::Columns(1);
 
             ImGui::Separator();
-            ImGui::Text("Status: ");
+            /*
+            
             for(int i = 7; i >= 0; i--){
                 if(i == 3){
                     ImGui::SameLine();
@@ -320,9 +321,28 @@ int runGUI(){
                 }
             }
             ImGui::SameLine();
-            HelpMarker("I: Interrupt\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
-            ImGui::Text("              I P   O C N Z");
             
+            ImGui::Text("              I P   O C N Z");
+            */
+            ImGui::Text("Status: ");
+            ImGui::SameLine();
+            HelpMarker("I: Interrupt Disable\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
+            char statusRegisterNames[] = {'Z','N','C','O','P','I',' ',' '};
+            ImGui::Columns(8,"statusregister",false);
+            for(int i = 7; i >= 0; i--){
+                char current = statusRegisterNames[i];
+                ImGui::Text(&current);
+                if(proc.st[i]){
+                    ImGui::Text("1");
+                }
+                else{
+                    ImGui::Text("0");
+                }
+                ImGui::NextColumn();
+            }
+
+
+
         ImGui::End();
 
 
@@ -356,20 +376,6 @@ int runGUI(){
                 
         ImGui::End();
 
-
-        static Logger log;
-
-        // For the demo: add a debug button _BEFORE_ the normal log window contents
-        // We take advantage of a rarely used feature: multiple calls to Begin()/End() are appending to the _same_ window.
-        // Most of the contents of the window will be added by the log.Draw() call.
-        
-        ImGui::Begin("Debug Logger");
-        ImGui::End();
-
-        // Actually call in the regular Log helper (which will Begin() into the same window as we just did)
-        ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(845,30),ImGuiCond_Once);
-        log.Draw("Debug Logger");
 
         // Rendering
         ImGui::Render();
