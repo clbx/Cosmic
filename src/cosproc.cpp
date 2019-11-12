@@ -24,10 +24,13 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x02] = (Instruction){&cosproc::IMP,&cosproc::PUSH,"PUSH",1};
 	InstructionSet[0x03] = (Instruction){&cosproc::IMP,&cosproc::POP,"POP",1};
 	InstructionSet[0x04] = (Instruction){&cosproc::IMP,&cosproc::SWP,"SWP",3};
-	InstructionSet[0x05] = (Instruction){&cosproc::IMM,&cosproc::CALL,"CALL #oper",3};
-	InstructionSet[0x06] = (Instruction){&cosproc::ABS,&cosproc::CALL,"CALL oper",3};
-	InstructionSet[0x07] = (Instruction){&cosproc::IND,&cosproc::CALL,"CALL @oper",3};
-	InstructionSet[0x08] = (Instruction){&cosproc::IMP,&cosproc::RET,"RET",1};
+
+	//The program counter should not increment after a call instruction to avoid overstepping the program counter.
+	InstructionSet[0x05] = (Instruction){&cosproc::IMM,&cosproc::CALL,"CALL #oper",0};
+	InstructionSet[0x06] = (Instruction){&cosproc::ABS,&cosproc::CALL,"CALL oper",0};
+	InstructionSet[0x07] = (Instruction){&cosproc::IND,&cosproc::CALL,"CALL @oper",0};
+	//Return move the program counter by 3 bytes to step over the call instruction.
+	InstructionSet[0x08] = (Instruction){&cosproc::IMP,&cosproc::RET,"RET",3};
 	
 	InstructionSet[0x10] = (Instruction){&cosproc::IMM,&cosproc::ADD,"ADD #oper",2};
 	InstructionSet[0x11] = (Instruction){&cosproc::ABS,&cosproc::ADD,"ADD oper",3};
@@ -271,12 +274,16 @@ void cosproc::SWP(uint16_t src){
 
 /* 0x05-0x07 CALL */
 void cosproc::CALL(uint16_t src){
-	//TODO
+	Write(sp,(pc & 0xFF));
+	Write(--sp,(pc >> 8) & 0xFF);
+	sp--;
+	pc = (Read(src) << 8) | Read(src+1);
 }
 
 /* 0x08 RET */
 void cosproc::RET(uint16_t src){
-	//TODO
+	pc = (Read(sp+1) << 8) | Read(sp+2);
+	sp +=2;
 }
 
 /* 0x10-0x12 ADD */
