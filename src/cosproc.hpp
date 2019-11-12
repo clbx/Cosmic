@@ -164,7 +164,7 @@ class cosproc{
             int bytes;
         } Instruction;
 
-        Instruction InstructionSet[256];
+        Instruction InstructionSet[257];
         
 
         //Public for System Usage

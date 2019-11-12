@@ -14,7 +14,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	Read = (BusRead)r;
 
 	//Fill InstructionSet with Undefined Opcodes so it don't crash no mo'
-	for(int i = 0;i < 0xFF; i++){
+	for(int i = 0;i <= 0xFF; i++){
 		InstructionSet[i] = (Instruction){&cosproc::IMP,&cosproc::UND,"Undefined",1};
 	}
 
