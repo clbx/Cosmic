@@ -175,6 +175,9 @@ int runGUI(){
                 done = true;
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
                 done = true;
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE){
+                proc.cycle();
+            }
         }
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -331,7 +334,6 @@ int runGUI(){
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
                 proc.cycle();
-                
             }
             ImGui::SameLine();
             if(ImGui::Button("Processor Reset")){
