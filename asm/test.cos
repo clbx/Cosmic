@@ -1,1 +1,4 @@
-ADDX FFFF
+start:
+ADD #50
+CMP R0
+JNZ start
