@@ -761,7 +761,7 @@ void cosproc::CMP(uint16_t src){
 	//Set Negative
 	st[1] = (temp & 0xFF) >= 0x80;
 	//Set Carry
-	st[2] = temp < 0x100;
+	st[2] = temp > 0x100;
 }
 
 /* 0x63 CMPR Compare with Accumulator from register*/
@@ -773,17 +773,35 @@ void cosproc::CMPR(uint16_t src){
 	//Set Negative
 	st[1] = (temp & 0xFF) >= 0x80;
 	//Set Carry
-	st[2] = temp < 0x100;
+	st[2] = temp > 0x100;
 }
 
 /* 0x64-0x66 CMPX Compare with 16-bit Accumulator */
 void cosproc::CMPX(uint16_t src){
-	//TODO
+	uint16_t data = (Read(src) << 8) | Read(src+1);
+	uint16_t acc = (r[0] << 8) | r[1];
+	unsigned int res = acc - data;
+
+	//Set Zero
+	st[0] = (res & 0xFFFF) == 0;
+	//Set Negative
+	st[1] = (res & 0xFFFF) >= 0x8000;
+	//Set Carry
+	st[2] = res > 0x10000;
 }
 
 /* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
 void cosproc::CMPXR(uint16_t src){
-	//TODO
+	uint16_t data = (r[src] << 8) | r[src+1];
+	uint16_t acc = (r[0] << 8) | r[1];
+	unsigned int res = acc - data;
+
+	//Set Zero
+	st[0] = (res & 0xFFFF) == 0;
+	//Set Negative
+	st[1] = (res & 0xFFFF) >= 0x8000;
+	//Set Carry
+	st[2] = res > 0x10000;
 }
 
 /* 0x68 INC Increment the Accumulator */

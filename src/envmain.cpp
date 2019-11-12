@@ -175,8 +175,18 @@ int runGUI(){
                 done = true;
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
                 done = true;
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE){
-                proc.cycle();
+            if (event.type == SDL_KEYDOWN){
+                switch (event.key.keysym.sym){
+                    case SDLK_SPACE:
+                        proc.cycle();
+                        break;
+                    case SDLK_r:
+                        proc.reset();
+                        break;
+                    case SDLK_m:	
+                        memset(memory,0,sizeof(memory));
+                        break;
+                }
             }
         }
 
