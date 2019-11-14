@@ -94,3 +94,13 @@ If 8 bytes worth of variables are defined the memory will look like the followin
 
 
 ### Comments
+
+Comments can be added anywhere in the code and are signified by a preceeding ``;``
+
+```
+; this does nothing
+ADD #50
+SUB #50
+MUL #50
+
+```
