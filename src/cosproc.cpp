@@ -675,7 +675,7 @@ void cosproc::MOVRR(uint16_t src){
 	r[Read(src+1)] = r[Read(src)];
 }
 
-/* 0x3C-0X3E SHL Shift the Accumulator left from Imm/Abs/Ind */
+/* 0x3C-0x3E SHL Shift the Accumulator left from Imm/Abs/Ind */
 void cosproc::SHL(uint16_t src){
 	uint8_t shift = Read(src);
 	if(shift > 8){

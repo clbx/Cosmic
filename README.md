@@ -18,9 +18,20 @@ Cosmic is designed to act similar to a real, physical chip but take advantage of
 
 With an instruction set that makes sense (and is fun), and simple memory-mapped I/O, Cosmic is an excellent "chip" to write for, using the cosmic assembler.*
 
-Along with plenty of prewritten software and a simple OS cosmic is in league with retro computers such as the Apple II and Commodore 64.*
-
 <sub>* in deveopment</sub>
+
+#### What is Cosmic?
+* A very interesting project
+* A Proof of Concept
+* Kinda cool
+* A good way to learn assembly and how processors work
+* Fun to play with
+
+#### What isn't Cosmic
+* An optimized, properly designed processor
+* Something that you should base a serious project off of
+* Free of mistakes or beginner errors
+
 
 -----
 
