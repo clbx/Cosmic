@@ -330,8 +330,7 @@ int runGUI(){
             char statusRegisterNames[] = {'Z','N','C','O','P','I',' ',' '};
             ImGui::Columns(8,"statusregister",false);
             for(int i = 7; i >= 0; i--){
-                char current = statusRegisterNames[i];
-                ImGui::Text(&current);
+                ImGui::Text("%c",statusRegisterNames[i]);
                 if(proc.st[i]){
                     ImGui::Text("1");
                 }

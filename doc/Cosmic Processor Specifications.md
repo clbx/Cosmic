@@ -60,15 +60,21 @@ Current Memory Map (highly subject to change)
 		│	   Usage Space		│
 		│						│
 		│						│
+		│						│
 		│						│		
 0x8000  ├───────────────────────┤
+		│						│		
      	│	16k Video Memory    │
+		│						│		 
 0xC000	├───────────────────────┤
-		│	1k Variable Space   │
-0xD000  ├───────────────────────┤
-		│  1k Currently Unused	│
-0xF000	├───────────────────────┤
-		│	 .99k I/O Space     │
+		│	 1k Stack Space     │
+0xC400  ├───────────────────────┤
+		│    3k Stack Space    	│
+0xD000	├───────────────────────┤
+		│	 1k I/O Space       │
+0xD200  ├───────────────────────┤
+		│   10k Empty Space	    │
+		│						│
 0xFFF0  ├───────────────────────┤
      	│  8 Byte Vector Space  │
 0xFFFF	└───────────────────────┘
