@@ -48,8 +48,12 @@ start:
     SUB #50
     JMP start
 ```
-This will set start whatever memory address ADD is at. On assembly ``start`` is replaced with that memory address and the ``JMP`` instruction will be given the memory address it neeeds to go to. 
 
+Variables are put into the 1k variable space between ``0xC000`` and ``0xCFFF`` 
+
+### Pre Defined Lables:
+Some labels translate to specific machine functions
+the ``HPI:`` and ``LPI:`` labels will set the High and Low Priority Interrupt Vectors respectivley and the code that will run on their calls
 
 ### Data Types
 There are 2 data types that cosmic supports: Byte and Word. A byte holds 8 bits, a word holds 16 bits
@@ -90,7 +94,6 @@ If 8 bytes worth of variables are defined the memory will look like the followin
 
 00 70 0A -=  Variables Here  =-  -= Program Starts =- 
 ```
-
 
 
 ### Comments

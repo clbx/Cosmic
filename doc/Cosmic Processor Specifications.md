@@ -50,12 +50,55 @@ things that need to be in it
 * ROM
 * Addressing stuff
 
+Current Memory Map (highly subject to change)
+```
+		┌───────────────────────┐
+0x0000	│					  	│
+		│						│
+        │						│
+		│    32k of General   	│
+		│	   Usage Space		│
+		│						│
+		│						│
+		│						│		
+0x8000  ├───────────────────────┤
+     	│	16k Video Memory    │
+0xC000	├───────────────────────┤
+		│	1k Variable Space   │
+0xD000  ├───────────────────────┤
+		│  1k Currently Unused	│
+0xF000	├───────────────────────┤
+		│	 .99k I/O Space     │
+0xFFF0  ├───────────────────────┤
+     	│  8 Byte Vector Space  │
+0xFFFF	└───────────────────────┘
+```
+
+
+The row of 0xFFF0 is used for handling specific cases
+```
+0xFFF0 ┬─ Reset Vector
+0xFFF1 ┘
+0xFFF2 ┬─ Low Priority Interrupt Vector
+0xFFF3 ┘
+0xFFF4 ┬─ High Priority Interrupt Vector
+0xFFF5 ┘
+0xFFF6┬─ Currently Unused
+...   │
+0xFFFF┘
+```
+
 
 
 
 
 
 ## Interrupt Handling
+
+When an interrupt is found, the program counter jumps to the location described in the relevant interrupt vector. The current program counter will be pushed to the stack and ``RET`` is required at the end of the interrupt subroutine
+
+Low priority interrupts will be ignored if the Interrupt flag is enabled. High priority interrupts cannot be ignored.
+
 
 ## Instruction Set
 

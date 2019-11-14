@@ -1071,3 +1071,14 @@ void cosproc::JNS(uint16_t src){
 		pc = ((Read(src) << 8) | Read(src+1));
 	}
 }
+
+/* Low Priority Interrupt */
+void cosproc::LPI(){
+
+
+}
+
+/* High Priority Interrupt */
+void cosproc::HPI(){
+
+}
