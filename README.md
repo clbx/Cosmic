@@ -38,6 +38,11 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank) at Elizabethtown College. All academically required reports and documentation is in the ``/doc`` folder.
 
 ----
+
+## Documentation
+* [Cosmic Processor Specification](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20Processor%20Specifications.md). This has information about how the processor works, the instruction set, and other general information
+* [Cosmic Assembler Specification](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20Assembler%20Specifications.md). This has information about how to write assembly programs for Cosmic.
+
 ## Installation Instructions
 
 ### Linux
