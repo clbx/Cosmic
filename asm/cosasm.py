@@ -23,7 +23,10 @@ registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 labelPattern = re.compile("[A-Z]{3,4} [A-Z,a-z,0-9]{1,}")
 
 symbolTable = {}
+variableTable = {}
+labelTable = {}
 
+#The instruction Set (Except MOV)
 InstructionSet = {
     'NOP':[0x00],
     'HCF':[0x01],
@@ -55,8 +58,20 @@ InstructionSet = {
     'JNS':[0x83,0x84,0x85],
     'SID':[]
 }
-    
 
+MovSet = {
+    'MOVA':[0x30,0x31,0x32,0x33], #Moving to an Absolute Location
+    'MOVI':[0x34,0x35,0x36,0x37], #Moving to an Indirect Location
+    'MOVR':[0x38,0x39,0x3A,0x3B], #Moving to a Register
+    'MOVXA':[0x40,0x41,0x42,0x43], #Moving 16 bits to an Absolute Location
+    'MOVXI':[0x44,0x45,0x46,0x47], #Moving 16 bits to an Indirect Location
+    'MOVXR':[0x48,0x49,0x4A,0x4B]  #Moving 16 bits to a register
+}
+
+currentLine = 0
+
+    
+#Returns the addressing mode
 def getAddrMode(instruction):
     if(immmediatePattern.match(instruction)):
         return 0
@@ -69,9 +84,50 @@ def getAddrMode(instruction):
     else:
         return -1
 
-def handleMov(tokens):
+
+def getVariables():
     return 0
 
+def handleOpcode():
+    return 0
+
+def handleMovOpcode():
+    return 0
+
+def handleLabel():
+    return 0
+
+def handleConstant():
+    return 0
+
+def handleComment():
+    return 0
+
+def handleSameLineComment():
+    return 0
+
+def assemble():
+    #Check if it's in the opcode table
+    #Check if it's a MOV
+    #Check if it's a label
+    #Check if it's a constant
+    #Check if it's a comment
+    error("Unknown Statement")
+    
+    
+    return 0
+
+
+
+
+
+
+
+
+#Writes an error to the console. Stops exectuion
+def error(msg):
+    print("Error on line {} : {} ".format(currentLine,msg))
+    sys.exit()
 
 def main():
     if(len(sys.argv) < 2):
@@ -85,70 +141,17 @@ def main():
 
     print("Read " + str(len(instructions)) + " lines")
 
+    #Go through the instructions    
 
+    #Gather Variables and put them in
+    getVariables()
 
-    #Go through the instructions
-    for i in range(0, len(instructions)):
-        #Tokenize
-        tokens = instructions[i].split()     
+    #Go through line by line
+    #Everything else, give Assemble one line at a time
+    #Set current line
+    assemble()
 
-        #If its any opcode except MOV
-        if(tokens[0] in InstructionSet):            
-
-            if(labelPattern.match(instructions[i]) and tokens[1] in symbolTable):    
-                tokens[1] = str(symbolTable[tokens[1]])
-                instructions[i] = " ".join(tokens)
-                
-            #Get Opcode
-            addrMode = getAddrMode(instructions[i])
-            output.append(InstructionSet[tokens[0]][addrMode])
-            
-            #Get Operand(s) if it's not implied
-            if(impliedPattern.match(instructions[i])):
-                break
-            
-            
-
-            #If it's Absolute then we get all of the operands
-            elif(absolutePattern.match(instructions[i])):
-                #If operand is 16 bit split the number
-                if(int(tokens[1],16) > 0xFF):
-                    output.append(int(tokens[1][1:],16) >> 8)
-                    output.append(int(tokens[1][1:],16) & 0xFF)
-                else:
-                    output.append(int(tokens[1],16))
-            
-            #Its immediate, indirect, or register
-            else:
-                #If operand is 16 bit split the number
-                if(int(tokens[1][1:],16) > 0xFF):
-                    output.append(int(tokens[1][1:],16) >> 8)
-                    output.append(int(tokens[1][1:],16) & 0xFF)
-                else:
-                    output.append(int(tokens[1][1:],16))
-
-
-
-        #If its MOV/MOVX
-        elif(tokens[0] == "MOV" or tokens[0] == "MOVX"):
-            print("hit mov")
-            break;
-
-        #If it's something else! Figure out if its good or not.
-        else:
-            #Make sure it's not supposed to be an opcode
-            if(impliedPattern.match(tokens[0]) or immmediatePattern.match(tokens[0]) or absolutePattern.match(tokens[0]) or indirectPattern.match(tokens[0]) or registerPattern.match(tokens[0])):
-                print("Syntax Error on line " + str(i+1))
-                return -1
-            
-            elif(tokens[0][-1:] == ':'):
-                if(tokens[0][:-1] in symbolTable):
-                    print("Error line " + str(i+1) + ". " + str(tokens[0][:-1]) + " label already exists")
-                symbolTable[tokens[0][:-1]] = len(output)+1
-
-            else:
-                print("You put something in line " + str(i+1) + " that is syntactically correct, but isn't so try again")
-        
+       
     
 
     outputFile = open('output.bin','w+b')

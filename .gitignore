@@ -8,6 +8,7 @@ test
 cosasm
 .vscode/
 imgui.ini
+asm/output.bin
 
 
 # Prerequisites
