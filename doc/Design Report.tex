@@ -41,18 +41,54 @@ carmank@etown.edu}
 \subsection{Bitness}
 The "bitness" of a chip is traditionally the size of the data bus. An 8 bit chip can address 8 bits of data at one time, a 16 can address 16 bits and so on.
 
-We were mainly between a 8 bit design and a 18 bit design. 32 and 64 were not considered as they did not exist during the time that the chips that cosmic is similar to were made.
+We were mainly between a 8 bit design and a 18 bit design. 32 and 64 were not considered as they did not exist during the time that the chips that cosmic is similar to were made.\\
 
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ 8 Bit & 5 &  8&  9 & \cellcolor{blue!25}49\\
+ \hline
+ 16 Bit  &  8 & 5 &  5 & \cellcolor{blue!25}44\\
+ \hline
+\end{tabular}
+}\\
 
-8 bit was chosen mainly due to it being more relevant to the class of chips Cosmic is made to fit in with, those of the early 80's and late 70's. 16 Bit would have been slightly more work to implement, but would have been much more useful to use.
+8 bit was chosen mainly due to it being more relevant to the class of chips Cosmic is made to fit in with, those of the early 80's and late 70's. 16 Bit would have been slightly more work to implement, but would have been much more useful to write for.
 
 \subsection{Registers vs Zero Page vs In-Memory Registers}
 
-\subsection{16-Bit Register Mode}
-16 Bit register mode is when 2 of the 8 bit registers can be used together to act as a 16 bit value. This can also be done for certain in-memory instructions as well. 
+Chips of the time generally had registers in 3 formats. There were many registers separated from memory like in the Z80. Few registers and then an easily accessible portion of memory like in the 6502. Or on chips with onboard memory, the registers would take up the first few bytes of memory.
 
-\begin{center}
- \begin{tabularx}{\textwidth}{||c|c|c|c|c||}
+Each of these has it's pros and cons, but all configurations were designed in mind with two thing, speed and utility. On a physical chip, retrieving data from a register is significantly faster than a location in memory, but you only had 8 bytes. Getting something from zero page on the 6502 was faster than getting something from another place in memory, but slower than a register, but you had 256 bytes.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Many Registers & 9 &  8&  10 & \cellcolor{blue!25}63\\
+ \hline
+ Zero Page  &  5 & 5 &  10 & \cellcolor{blue!25}45\\
+ \hline
+ Onboard Memory &  6 & 10 &  7& \cellcolor{blue!25}52\\
+ \hline \\
+ 
+
+ 
+\end{tabular}
+}\\
+Registers, similar to the Z80 made the most sense in our case. Zero page did not hold any advantages to our case since there is no speed difference between accessing zero page and accessing any other position in memory on our design. On-board memory would have been very easy to develop, but was generally found on microcontrollers rather than microprocessors, and would have held no real speed boost either.
+\subsection{16-Bit Register Mode}
+16 Bit register mode is when 2 of the 8 bit registers can be used together to act as a 16 bit register. This can also be done for certain instructions as well.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
  \hline
  Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
  \hline\hline
@@ -62,16 +98,93 @@ We were mainly between a 8 bit design and a 18 bit design. 32 and 64 were not co
  \hline
  16 Bit mode &  10 & 6 &  10 & \cellcolor{blue!25}62\\
  \hline
-\end{tabularx}
-\end{center}
+\end{tabular}
+}\\
 
-
+Overall a 16-bit mode was a good decision. This allow for a lot more usability, and still fits in with chips of the time since the Z80 also had 16-bit mode instructions. This did add a bit of work, significantly increasing our instruction count,  but it's worth it overall.
 
 \subsection{Opcode Selection}
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Switch Statement & 0 & 0& 0& \cellcolor{blue!25}48\\
+ \hline
+ Function Pointers &  0& 0&  0& \cellcolor{blue!25}62\\
+ \hline
+ Function Pointers with Additional Data &  0 & 0 &  0 & \cellcolor{blue!25}62\\
+ \hline
+\end{tabular}
+}\\
+
 \subsection{Addressing functions}
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Individual Functions & 0 &  0&  0 & \cellcolor{blue!25}0\\
+ \hline
+ Addressing Functions &  0& 0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+\end{tabular}
+}\\
+
 \subsection{GUI Backend}
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ ImGui & 0 &  0&  0 & \cellcolor{blue!25}0\\
+ \hline
+ Qt4 &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+\end{tabular}
+}\\
+
+
 \subsection{Signed vs. Unsigned Data}
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Specifically Signed Data & 0 &  0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+ Overflow and Carry flags &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+\end{tabular}
+}\\
+
 \subsection{Supported Systems}
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Windows, macOS, \& Linux & 0 &  0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+ macOS \& Linux &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ \hline
+\end{tabular}
+}\\
 
 
 
