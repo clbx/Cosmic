@@ -43,21 +43,29 @@ Before any development of Cosmic began, in-depth research was conducted on proce
 
 After everything was mapped out and planned, development began simultaneously with the creation of the GUI interface environment and the backbone code of the processor itself. The GUI was developed to allow for easy debugging throughout the design process and for usability of the final project. At first, it was designed to include nothing but a hex editor, a display for the registers, program counter, and stack pointer, and three buttons to cycle the program counter and reset the processor and memory. The backbone code was made up of two files, a header file and a class file. The header file housed the function prototypes, type declarations, registers, program counter, and stack pointer. The class file defined the functions for fetching, decoding, and executing along with the various addressing types we planned to implement. It was set up to allow for easy implementation of instructions as development carried on.
 
-We worked together for a short time putting some finishing touches on the design and implementing a few opcodes, but split up to work more efficiently. Kevin focused on implementing and testing all of the opcodes for the processor while Clay moved on to start writing the assembler.
+We worked together for a short time putting some finishing touches on the design and implementing a few op-codes, but split up to work more efficiently. Kevin focused on implementing and testing all of the op-codes for the processor while Clay moved on to start writing the assembler.
 
-The Cosmic assembler is close to done, but requires a little more development to work out the kinks. All the opcodes thus far have been implemented and tested except for the recent addition of interrupt handling. In the upcoming weeks we plan to finish the assembler and to implement unit testing for all the opcodes which means we are right on schedule with what we believed we could achieve this semester.
+The Cosmic assembler is close to done, but requires a little more development to work out the kinks. All the op-codes thus far have been implemented and tested except for the recent addition of interrupt handling. In the upcoming weeks we plan to finish the assembler and to implement unit testing for all the op-codes which means we are right on schedule with what we believed we could achieve this semester. We utilize a GitHub repository to allow for continuous development of the project in tandem and keep track of what is done, what is in development, and what needs to be done.
 
 \subsection{Workflow}
 \begin{figure}[h!]
 	\includegraphics[width=\linewidth]{block_dia.jpg}
 	\caption{The Cosmic workflow.}
-	\label{fig:The Cosmic Workflow}
+	\label{fig:Cosmic Workflow}
 \end{figure}
 
-The block diagram in Figure \ref{fig:The Cosmic Workflow} shows the path the user can follow to input their program, run the processor, and obtain the results. Once the user has the GUI up and running, they can input a program written in either assembly or machine code. If the user opts to write their program in assembly, then it will be converted to machine code so that the Cosmic processor can understand it. Currently, the user must manually step the processor to run through their program, but a method to automatically step will be implemented soon. The output of the program is wherever the user specifies it to be, either storing it in memory or leaving it in one of the registers. This is subject to change once we develop the I/O capabilities of Cosmic.
+The block diagram in Figure 1. shows the path the user can follow to input their program, run the processor, and obtain the results. Once the user has the GUI up and running, they can input a program written in either assembly or machine code. If the user opts to write their program in assembly, then it will be converted to machine code so that the Cosmic processor can understand it. Currently, the user must manually step the processor to run through their program, but a method to automatically step will be implemented soon. The output of the program is wherever the user specifies it to be, either storing it in memory or leaving it in one of the registers. This is subject to change once we develop the I/O capabilities of Cosmic.
+\\
+\\
 
 \subsection{Results}
+\begin{figure}[h!]
+	\includegraphics[width=\linewidth]{cosmic_GUI.png}
+	\caption{The current state of the GUI.}
+	\label{fig:Cosmic GUI}
+\end{figure}
 
+Since we are still developing the processor and assembler, there are not too many results to show. We have yet to create any complex programs to run on the processor since our main goal is to make it functional first. Figure 2. shows off the current state of our GUI after running through several MOV instructions utilizing various addressing modes. Our GitHub project page shows off our in-depth documentation of the processor and its design.
 
 \section{Design Choices}
 \subsection{Bitness}
@@ -127,7 +135,7 @@ Overall, a 16-bit mode was a good decision. This allows for a lot more usability
 
 \subsection{Signed vs. Unsigned Data}
 
-During the design we were unsure how to use signed and unsigned numbers. In the Z80 and 6502 there is no distinction between the two in position of memory since the arithmetic functions do binary math. The programmer must keep track of if the number is signed or unsigned and flags are used in math to signify certain cases.\\
+During the design, we were unsure how to use signed and unsigned numbers. In the Z80 and 6502, there is no distinction between the two in memory since the arithmetic functions do binary math. The programmer must keep track of if the number is signed or unsigned and flags are used to signify certain cases.\\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -143,11 +151,11 @@ During the design we were unsure how to use signed and unsigned numbers. In the 
 \end{tabular}
 }\\
 
-While having specifically signed functions and locations would have been helpful, it would have been a lot to implement and not really consistent with how processors work. Instead we focused on having flags when using arithmetic functions show if things would be negative and when it would overflow.
+While having specifically signed functions and locations would have been helpful, it would have been a lot to implement and not really consistent with how processors work. Instead, we focused on having flags when using arithmetic functions show if things would be negative and when it would overflow.
 
 \subsection{Op-code Selection}
 
-The op-code selection is the control logic of a simulated chip. It takes an op-code in from memory and has to resolve it to a instruction to execute. This can be done in a few ways. One way is using a large switch statement to branch to the proper instruction function. This can be large and cumbersome, but is also very simple. Another way is to use function pointers and then store them in a way in which they can be easily called. We could also create a struct to hold the function pointer and then other things relevant to the instruction like size, mnemonic, and addressing mode.\\
+The op-code selection is the control logic of a simulated chip. It takes an op-code in from memory and has to resolve it to a instruction to execute. This can be done in a few ways. One way is using a large switch statement to branch to the proper instruction function. This can be large and cumbersome, but is also very simple. Another way is to use function pointers and then store them in a way in which they can be easily called. We could also create a struct to hold the function pointer and other things relevant to the instruction like size, mnemonic, and addressing mode using this method.\\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -165,7 +173,7 @@ The op-code selection is the control logic of a simulated chip. It takes an op-c
 \end{tabular}
 }\\
 
-A switch statement is very large and cumbersome and also is a very crude way to select op-codes. We decided using an array of structs containing the function pointers, and additional data about the function way the best way to go. While it was tricky to implement, it works very well, is much faster than a switch statement, and also contains a lot of data about each of the functions. The instructions are put into an array at the position that their op-code is. For instance the NOP instruction is op-code 0x00, so it was put into the first element of the array so when InstructionSet[0] is called, it will return the struct which contains the function pointer for the NOP instruction
+A switch statement is very large and cumbersome and also a very crude way to select op-codes. We decided to use an array of structs that contain the function pointers and additional data about the function was the best way to go. While it was tricky to implement, it works very well, is much faster than a switch statement, and also contains a lot of data about each of the functions. The instructions are put into an array at the position of their op-code. For instance, the NOP instruction is op-code 0x00, so it was put into InstructionSet[0] so that when it is called, it will return the struct for the NOP instruction.
 
 \subsection{Addressing functions}
 
@@ -185,11 +193,11 @@ When writing the functions for the op-codes, we were unsure on how to implement 
 \end{tabular}
 }\\
 
-Implementing each function with each addressing mode was very cumbersome as it increased the number of instruction functions significantly. Although 2 different functions have to be written for each function due to the way our addressing works, it reduced the total number of functions and made writing the remaining functions very easy. 
+Implementing each function with each addressing mode was very cumbersome as it increased the number of instruction functions significantly. Although two different functions have to be written for each function due to the way our addressing works, it reduced the total number of functions and made writing the remaining functions significantly easier. 
 
 \subsection{GUI back-end}
 
-The GUI back-end for the simulation environment was the smallest design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI and ImGUI, a immediate mode GUI were both libraries we were familiar with and could easily implement. \\
+The GUI back-end for the simulation environment was the least significant design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI, and ImGUI, an immediate mode GUI, were both libraries we were familiar with and could easily implement. \\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -205,14 +213,11 @@ The GUI back-end for the simulation environment was the smallest design decision
 \end{tabular}
 }\\
 
-We chose immediate mode due to how much would be changing on screen at a time, and since the elements in the GUI would not be super intensive, and ImGui is much easier to implement and works cross platform with few external dependencies.
-
-
-
+We chose immediate mode due to how much would be changing on the screen at a time. Since the elements in the GUI would not be super intensive, ImGui is much easier to implement and works cross platform with few external dependencies.
 
 \subsection{Supported Systems}
 
-Targeting all operating systems can be difficult since they all require different dependencies and have different ways to build the software. macOS and Linux work similarly enough for our purposes and very few changes have to be made to the build process between macOS and Linux. Windows however requires a different process and generally requires tools installed that most people will not unless they are writing in C/C++ without Microsoft tools. \\
+Targeting all operating systems can be difficult since they all require different dependencies and have different ways to build the software. macOS and Linux work similarly enough for our purposes and very few changes have to be made to the build process between them. However, Windows requires a different process and generally requires tools installed that most people will not have unless they are writing in C/C++ without Microsoft tools. \\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -228,7 +233,7 @@ Targeting all operating systems can be difficult since they all require differen
 \end{tabular}
 }\\
 
-We ended up "supporting" windows. There are instructions and a makefile for building on windows, we currently have no good way of consistently testing and ensuring quality on Windows. While it works we do not officially support it and won't change things for the program to work better on Windows. 
+We ended up "supporting" Windows. There are instructions and a makefile for building on windows, but we currently have no good way of consistently testing and ensuring quality on Windows. While it works, we do not officially support it and won't change things for the program specifically to work better on Windows. 
 
 
 
