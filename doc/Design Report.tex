@@ -189,7 +189,11 @@ Implementing each function with each addressing mode was very cumbersome as it i
 
 \subsection{GUI back-end}
 
+<<<<<<< Updated upstream
 The GUI back-end for the simulation environment was the smallest design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI and ImGUI, a immediate mode GUI were both libraries we were familiar with and could easily implement. \\
+=======
+The GUI back-end for the simulation environment was the least significant design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI, and ImGui, an immediate mode GUI, were both libraries we were familiar with and could easily implement. \\
+>>>>>>> Stashed changes
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -233,9 +237,9 @@ We ended up "supporting" windows. There are instructions and a makefile for buil
 
 \section{System Level Design}
 
-The system currently consists of 2 source files, envmain.cpp, and cosproc.cpp. Envmain holds all of the GUI code and also acts as a motherboard to the processor right now along with "fake" memory since the memory class has not yet been implemented. Eventually, the motherboard part of the code will be moved into its own class, but since we don't have any other system parts developed, it worked well for the testing environment. Cosproc is the processor itself and works very similarly to a 6502 or Z80. Internally it has registers, a program counter, and all the other components of a processor. An assembler, separate to the rest of the project, is written in Python and called cosasm.py. 
+The system currently consists of 2 source files, envmain.cpp, and cosproc.cpp. Envmain holds all of the GUI code and also acts as a motherboard to the processor right now along with "fake" memory, since the memory class has not yet been implemented. Eventually, the motherboard part of the code will be moved into its own class, but since we don't have any other system parts developed, it worked well for the testing environment. Cosproc is the processor itself and works very similarly to a 6502 or Z80. Internally, it has registers, a program counter, and all the other components of a processor. An assembler, separate to the rest of the project, is written in Python and called cosasm.py. 
 
-The figure below gives a brief overview over the current and near-future design of the cosmic system, with the elements in dotted outlines not yet being implemented.
+The figure below gives a brief overview of the current and near-future design of the Cosmic system, with the elements in dotted outlines not yet being implemented.
 
 \begin{figure}[h!]
 	\includegraphics[width=\linewidth]{SystemDesign.jpg}
@@ -247,23 +251,23 @@ The figure below gives a brief overview over the current and near-future design 
 
 \subsection{Environment Main [envmain.cpp]}
 
-The environment main holds the initialization of ImGUI, SDL, and OpenGL, alongside building the GUI elements. This is all constructed in the main ImGui loop. As previously mentioned envmain also currently acts as a motherboard for the system, holding a 64Kb byte array, which acts as the memory and the MemoryWrite and MemoryRead functions that serve as a Data and Address bus. The GUI currently shows the status of the internal registers, a control panel for stepping and resetting the processor, and a memory editor that displays and allows editing of all addressable memory. 
+The environment main holds the initialization of ImGui, SDL, and OpenGL, alongside building the GUI elements. This is all constructed in the main ImGui loop. As previously mentioned, envmain also currently acts as a motherboard for the system, holding a 64Kb byte array, which acts as the memory while the MemoryWrite and MemoryRead functions serve as a Data and Address bus. The GUI currently shows the status of the internal registers, a control panel for stepping and resetting the processor, and a memory editor that displays and allows editing of all addressable memory. 
 
 
 \subsection{Cosmic Processor [cosproc.cpp]}
 
-The cosmic processor is a standalone processor that can technically be implemented anywhere and does not rely on the environment main to work. The processor was designed to function similarly to a real processor. On every cycle, the processor goes through the same sequence. Read from memory, decode the instruction, and execute the instruction. The processor itself does not know anything other than the instruction it is currently executing. In code, the opcode is read, and it decoded by checking the InstructionSet array that holds all of the addressing modes, instruction function, size, and mnemonic for each opcode. Once the addressing mode and opcode function have been retrieved, the addressing mode function is executed to find the operand in memory. This location is passed to the opcode function, which then does whatever the instruction entails.
+The Cosmic processor is a standalone processor that can technically be implemented anywhere and does not rely on the environment main to work. The processor was designed to function similarly to a real processor. On every cycle, the processor goes through the same sequence. Read from memory, decode the instruction, and execute the instruction. The processor itself does not know anything other than the instruction it is currently executing. In code, the op-code is read and then decoded by checking the InstructionSet array that holds all of the addressing modes, instruction functions, sizes, and mnemonics. Once the addressing mode and op-code function have been retrieved, the addressing mode function is executed to find the operand in memory. This location is passed to the op-code function, which then does whatever the instruction entails.
 
 
 \subsection{Cosmic Assembler [cosasm.py]}
 
-The cosmic assembler takes in assembly code and translates it to binary, which the processor can read. The assembly language has some support for things like variables, labels, and constants, but it very simple at the moment. The assembler does two passes through the assembly code, first to find all of the variables and put them at the head of the binary, then goes line by line and translates instructions into binary code.
+The Cosmic assembler takes in assembly code and translates it to binary, which the processor can then read. The assembly language has some support for things like variables, labels, and constants, but it is very simple at the moment. The assembler does two passes through the assembly code, first to find all of the variables and put them at the head of the binary, then it goes line by line and translates the instructions into binary code.
 
 
 \subsection{Memory, Video, and Other Planned System Components}
-In the near future many more components to the cosmic system are planned. The two most significant are memory and video. Memory is mainly to properly implement a memory module instead of it being a massive array in the environment's main class. The second is video output. Video is all memory-mapped, which means a position in memory will represent an element on the screen. This is a simplistic approach to video output and is similar to older systems.
+In the near future, many more components for the Cosmic system are planned. The two most significant are memory and video. Memory is mainly to properly implement a memory module instead of it being a massive array in the environment's main class. The second is video output. Video is all memory-mapped, which means a position in memory will represent an element on the screen. This is a simplistic approach to video output and is similar to older systems.
 
-Down the line, time permitting, we also want to implement other things like sounds, emulated expansions, and other devices common on physical machines. 
+Down the line, time permitting, we also want to implement other things like audio, emulated expansions, and other common devices on physical machines. 
 
 
 \end{document}
