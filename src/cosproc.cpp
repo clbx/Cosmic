@@ -1,8 +1,8 @@
 /**
  * @file cosproc.cpp
  * 
- * 
- * 
+ * @author Clay Buxton  (clbx, buxtonc@etown.edu)
+ * @author Kevin Carman (carmank, carmank@etown.edu)
  * 
  */
 

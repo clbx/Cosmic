@@ -1,8 +1,8 @@
 /**
  * @breif The main class when running in the debugging simulation environtment. Shows status of the processor when running
  * 
- * @author Clay Buxton (buxtonc@etown.edu)
- * @author Kevin Carman (carmank@etown.edu)
+ * @author Clay Buxton  (clbx, buxtonc@etown.edu)
+ * @author Kevin Carman (carmank, carmank@etown.edu)
  * 
  */
 
