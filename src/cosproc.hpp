@@ -1,7 +1,9 @@
 /**
  * @file cosproc.hpp
  * 
- * @author Clay Buxton (clbx, buxtonc@etown.edu)
+ * @author Clay Buxton  (clbx, buxtonc@etown.edu)
+ * @author Kevin Carman (carmank, carmank@etown.edu)
+ * 
  */
 
 #include <stdio.h>
@@ -151,10 +153,10 @@ class cosproc{
 
     public:
         //Public for Debugger Only (Package this up eventually)
-        uint16_t pc; //Program Counter
-        uint16_t sp; //Stack Pointer
+        uint16_t pc;  //Program Counter
+        uint16_t sp;  //Stack Pointer
         uint8_t r[8]; // General Registers
-        bool st[8]; //Status Register
+        bool st[8];   //Status Register
 
         
         typedef struct {
@@ -172,7 +174,7 @@ class cosproc{
         void reset();
         void cycle();
         void LPI();   //Non Maskable Interrupt
-        void HPI();  //Send High 
+        void HPI();   //Send High 
         void execute(Instruction i);
 
 
