@@ -61,7 +61,7 @@ We were mainly between a 8 bit design and a 18 bit design. 32 and 64 were not co
 
 \subsection{Registers vs Zero Page vs In-Memory Registers}
 
-Chips of the time generally had registers in 3 formats. There were many registers separated from memory like in the Z80. Few registers and then an easily accessible portion of memory like in the 6502. Or on chips with onboard memory, the registers would take up the first few bytes of memory.
+Chips of the time generally had registers in 3 formats. There were many registers separated from memory like in the Z80. Few registers and then an easily accessible portion of memory like in the 6502. Or on chips with on-board memory, the registers would take up the first few bytes of memory.
 
 Each of these has it's pros and cons, but all configurations were designed in mind with two thing, speed and utility. On a physical chip, retrieving data from a register is significantly faster than a location in memory, but you only had 8 bytes. Getting something from zero page on the 6502 was faster than getting something from another place in memory, but slower than a register, but you had 256 bytes.\\
 
@@ -77,12 +77,10 @@ Each of these has it's pros and cons, but all configurations were designed in mi
  Zero Page  &  5 & 5 &  10 & \cellcolor{blue!25}45\\
  \hline
  Onboard Memory &  6 & 10 &  7& \cellcolor{blue!25}52\\
- \hline \\
- 
-
- 
+ \hline
 \end{tabular}
 }\\
+
 Registers, similar to the Z80 made the most sense in our case. Zero page did not hold any advantages to our case since there is no speed difference between accessing zero page and accessing any other position in memory on our design. On-board memory would have been very easy to develop, but was generally found on microcontrollers rather than microprocessors, and would have held no real speed boost either.
 \subsection{16-Bit Register Mode}
 16 Bit register mode is when 2 of the 8 bit registers can be used together to act as a 16 bit register. This can also be done for certain instructions as well.\\
@@ -103,7 +101,9 @@ Registers, similar to the Z80 made the most sense in our case. Zero page did not
 
 Overall a 16-bit mode was a good decision. This allow for a lot more usability, and still fits in with chips of the time since the Z80 also had 16-bit mode instructions. This did add a bit of work, significantly increasing our instruction count,  but it's worth it overall.
 
-\subsection{Opcode Selection}
+\subsection{Signed vs. Unsigned Data}
+
+During the design we were unsure how to use signed and unsigned numbers. In the Z80 and 6502 there is no distinction between the two in position of memory since the arithmetic functions do binary math. The programmer must keep track of if the number is signed or unsigned and flags are used in math to signify certain cases.\\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -112,32 +112,40 @@ Overall a 16-bit mode was a good decision. This allow for a lot more usability, 
  \hline\hline
  Weights & 3 & 2 & 2& \\ 
  \hline
- Switch Statement & 0 & 0& 0& \cellcolor{blue!25}48\\
+ Specifically Signed Data & 8 &  4 &  3 & \cellcolor{blue!25}38\\
  \hline
- Function Pointers &  0& 0&  0& \cellcolor{blue!25}62\\
- \hline
- Function Pointers with Additional Data &  0 & 0 &  0 & \cellcolor{blue!25}62\\
+ Overflow and Carry flags &  5 & 8 &  7 & \cellcolor{blue!25}45\\
  \hline
 \end{tabular}
 }\\
+
+While having specifically signed functions and locations would have been helpful, it would have been a lot to implement and not really consistent with how processors work. Instead we focused on having flags when using arithmetic functions show if things would be negative and when it would overflow.
+
+\subsection{Op-code Selection}
+
+The op-code selection is the control logic of a simulated chip. It takes an op-code in from memory and has to resolve it to a instruction to execute. This can be done in a few ways. One way is using a large switch statement to branch to the proper instruction function. This can be large and cumbersome, but is also very simple. Another way is to use function pointers and then store them in a way in which they can be easily called. We could also create a struct to hold the function pointer and then other things relevant to the instruction like size, mnemonic, and addressing mode.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Switch Statement & 3 & 10& n/a& \cellcolor{blue!25}29\\
+ \hline
+ Function Pointers &  7& 7&  n/a& \cellcolor{blue!25}35\\
+ \hline
+ Function Pointers w/ Data &  9 & 7 &  n/a & \cellcolor{blue!25}41\\
+ \hline
+\end{tabular}
+}\\
+
+A switch statement is very large and cumbersome and also is a very crude way to select op-codes. We decided using an array of structs containing the function pointers, and additional data about the function way the best way to go. While it was tricky to implement, it works very well, is much faster than a switch statement, and also contains a lot of data about each of the functions. The instructions are put into an array at the position that their op-code is. For instance the NOP instruction is op-code 0x00, so it was put into the first element of the array so when InstructionSet[0] is called, it will return the struct which contains the function pointer for the NOP instruction
 
 \subsection{Addressing functions}
 
-\resizebox{\columnwidth}{!}{%
- \begin{tabular}{||c|c|c|c|c||}
- \hline
- Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
- \hline\hline
- Weights & 3 & 2 & 2& \\ 
- \hline
- Individual Functions & 0 &  0&  0 & \cellcolor{blue!25}0\\
- \hline
- Addressing Functions &  0& 0 &  0 & \cellcolor{blue!25}0\\
- \hline
-\end{tabular}
-}\\
-
-\subsection{GUI Backend}
+When writing the functions for the op-codes, we were unsure on how to implement the addressing modes. They could either be done as separate functions or each instruction could be implemented separately with its addressing mode.\\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -146,15 +154,18 @@ Overall a 16-bit mode was a good decision. This allow for a lot more usability, 
  \hline\hline
  Weights & 3 & 2 & 2& \\ 
  \hline
- ImGui & 0 &  0&  0 & \cellcolor{blue!25}0\\
+ Individual Functions & 3 &  7&  n/a & \cellcolor{blue!25}23\\
  \hline
- Qt4 &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ Addressing Functions &  7 & 6 &  n/a & \cellcolor{blue!25}33\\
  \hline
 \end{tabular}
 }\\
 
+Implementing each function with each addressing mode was very cumbersome as it increased the number of instruction functions significantly. Although 2 different functions have to be written for each function due to the way our addressing works, it reduced the total number of functions and made writing the remaining functions very easy. 
 
-\subsection{Signed vs. Unsigned Data}
+\subsection{GUI back-end}
+
+The GUI back-end for the simulation environment was the smallest design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI and ImGUI, a immediate mode GUI were both libraries we were familiar with and could easily implement. \\
 
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
@@ -163,15 +174,22 @@ Overall a 16-bit mode was a good decision. This allow for a lot more usability, 
  \hline\hline
  Weights & 3 & 2 & 2& \\ 
  \hline
- Specifically Signed Data & 0 &  0 &  0 & \cellcolor{blue!25}0\\
+ ImGui & 8 &  5&  n/a & \cellcolor{blue!25}34\\
  \hline
- Overflow and Carry flags &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ Qt4 &  6 & 5 &  n/a & \cellcolor{blue!25}23\\
  \hline
 \end{tabular}
 }\\
+
+We chose immediate mode due to how much would be changing on screen at a time, and since the elements in the GUI would not be super intensive, and ImGui is much easier to implement and works cross platform with few external dependencies.
+
+
+
 
 \subsection{Supported Systems}
 
+Targeting all operating systems can be difficult since they all require different dependencies and have different ways to build the software. macOS and Linux work similarly enough for our purposes and very few changes have to be made to the build process between macOS and Linux. Windows however requires a different process and generally requires tools installed that most people will not unless they are writing in C/C++ without Microsoft tools. \\
+
 \resizebox{\columnwidth}{!}{%
  \begin{tabular}{||c|c|c|c|c||}
  \hline
@@ -179,12 +197,14 @@ Overall a 16-bit mode was a good decision. This allow for a lot more usability, 
  \hline\hline
  Weights & 3 & 2 & 2& \\ 
  \hline
- Windows, macOS, \& Linux & 0 &  0 &  0 & \cellcolor{blue!25}0\\
+ Windows, macOS, \& Linux & 8 &  5 &  n/a & \cellcolor{blue!25}34\\
  \hline
- macOS \& Linux &  0 & 0 &  0 & \cellcolor{blue!25}0\\
+ macOS \& Linux &  6 & 7 &  n/a & \cellcolor{blue!25}32\\
  \hline
 \end{tabular}
 }\\
+
+We ended up "supporting" windows. There are instructions and a makefile for building on windows, we currently have no good way of consistently testing and ensuring quality on Windows. While it works we do not officially support it and won't change things for the program to work better on Windows. 
 
 
 
