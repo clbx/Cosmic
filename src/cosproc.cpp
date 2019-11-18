@@ -1074,11 +1074,20 @@ void cosproc::JNS(uint16_t src){
 
 /* Low Priority Interrupt */
 void cosproc::LPI(){
-
-
+	if(!st[2]){
+		Write(sp,((pc*0xFF00)>>8));
+		sp--;
+		Write(sp,(pc*0x00FF));
+		sp--;
+		pc = (Read(0xFFF2) << 8) & Read(0xFFF3);
+	}
 }
 
 /* High Priority Interrupt */
 void cosproc::HPI(){
-
+	Write(sp,((pc*0xFF00)>>8));
+	sp--;
+	Write(sp,(pc*0x00FF));
+	sp--;
+	pc = (Read(0xFFF2) << 8) & Read(0xFFF3);
 }
