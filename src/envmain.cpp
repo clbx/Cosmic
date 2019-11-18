@@ -164,7 +164,7 @@ int runGUI(){
     
 
     cosproc proc = cosproc(MemoryRead, MemoryWrite);    
-
+    bool running = false;
 
     bool done = false;
     while (!done){
@@ -194,8 +194,11 @@ int runGUI(){
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        //ImGui::ShowTestWindow();
+        ImGui::ShowTestWindow();
         
+        /**  -= Menu Bar =-
+        *     Top Menu bar.
+        */
         std::string menu_action = "";
         if (ImGui::BeginMainMenuBar()){
             if (ImGui::BeginMenu("File")){
@@ -305,25 +308,6 @@ int runGUI(){
             ImGui::Columns(1);
 
             ImGui::Separator();
-            /*
-            
-            for(int i = 7; i >= 0; i--){
-                if(i == 3){
-                    ImGui::SameLine();
-                    ImGui::Text(" ");
-                }
-                ImGui::SameLine();
-                if(proc.st[i]){
-                    ImGui::Text("1");
-                }
-                else{
-                    ImGui::Text("0");
-                }
-            }
-            ImGui::SameLine();
-            
-            ImGui::Text("              I P   O C N Z");
-            */
             ImGui::Text("Status: ");
             ImGui::SameLine();
             HelpMarker("I: Interrupt Disable\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
@@ -350,7 +334,7 @@ int runGUI(){
         *  Memory
         */
         ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(305,100),ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(305,120),ImGuiCond_Once);
         ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*65536);
         ram_edit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
 
@@ -358,7 +342,7 @@ int runGUI(){
         /**  -= Control Window =-
         *   Control the Processor.
         */
-        ImGui::SetNextWindowSize(ImVec2(300,60),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(300,85),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
@@ -367,14 +351,27 @@ int runGUI(){
             ImGui::SameLine();
             if(ImGui::Button("Processor Reset")){
                 proc.reset();
+                running = false;
             }
             ImGui::SameLine();
             if(ImGui::Button("Memory Reset")){
                 memset(memory,0,sizeof(memory));
+                running = false;
             }
+            if(ImGui::Button("Run")){
+                running = true;      
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Pause")){
+                running = false;
+            }
+
                 
         ImGui::End();
 
+        if(running){
+            proc.cycle();
+        }
 
         // Rendering
         ImGui::Render();
