@@ -15,8 +15,6 @@
 #include <string>
 #include <map>
 
-
-
 /**
  * The processor for the cosmic system
  * 
@@ -38,12 +36,7 @@ class cosproc{
         //Instruction encoding pointers
         typedef uint16_t (cosproc::*Addressing)();
         typedef void (cosproc::*Opcode)(uint16_t);
-        
-        
-
-
-        
-
+            
         // -= ADDRESSING MODES =-
         uint16_t IMP(); //Implied Addressing
         uint16_t IMM(); //Immediate Addressing
@@ -150,14 +143,12 @@ class cosproc{
         void JOS(uint16_t src); //Jump if overflow is set
         void JNS(uint16_t src); //Jump if overflow is not set
 
-
     public:
         //Public for Debugger Only (Package this up eventually)
         uint16_t pc;  //Program Counter
         uint16_t sp;  //Stack Pointer
         uint8_t r[8]; // General Registers
         bool st[8];   //Status Register
-
         
         typedef struct {
             Addressing addressing;
@@ -168,7 +159,6 @@ class cosproc{
 
         Instruction InstructionSet[257];
         
-
         //Public for System Usage
         cosproc(BusRead r, BusWrite w);
         void reset();
@@ -176,6 +166,4 @@ class cosproc{
         void LPI();   //Non Maskable Interrupt
         void HPI();   //Send High 
         void execute(Instruction i);
-
-
 };
