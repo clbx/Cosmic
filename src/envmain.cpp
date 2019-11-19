@@ -165,6 +165,7 @@ int runGUI(){
 
     cosproc proc = cosproc(MemoryRead, MemoryWrite);    
     bool running = false;
+    int procFrequency = 3000;
 
     bool done = false;
     while (!done){
@@ -365,12 +366,34 @@ int runGUI(){
             if(ImGui::Button("Pause")){
                 running = false;
             }
+            ImGui::SameLine();
+            const char* speeds[] = {"3000", "1500", "600", "300", "60"};
+            static const char* current_speed = speeds[0]; 
+            static ImGuiComboFlags flags = 0;
+            if(ImGui::BeginCombo("Speed", current_speed, flags)){
+                for (int n = 0; n < IM_ARRAYSIZE(speeds); n++){
+                    bool is_selected = (current_speed == speeds[n]);
+                    if (ImGui::Selectable(speeds[n], is_selected)){
+                        current_speed = speeds[n];
+                        procFrequency = atoi(speeds[n]);
+                        printf("New Speed %d\n", procFrequency);
+                    }
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+                }
+                ImGui::EndCombo();
+            }
 
                 
         ImGui::End();
 
+
         if(running){
-            proc.cycle();
+            int i = 0;
+            while(i < procFrequency/60){
+                proc.cycle();
+                i++;
+            }
         }
 
         // Rendering
