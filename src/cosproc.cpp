@@ -183,29 +183,27 @@ void cosproc::reset()
     sp = 65535;
     memset(st,0,sizeof(st));
 
-	//TODO: Replace me with something a little less dangerous
-	printf("\033[2J\033[1;1H\n");
-
 	return;
 }
 
 
-void cosproc::cycle()
+cosproc::Debug cosproc::cycle()
 {
+	
 	
 	uint8_t opcode = Read(pc); //Fetch
 	Instruction currentInstruction = InstructionSet[opcode]; //Decode
 	execute(currentInstruction); //Execute
-	printf("%s\n",currentInstruction.mnemonic); //Write Debug
+	Debug debugPackage;
+	debugPackage.pc = pc;
+	debugPackage.instruction = currentInstruction;
 	pc += currentInstruction.bytes; //Writeback
-
+	return debugPackage;
 }
 
 void cosproc::execute(Instruction i)
 {
-	printf("Addressing:\n");
 	uint16_t src = (this->*i.addressing)();
-	printf("Execution:\n");
 	(this->*i.opcode)(src);
 }
 

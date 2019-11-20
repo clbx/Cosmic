@@ -169,10 +169,15 @@ class cosproc{
         Instruction InstructionSet[257];
         
 
+        struct Debug{
+            int pc;
+            Instruction instruction;
+        };
+
         //Public for System Usage
         cosproc(BusRead r, BusWrite w);
         void reset();
-        void cycle();
+        Debug cycle();
         void LPI();   //Non Maskable Interrupt
         void HPI();   //Send High 
         void execute(Instruction i);

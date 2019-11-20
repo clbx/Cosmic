@@ -49,13 +49,12 @@
 uint8_t memory[65536] = { };
 
 void MemoryWrite(uint16_t address, uint8_t value){
-    //TODO: Actually put memory here
+    //printf("Wrote %X to %X\n",value,address);
     memory[address] = value;
-    printf("Wrote %X to %X\n",value,address);
 }
 
 uint8_t MemoryRead(uint16_t address){
-    printf("READ: %X from %X\n",memory[address],address);
+    //printf("READ: %X from %X\n",memory[address],address);
     return memory[address];
 }
 
@@ -99,9 +98,6 @@ static void HelpMarker(const char* desc)
     }
 }
 
-
-static MemoryEditor ram_edit;
-
 void runCMD(char* filepath){
     LoadIntoMemory(filepath);
     //TODO: Fix when memory is not only 256bytes
@@ -115,6 +111,8 @@ void runCMD(char* filepath){
     }
 
 }
+
+static MemoryEditor ram_edit;
 
 int runGUI(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
@@ -163,7 +161,8 @@ int runGUI(){
     //System setup
     
 
-    cosproc proc = cosproc(MemoryRead, MemoryWrite);    
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    cosproc::Debug debugPackage;  
     bool running = false;
 
     bool done = false;
@@ -346,7 +345,7 @@ int runGUI(){
         ImGui::SetNextWindowPos(ImVec2(305,30),ImGuiCond_Once);
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
-                proc.cycle();
+                debugPackage = proc.cycle();
             }
             ImGui::SameLine();
             if(ImGui::Button("Processor Reset")){
@@ -370,8 +369,10 @@ int runGUI(){
         ImGui::End();
 
         if(running){
-            proc.cycle();
+            debugPackage = proc.cycle();
         }
+
+        ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
 
         // Rendering
         ImGui::Render();
