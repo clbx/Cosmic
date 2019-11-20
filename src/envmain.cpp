@@ -46,13 +46,17 @@
 
 uint8_t memory[65536] = { };
 
+static MemoryEditor ramEdit;
+static Logger debugLog;
+
+
 void MemoryWrite(uint16_t address, uint8_t value){
-    //printf("Wrote %X to %X\n",value,address);
+    debugLog.AddLog("Wrote %X to %X\n",value,address);
     memory[address] = value;
 }
 
 uint8_t MemoryRead(uint16_t address){
-    //printf("READ: %X from %X\n",memory[address],address);
+    debugLog.AddLog("READ: %X from %X\n",memory[address],address);
     return memory[address];
 }
 
@@ -107,8 +111,6 @@ void runCMD(char* filepath){
     }
 
 }
-
-static MemoryEditor ram_edit;
 
 int runGUI(){
 
@@ -168,15 +170,20 @@ int runGUI(){
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
                 done = true;
             if (event.type == SDL_KEYDOWN){
+                //TODO: Add scope to this with only affecting the active window
                 switch (event.key.keysym.sym){
                     case SDLK_SPACE:
-                        proc.cycle();
+                        debugPackage = proc.cycle();
+                        debugLog.AddLog("[%04X] %s\n",debugPackage.pc, debugPackage.instruction.mnemonic);
                         break;
                     case SDLK_r:
                         proc.reset();
+                        debugLog.Clear();
+                        debugLog.AddLog("Processor Reset\n");
                         break;
                     case SDLK_m:	
                         memset(memory,0,sizeof(memory));
+                        debugLog.AddLog("Memory Reset\n");
                         break;
                 }
             }
@@ -186,7 +193,11 @@ int runGUI(){
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        ImGui::ShowTestWindow();
+        /**  -= Test Window =-
+        *   Useful for figuring out how
+        *   To do new things
+        */
+        //ImGui::ShowTestWindow();
         
         /**  -= Menu Bar =-
         *     Top Menu bar.
@@ -249,7 +260,7 @@ int runGUI(){
             ImGui::EndPopup();
         }
 
-        /**  -= Debug Window =-
+        /**  -= GUI Debug Window =-
         *  This window holds debug info
         *       About the gui.
         */
@@ -320,8 +331,8 @@ int runGUI(){
         */
         ImGui::SetNextWindowSize(ImVec2(530,280),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305,120),ImGuiCond_Once);
-        ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*65536);
-        ram_edit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
+        ramEdit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*65536);
+        ramEdit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
 
         /**  -= Control Window =-
         *   Control the Processor.
@@ -331,15 +342,19 @@ int runGUI(){
         ImGui::Begin("Control");
             if(ImGui::Button("Step")){
                 debugPackage = proc.cycle();
+                debugLog.AddLog("[%04X] %s\n",debugPackage.pc, debugPackage.instruction.mnemonic);
             }
             ImGui::SameLine();
             if(ImGui::Button("Processor Reset")){
                 proc.reset();
+                debugLog.Clear();
+                debugLog.AddLog("Processor Reset\n");
                 running = false;
             }
             ImGui::SameLine();
             if(ImGui::Button("Memory Reset")){
                 memset(memory,0,sizeof(memory));
+                debugLog.AddLog("Memory Reset\n");
                 running = false;
             }
             if(ImGui::Button("Run")){
@@ -373,11 +388,19 @@ int runGUI(){
             int i = 0;
             while(i < procFrequency/60){
                 debugPackage = proc.cycle();
+                debugLog.AddLog("[%04X] %s\n",debugPackage.pc, debugPackage.instruction.mnemonic);
                 i++;
             }
         }
 
-        ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+         /**  -= Debug Log =-
+        *   Prints out Debug Information about
+        *       The system
+        */
+        ImGui::SetNextWindowPos(ImVec2(840,30),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(400, 400),ImGuiCond_Once);
+        debugLog.Draw("Debug Log");
+
 
         // Rendering
         ImGui::Render();
