@@ -207,8 +207,6 @@ void cosproc::execute(Instruction i)
 	(this->*i.opcode)(src);
 }
 
-
-
 /** -= ADDRESSING MODES =- **/
 
 uint16_t cosproc::IMP()
@@ -236,8 +234,6 @@ uint16_t cosproc::IND(){
 uint16_t cosproc::REG(){
 	return Read(pc + 1);
 }
-
-
 
 /** -= OPCODES =- **/
 /* Undefined Opcode */

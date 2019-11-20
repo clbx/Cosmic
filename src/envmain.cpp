@@ -22,7 +22,6 @@
 
 #include "cosproc.hpp"
 
-
 #define BYTE_TO_BINARY_PATTERN "%c %c %c %c  %c %c %c %c"
 #define BYTE_TO_BINARY(byte)  \
   (byte & 0x80 ? '1' : '0'), \
@@ -34,7 +33,6 @@
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0') 
 /*fuck std for having hex and octal but no binary */
-
 
 /*Probably will be moved elsewhere in the future becauese it doesn't belong here */
 /**
@@ -57,7 +55,6 @@ uint8_t MemoryRead(uint16_t address){
     //printf("READ: %X from %X\n",memory[address],address);
     return memory[address];
 }
-
 
 //TODO: Fix this once proper memory is added
 void LoadIntoMemory(char* filepath){
@@ -83,7 +80,6 @@ void DumpMemory(char* filepath){
 
     File.close();
 }
-
 
 static void HelpMarker(const char* desc)
 {
@@ -115,6 +111,7 @@ void runCMD(char* filepath){
 static MemoryEditor ram_edit;
 
 int runGUI(){
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
@@ -153,17 +150,13 @@ int runGUI(){
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-
-
     //System setup
-    
-
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
     cosproc::Debug debugPackage;  
     bool running = false;
+    int procFrequency = 3000;
 
     bool done = false;
     while (!done){
@@ -256,8 +249,6 @@ int runGUI(){
             ImGui::EndPopup();
         }
 
-
-
         /**  -= Debug Window =-
         *  This window holds debug info
         *       About the gui.
@@ -267,7 +258,6 @@ int runGUI(){
             ImVec2 mousePos = ImGui::GetMousePos();
             ImGui::Text("%f, %f",mousePos.x,mousePos.y);
         ImGui::End();
-
         
         /**  -= Status Window =-
         *  Shows the status of the registers
@@ -322,11 +312,7 @@ int runGUI(){
                 }
                 ImGui::NextColumn();
             }
-
-
-
         ImGui::End();
-
 
         /**  -= Memory Editor =-
         *  Shows and allows the editing of
@@ -336,7 +322,6 @@ int runGUI(){
         ImGui::SetNextWindowPos(ImVec2(305,120),ImGuiCond_Once);
         ram_edit.DrawWindow("Memory Editor", memory, sizeof(uint8_t)*65536);
         ram_edit.Highlight(proc.pc,proc.pc+1,ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f,0.75f,0.25f,1.0f)));
-
 
         /**  -= Control Window =-
         *   Control the Processor.
@@ -364,12 +349,32 @@ int runGUI(){
             if(ImGui::Button("Pause")){
                 running = false;
             }
-
-                
+            ImGui::SameLine();
+            const char* speeds[] = {"3000", "1500", "600", "300", "60"};
+            static const char* current_speed = speeds[0]; 
+            static ImGuiComboFlags flags = 0;
+            if(ImGui::BeginCombo("Speed", current_speed, flags)){
+                for (int n = 0; n < IM_ARRAYSIZE(speeds); n++){
+                    bool is_selected = (current_speed == speeds[n]);
+                    if (ImGui::Selectable(speeds[n], is_selected)){
+                        current_speed = speeds[n];
+                        procFrequency = atoi(speeds[n]);
+                        printf("New Speed %d\n", procFrequency);
+                    }
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+                }
+                ImGui::EndCombo();
+            }
         ImGui::End();
 
+        //Run if the run button it pushed
         if(running){
-            debugPackage = proc.cycle();
+            int i = 0;
+            while(i < procFrequency/60){
+                debugPackage = proc.cycle();
+                i++;
+            }
         }
 
         ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -381,10 +386,6 @@ int runGUI(){
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
-
-        
-
-
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -398,14 +399,10 @@ int runGUI(){
     return 0;
 }
 
-
 int main(int argc, char** argv){
-
     if(argc > 1){
         runCMD(argv[1]);
     }else{
         runGUI();
-    }
-
-    
+    }    
 }
