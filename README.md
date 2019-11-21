@@ -13,6 +13,9 @@
 
 Cosmic is a fully emulated computer architecture that provides a full environment to use the Cosmic Processor, specialized devices, ROM, RAM, graphics, and more. The cosmic processor can also be used on a Raspberry Pi to interface with real-world devices. The cosmic system is all entirely accessible in a rich GUI interface that allows for full customization of the system environment and code execution.*
 
+<p align="center">
+    <a target="_blank" rel="noopener noreferrer"><img width="800" src="./doc/img/cosmicGUI.png" alt="Cosmic GUI"></a>
+<br></p>
 
 Cosmic is designed to act similar to a real, physical chip but take advantage of it being software-based and leaving some of the nuances of the physical world behind.*
 
@@ -31,6 +34,10 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 * An optimized, properly designed processor
 * Something that you should base a serious project off of
 * Free of mistakes or beginner errors
+
+
+
+
 
 
 -----
