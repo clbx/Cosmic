@@ -154,6 +154,8 @@ int runGUI(){
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    bool editorAssembled = false;
+
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
     cosproc::Debug debugPackage;  
@@ -161,6 +163,8 @@ int runGUI(){
     int procFrequency = 3000;
 
     bool done = false;
+
+    bool ctrlState = false;
     while (!done){
         SDL_Event event;
         while (SDL_PollEvent(&event)){
@@ -173,19 +177,48 @@ int runGUI(){
                 //TODO: Add scope to this with only affecting the active window
                 switch (event.key.keysym.sym){
                     case SDLK_SPACE:
-                        debugPackage = proc.cycle();
-                        debugLog.AddLog("[%04X] %s\n",debugPackage.pc, debugPackage.instruction.mnemonic);
+                        if(ctrlState){
+                            debugPackage = proc.cycle();
+                            debugLog.AddLog("[%04X] %s\n",debugPackage.pc, debugPackage.instruction.mnemonic);
+                        }
                         break;
                     case SDLK_r:
-                        proc.reset();
-                        debugLog.Clear();
-                        debugLog.AddLog("Processor Reset\n");
+                        if(ctrlState){
+                            proc.reset();
+                            debugLog.Clear();
+                            debugLog.AddLog("Processor Reset\n");
+                        }
                         break;
-                    case SDLK_m:	
-                        memset(memory,0,sizeof(memory));
-                        debugLog.AddLog("Memory Reset\n");
+                    case SDLK_m:
+                        if(ctrlState){
+                            memset(memory,0,sizeof(memory));
+                            debugLog.AddLog("Memory Reset\n");
+                        }
+                        break;
+                    case SDLK_c:
+                        if(ctrlState){
+                            debugLog.Clear();
+                        }
+                        break;
+                    case SDLK_RCTRL:
+                        ctrlState = true;
+                        break;
+                    case SDLK_LCTRL:
+                        ctrlState = true;
+                        break;
+
+                }
+            }
+            if(event.type == SDL_KEYUP){
+                switch(event.key.keysym.sym){
+                    case SDLK_RCTRL:
+                        ctrlState = false;
+                        break;
+                    case SDLK_LCTRL:
+                        ctrlState = false;
                         break;
                 }
+
             }
         }
 
@@ -275,7 +308,7 @@ int runGUI(){
         *  And other basic information about
         *        the processor
         */
-        ImGui::SetNextWindowSize(ImVec2(290,350),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(290,370),ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(10,30),ImGuiCond_Once);
         ImGui::Begin("Status");
             ImGui::Text("Registers");
@@ -383,6 +416,31 @@ int runGUI(){
             }
         ImGui::End();
 
+        /**  -= Editor + Assembler Window =-
+        *   Allows the writing of Assembly Code
+        *   And assembles it in the enviroment
+        */
+        ImGui::SetNextWindowPos(ImVec2(845,30),ImGuiCond_Once);
+        ImGui::Begin("Editor");
+
+            if(ImGui::Button("Assemble")){
+               debugLog.AddLog("Assembling...\n");
+               editorAssembled = true;
+            }
+            if(editorAssembled){
+                ImGui::SameLine();
+                ImGui::Text(" File saved to /filepath/file.bin\n");
+            }
+
+            static ImGuiInputTextFlags editorFlags = ImGuiInputTextFlags_AllowTabInput;
+            static char editorText[256*1000] = "";
+            ImGui::InputTextMultiline("##source", editorText, IM_ARRAYSIZE(editorText), ImVec2(400,625),editorFlags);
+
+
+
+        ImGui::End();
+
+
         //Run if the run button it pushed
         if(running){
             int i = 0;
@@ -397,8 +455,8 @@ int runGUI(){
         *   Prints out Debug Information about
         *       The system
         */
-        ImGui::SetNextWindowPos(ImVec2(840,30),ImGuiCond_Once);
-        ImGui::SetNextWindowSize(ImVec2(400, 400),ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(10,405),ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(825, 310),ImGuiCond_Once);
         debugLog.Draw("Debug Log");
 
 
