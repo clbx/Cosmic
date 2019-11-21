@@ -24,12 +24,11 @@ vairablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [
 
 labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
-symbolTable = {}
+constantTable = {}
 variableTable = {}
 labelTable = {}
 
 currentLine = 0
-currentByte = 0
 
 #The instruction Set (Except MOV)
 InstructionSet = {
@@ -88,8 +87,20 @@ def getAddrMode(instruction):
         return -1
 
 
-def getVariables():
+def getVariables(tokens):
+    if(constantPattern.match(" ".join(tokens))):
+        handleConstant(tokens)
+    elif(vairablePattern.match(" ".join(tokens))):
+        handleVariable(tokens)
+    else:
+        return
+
+def handleConstant(tokens):
     return 0
+
+def handleVariable(tokens):
+    return 0
+
 
 def handleOpcode(tokens):
     return 0
@@ -97,11 +108,19 @@ def handleOpcode(tokens):
 def handleMovOpcode(tokens):
     return 0
 
+#Handle a label being encountered
 def handleLabel(tokens):
-    return 0
+    label = tokens[0][:-1]
+    print("Encountered label {}".format(label))
+    #check if the label is already in the label
+    if(label in labelTable):
+        error("Label {} already exists".format(label))
+    #if its not already in the label table then we need to add it
+    currentByte = len(output)
+    print("Label {} correlates to position {}".format(label,currentByte))
+    labelTable[label] = currentByte
+    return
 
-def handleConstVar(tokens):
-    return 0
 
 def assemble(tokens):
     #Check if it's in the opcode table
@@ -122,8 +141,7 @@ def assemble(tokens):
         return
     #Check if it's a constant or variable
     if(constantPattern.match(" ".join(tokens)) or vairablePattern.match(" ".join(tokens))):
-        print("Handling Constant or Variable")
-        handleConstVar(tokens)
+        print("Handling a variable or constant") #It should have already been handled in the first pass
         return
     #Check if it's a comment
     if(tokens[0][0] == ';'):
@@ -154,7 +172,9 @@ def main():
     #Go through the instructions    
 
     #Gather Variables and put them in
-    getVariables()
+    for i in range(0, len(instructions)):
+        tokens = instructions[i].split()
+        getVariables(tokens)
 
 
     #Go through line by line

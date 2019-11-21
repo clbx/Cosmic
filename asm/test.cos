@@ -6,4 +6,5 @@ start:
     var word avariable = 0x0000
     ;this is a comment
     JMP start
+anotherlabel:
     MOV nowhere
