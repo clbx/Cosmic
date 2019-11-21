@@ -437,6 +437,7 @@ pc = data    					x x I P  O C N Z
 | Immediate  | JMP #oper | 0x70   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JMP oper  | 0x71   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JMP @oper | 0x72   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JMP RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -456,6 +457,7 @@ if zero; pc = data		x x I P  O C N Z
 | Immediate  | JZS #oper | 0x73   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JZS oper  | 0x74   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JZS @oper | 0x75   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JZS RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -475,6 +477,7 @@ if !zero; pc = data		    x x I P  O C N Z
 | Immediate  | JNZ #oper | 0x76   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JNZ oper  | 0x77   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNZ @oper | 0x78   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JNZ RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -494,6 +497,7 @@ if carry; pc = data		x x I P  O C N Z
 | Immediate  | JCS #oper | 0x79   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JCS oper  | 0x7A   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JCS @oper | 0x7B   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JCS RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -513,6 +517,7 @@ if !carry; pc = data	x x I P  O C N Z
 | Immediate  | JNC #oper | 0x7C   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JNC oper  | 0x7D   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNC @oper | 0x7E   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JNC RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -532,6 +537,7 @@ if over; pc = data		x x I P  O C N Z
 | Immediate  | JOS #oper | 0x80   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JOS oper  | 0x81   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JOS @oper | 0x82   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JOS RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -551,6 +557,7 @@ if negative; pc=data  x x I P  O C N Z
 | Immediate  | JNS #oper | 0x83   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Absolute   | JNS oper  | 0x84   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNS @oper | 0x85   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JNS RX    |        | 2 ``opcode register``                         |
 
 
 
@@ -575,7 +582,7 @@ interrupt = false 		x x I P  O C N Z
 
 ### CALL
 
-Call subroutine at location. Pushes current location onto stack, jumps to new location
+Call subroutine at location. Pushes current location onto stack, jumps to new location **Maybe axe absolute and indirect since you'll need to know what you're calling and that'll be handled mostly by the assembler**
 
 ```
 push pc; pc = oper		x x I P  O C N Z
