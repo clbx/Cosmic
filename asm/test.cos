@@ -1,0 +1,9 @@
+start:
+    ADD #50
+    SUB 905
+    word thisValue = 0xFFFF
+    byte anotherValue = 0xFF
+    var word avariable = 0x0000
+    ;this is a comment
+    JMP start
+    MOV nowhere

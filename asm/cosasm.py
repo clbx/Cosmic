@@ -19,12 +19,17 @@ immmediatePattern = re.compile("[A-Z]{3,4} [#][0-9,A-F]{1,4}$")
 absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-F]{1,4}$")
 indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
+constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
+vairablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
 
-labelPattern = re.compile("[A-Z]{3,4} [A-Z,a-z,0-9]{1,}")
+labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
 symbolTable = {}
 variableTable = {}
 labelTable = {}
+
+currentLine = 0
+currentByte = 0
 
 #The instruction Set (Except MOV)
 InstructionSet = {
@@ -68,8 +73,6 @@ MovSet = {
     'MOVXR':[0x48,0x49,0x4A,0x4B]  #Moving 16 bits to a register
 }
 
-currentLine = 0
-
     
 #Returns the addressing mode
 def getAddrMode(instruction):
@@ -88,40 +91,47 @@ def getAddrMode(instruction):
 def getVariables():
     return 0
 
-def handleOpcode():
+def handleOpcode(tokens):
     return 0
 
-def handleMovOpcode():
+def handleMovOpcode(tokens):
     return 0
 
-def handleLabel():
+def handleLabel(tokens):
     return 0
 
-def handleConstant():
+def handleConstVar(tokens):
     return 0
 
-def handleComment():
-    return 0
-
-def handleSameLineComment():
-    return 0
-
-def assemble():
+def assemble(tokens):
     #Check if it's in the opcode table
+    if(tokens[0] in InstructionSet):
+        print("Handling Opcode")
+        handleOpcode(tokens)
+        return
     #Check if it's a MOV
+
+    if(tokens[0] == "MOV"):
+        print("Handling Move Opcode")
+        handleMovOpcode(tokens)
+        return
     #Check if it's a label
-    #Check if it's a constant
+    if(labelPattern.match(" ".join(tokens))):
+        print("Handling Label")
+        handleLabel(tokens)
+        return
+    #Check if it's a constant or variable
+    if(constantPattern.match(" ".join(tokens)) or vairablePattern.match(" ".join(tokens))):
+        print("Handling Constant or Variable")
+        handleConstVar(tokens)
+        return
     #Check if it's a comment
-    error("Unknown Statement")
-    
-    
+    if(tokens[0][0] == ';'):
+        print("Handling a Comment")
+        return
+
+    error("{} did not match any proper input".format(" ".join(tokens)))
     return 0
-
-
-
-
-
-
 
 
 #Writes an error to the console. Stops exectuion
@@ -146,10 +156,14 @@ def main():
     #Gather Variables and put them in
     getVariables()
 
+
     #Go through line by line
     #Everything else, give Assemble one line at a time
     #Set current line
-    assemble()
+    for i in range(0, len(instructions)):
+        curentLine = i+1
+        tokens = instructions[i].split()
+        assemble(tokens)
 
        
     
