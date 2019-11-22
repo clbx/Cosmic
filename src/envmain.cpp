@@ -233,7 +233,7 @@ int runGUI(){
         *   Useful for figuring out how
         *   To do new things
         */
-        //ImGui::ShowTestWindow();
+        ImGui::ShowTestWindow();
         
         /**  -= Menu Bar =-
         *     Top Menu bar.
@@ -468,23 +468,35 @@ int runGUI(){
         ImGui::SetNextWindowSize(ImVec2(825, 310),ImGuiCond_Once);
         debugLog.Draw("Debug Log");
 
+
         /** -= Graphics Window =-
         *   Shows the video out of
         *   Cosmic, VRAM is memory mapped
         */
         if(showGraphics){
-            ImGui::SetNextWindowSize(ImVec2(500,300),ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(650,450),ImGuiCond_Once);
             ImGui::SetNextWindowPos(ImVec2(500,300),ImGuiCond_Once);
             ImGui::Begin("Video Out");
                 ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
+                const ImU32 col = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
+                ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
                 static ImVector<ImVec2> pixels;
-                ImVec2 canvas_size = ImGui::GetContentRegionAvail();
-                ImVec2 canvas_pos;
-                canvas_pos.x = 0;
-                canvas_pos.y = 0;
+                float x = canvas_pos.x;
+                float y = canvas_pos.y;
+                static float size = 1.0f;
 
-                draw_list->AddRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), IM_COL32(255, 255, 255, 255));
+                draw_list->AddRectFilled(ImVec2(x+5, y+5), ImVec2(x + size, y + size), col);
+
+                /* Change this to only draw on change instead of every frame
+                for(int i = 0; i < 640; i++){
+                    for(int j = 0; j < 400; j++){
+                        draw_list->AddRectFilled(ImVec2(x+i, y+j), ImVec2(x + size, y + size), col);
+                    }
+                }
+                */
+                 
+                
+
 
             ImGui::End();
         }
