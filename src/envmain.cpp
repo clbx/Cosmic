@@ -165,6 +165,9 @@ int runGUI(){
     bool done = false;
 
     bool ctrlState = false;
+
+
+    bool showGraphics = false;
     while (!done){
         SDL_Event event;
         while (SDL_PollEvent(&event)){
@@ -255,6 +258,12 @@ int runGUI(){
                 if (ImGui::MenuItem("Cut", "CTRL+X")) {}
                 if (ImGui::MenuItem("Copy", "CTRL+C")) {}
                 if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+            }
+            if(ImGui::BeginMenu("Window")){
+                if(ImGui::MenuItem("Toggle Graphics")){
+                    showGraphics = !showGraphics;
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -458,6 +467,28 @@ int runGUI(){
         ImGui::SetNextWindowPos(ImVec2(10,405),ImGuiCond_Once);
         ImGui::SetNextWindowSize(ImVec2(825, 310),ImGuiCond_Once);
         debugLog.Draw("Debug Log");
+
+        /** -= Graphics Window =-
+        *   Shows the video out of
+        *   Cosmic, VRAM is memory mapped
+        */
+        if(showGraphics){
+            ImGui::SetNextWindowSize(ImVec2(500,300),ImGuiCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(500,300),ImGuiCond_Once);
+            ImGui::Begin("Video Out");
+                ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+                static ImVector<ImVec2> pixels;
+                ImVec2 canvas_size = ImGui::GetContentRegionAvail();
+                ImVec2 canvas_pos;
+                canvas_pos.x = 0;
+                canvas_pos.y = 0;
+
+                draw_list->AddRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), IM_COL32(255, 255, 255, 255));
+
+            ImGui::End();
+        }
+
 
 
         // Rendering
