@@ -134,14 +134,21 @@ class cosproc{
 
         /* 0x70-0x7F */
         void JMP(uint16_t src); //Jump to a location in memory
+        void JMPR(uint16_t src); //Jump to a location in memory from register
         void JZS(uint16_t src); //Jump if zero flag is set
+        void JZSR(uint16_t src); //Jump if zero flag is set from register
         void JNZ(uint16_t src); //Jump if zero flag is not set
+        void JNZR(uint16_t src); //Jump if zero flag is not set from register
         void JCS(uint16_t src); //Jump if carry flag is set
-        void JNC(uint16_t src); //Jump if carry flag is not set
+        void JCSR(uint16_t src); //Jump if carry flag is set from register
 
         /* 0x80-0x8F */
+        void JNC(uint16_t src); //Jump if carry flag is not set
+        void JNCR(uint16_t src); //Jump if carry flag is not set register
         void JOS(uint16_t src); //Jump if overflow is set
+        void JOSR(uint16_t src); //Jump if overflow is set register
         void JNS(uint16_t src); //Jump if overflow is not set
+        void JNSR(uint16_t src); //Jump if overflow is not set register
 
     public:
         //Public for Debugger Only (Package this up eventually)
