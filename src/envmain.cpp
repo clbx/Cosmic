@@ -233,7 +233,7 @@ int runGUI(){
         *   Useful for figuring out how
         *   To do new things
         */
-        ImGui::ShowTestWindow();
+        //ImGui::ShowTestWindow();
         
         /**  -= Menu Bar =-
         *     Top Menu bar.
@@ -495,9 +495,6 @@ int runGUI(){
                 }
                 */
                  
-                
-
-
             ImGui::End();
         }
 

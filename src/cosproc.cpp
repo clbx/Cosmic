@@ -187,7 +187,7 @@ void cosproc::reset()
 {
 	memset(r,0,sizeof(r));
 	pc = 0;
-    sp = 65535;
+    sp = 0xC399;
     memset(st,0,sizeof(st));
 
 	return;
