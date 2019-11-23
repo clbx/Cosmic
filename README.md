@@ -32,7 +32,6 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 
 #### What isn't Cosmic
 * An optimized, properly designed processor
-* Something that you should base a serious project off of
 * Free of mistakes or beginner errors
 
 
