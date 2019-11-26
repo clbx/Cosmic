@@ -32,7 +32,6 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 
 #### What isn't Cosmic
 * An optimized, properly designed processor
-* Something that you should base a serious project off of
 * Free of mistakes or beginner errors
 
 
@@ -49,6 +48,7 @@ Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank)
 ## Documentation
 * [Cosmic Processor Specification](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20Processor%20Specifications.md). This has information about how the processor works, the instruction set, and other general information
 * [Cosmic Assembler Specification](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20Assembler%20Specifications.md). This has information about how to write assembly programs for Cosmic.
+* [Cosmic System Specifications](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20System%20Specifications.md) This has information about other parts of the Cosmic system work (Video, Audio, etc.)
 
 ## Installation Instructions
 
