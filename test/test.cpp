@@ -10,11 +10,11 @@ uint8_t memory[65536] = { };
 void MemoryWrite(uint16_t address, uint8_t value){
     //TODO: Actually put memory here
     memory[address] = value;
-    printf("Wrote %X to %X\n",value,address);
+    //printf("Wrote %X to %X\n",value,address);
 }
 
 uint8_t MemoryRead(uint16_t address){
-    printf("READ: %X from %X\n",memory[address],address);
+    //printf("READ: %X from %X\n",memory[address],address);
     return memory[address];
 }
 
