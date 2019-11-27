@@ -147,7 +147,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x70] = (Instruction){&cosproc::IMM,&cosproc::JMP,"JMP #oper",0};
 	InstructionSet[0x71] = (Instruction){&cosproc::ABS,&cosproc::JMP,"JMP oper",0};
 	InstructionSet[0x72] = (Instruction){&cosproc::IND,&cosproc::JMP,"JMP @oper",0};
-	InstructionSet[0x73] = (Instruction){&cosproc::REG,&cosproc::JMPR,"JMP RX",2};
+	InstructionSet[0x73] = (Instruction){&cosproc::REG,&cosproc::JMPR,"JMP RX",0};
 
 	InstructionSet[0x74] = (Instruction){&cosproc::IMM,&cosproc::JZS,"JZS #oper",0};
 	InstructionSet[0x75] = (Instruction){&cosproc::ABS,&cosproc::JZS,"JZS oper",0};
@@ -157,7 +157,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x78] = (Instruction){&cosproc::IMM,&cosproc::JNZ,"JNZ #oper",0};
 	InstructionSet[0x79] = (Instruction){&cosproc::ABS,&cosproc::JNZ,"JNZ oper",0};
 	InstructionSet[0x7A] = (Instruction){&cosproc::IND,&cosproc::JNZ,"JNZ @oper",0};
-	InstructionSet[0x7B] = (Instruction){&cosproc::REG,&cosproc::JZSR,"JMP RX",0};
+	InstructionSet[0x7B] = (Instruction){&cosproc::REG,&cosproc::JNZR,"JMP RX",0};
 
 	InstructionSet[0x7C] = (Instruction){&cosproc::IMM,&cosproc::JCS,"JCS #oper",0};
 	InstructionSet[0x7D] = (Instruction){&cosproc::ABS,&cosproc::JCS,"JCS oper",0};
@@ -167,7 +167,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x80] = (Instruction){&cosproc::IMM,&cosproc::JNC,"JNC #oper",0};
 	InstructionSet[0x81] = (Instruction){&cosproc::ABS,&cosproc::JNC,"JNC oper",0};
 	InstructionSet[0x82] = (Instruction){&cosproc::IND,&cosproc::JNC,"JNC @oper",0};
-	InstructionSet[0x83] = (Instruction){&cosproc::REG,&cosproc::JNCR,"JNC RX",2};
+	InstructionSet[0x83] = (Instruction){&cosproc::REG,&cosproc::JNCR,"JNC RX",0};
 
 	InstructionSet[0x84] = (Instruction){&cosproc::IMM,&cosproc::JOS,"JOS #oper",0};
 	InstructionSet[0x85] = (Instruction){&cosproc::ABS,&cosproc::JOS,"JOS oper",0};
@@ -1046,6 +1046,8 @@ void cosproc::JMPR(uint16_t src){
 void cosproc::JZS(uint16_t src){
 	if(st[0]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 /* 0x77 JZS from Reg */
@@ -1058,6 +1060,8 @@ void cosproc::JZSR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
@@ -1065,6 +1069,8 @@ void cosproc::JZSR(uint16_t src){
 void cosproc::JNZ(uint16_t src){
 	if(!st[0]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 
@@ -1078,6 +1084,8 @@ void cosproc::JNZR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
@@ -1085,6 +1093,8 @@ void cosproc::JNZR(uint16_t src){
 void cosproc::JCS(uint16_t src){
 	if(st[2]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 
@@ -1098,6 +1108,8 @@ void cosproc::JCSR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
@@ -1105,6 +1117,8 @@ void cosproc::JCSR(uint16_t src){
 void cosproc::JNC(uint16_t src){
 	if(!st[2]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 
@@ -1118,6 +1132,8 @@ void cosproc::JNCR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
@@ -1125,6 +1141,8 @@ void cosproc::JNCR(uint16_t src){
 void cosproc::JOS(uint16_t src){
 	if(st[3]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 
@@ -1138,6 +1156,8 @@ void cosproc::JOSR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
@@ -1145,6 +1165,8 @@ void cosproc::JOSR(uint16_t src){
 void cosproc::JNS(uint16_t src){
 	if(st[1]){
 		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
 	}
 }
 
@@ -1158,6 +1180,8 @@ void cosproc::JNSR(uint16_t src){
 			data = ((r[src-1] << 8) | r[src]);
 		}
 		pc = (data);
+	}else{
+		pc += 2;
 	}
 }
 
