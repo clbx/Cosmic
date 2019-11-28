@@ -637,7 +637,7 @@ void cosproc::MOVA(uint16_t src){
 /* 0x33 MOV to Absolute from Reigster */
 void cosproc::MOVAR(uint16_t src){
 	uint16_t dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit destination
-	Write(dst,r[src-1]);  //Write the value of the register to the location
+	Write(dst,r[src]);  //Write the value of the register to the location
 }
 
 /* 0x34 MOV to Indirect from Immediate */
