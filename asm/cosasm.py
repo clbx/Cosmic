@@ -63,6 +63,7 @@ InstructionSet = {
     'SID':[]
 }
 
+
 MovSet = {
     'MOVA':[0x30,0x31,0x32,0x33], #Moving to an Absolute Location
     'MOVI':[0x34,0x35,0x36,0x37], #Moving to an Indirect Location
@@ -96,9 +97,11 @@ def getVariables(tokens):
         return
 
 def handleConstant(tokens):
+    print("Found a Constant")
     return 0
 
 def handleVariable(tokens):
+    print("Found a Variable")
     return 0
 
 
@@ -114,7 +117,7 @@ def handleLabel(tokens):
     print("Encountered label {}".format(label))
     #check if the label is already in the label
     if(label in labelTable):
-        error("Label {} already exists".format(label))
+        error("Label \"{}\" already exists".format(label))
     #if its not already in the label table then we need to add it
     currentByte = len(output)
     print("Label {} correlates to position {}".format(label,currentByte))
@@ -141,11 +144,11 @@ def assemble(tokens):
         return
     #Check if it's a constant or variable
     if(constantPattern.match(" ".join(tokens)) or vairablePattern.match(" ".join(tokens))):
-        print("Handling a variable or constant") #It should have already been handled in the first pass
+        print("Skipping: Variable or constant") #It should have already been handled in the first pass
         return
     #Check if it's a comment
     if(tokens[0][0] == ';'):
-        print("Handling a Comment")
+        print("Skipping: Comment")
         return
 
     error("{} did not match any proper input".format(" ".join(tokens)))
@@ -162,21 +165,26 @@ def main():
         print("Please supply a file")
         return -1
 
+    bytearray.append(0x70)
+    bytearray.append(0x00) #Where the program will jump to after all the variables are allocated
+    bytearray.append(0x00)
+
     #Put's all read instructions into a list by line
     inputFile = open(sys.argv[1],'r')
     instructions = list(inputFile)
     inputFile.close()
 
-    print("Read " + str(len(instructions)) + " lines")
+    print("Read " + str(len(instructions)) + " lines\n")
 
     #Go through the instructions    
 
+    print("-= First Pass: Variables and Constants =-")
     #Gather Variables and put them in
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         getVariables(tokens)
 
-
+    print("\n\n-= Second Pass: Assembly =-")    
     #Go through line by line
     #Everything else, give Assemble one line at a time
     #Set current line
