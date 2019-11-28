@@ -21,7 +21,7 @@ ADD #50
 ```
 Only a comment can be on the same line as an instruction
 ```
-ADD #50 //Add 50
+ADD #50 ;Add 50
 ```
 
 ### Addressing Modes
