@@ -109,7 +109,7 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 
 ----
 
-| Hi\Lo    | 0x00         | 0x01         | 0x02          | 0x03         | 0x04         | 0x05          | 0x06          | 0x07          | 0x08         | 0x9         | 0x0A         | 0x0B         | 0x0C         | 0x0D         | 0x0E         | 0x0F         |
+| Hi\Lo    | 0x00         | 0x01         | 0x02          | 0x03         | 0x04         | 0x05          | 0x06          | 0x07          | 0x08         | 0x09         | 0x0A         | 0x0B         | 0x0C         | 0x0D         | 0x0E         | 0x0F         |
 | -------- | ------------ | ------------ | ------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
 | **0x00** | [NOP](#NOP)  | [HCF](#HCF)  | [PUSH](#PUSH) | [POP](#POP)  | [SWP](#SWP)  | [CALL](#CALL) | [CALL](#CALL) | [CALL](#CALL) | [RET](#RET)  | [SID](#SID)  |              |              |              |              |              |              |
 | **0x10** | [ADD](#ADD)  | [ADD](#ADD)  | [ADD](#ADD)   | [ADD](#ADD)  | [ADDX](#ADD) | [ADDX](#ADD)  | [ADDX](#ADD)  | [ADDX](#ADD)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUB](#SUB)  | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) | [SUBX](#SUB) |
