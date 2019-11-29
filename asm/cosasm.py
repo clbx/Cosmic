@@ -39,6 +39,7 @@ InstructionSet = {
     'SWP':[0x04],
     'CALL':[0x05,0x06,0x07],
     'RET':[0x08],
+    'SID':[0x09],
     'ADD':[0x10,0x11,0x12,0x13],
     'ADDX':[0x14,0x15,0x17,0x17],
     'SUB':[0x18,0x19,0x1A,0x1B],
@@ -53,14 +54,13 @@ InstructionSet = {
     'OR':[0x54,0x55,0x56,0x57],
     'XOR':[0x58,0x59,0x5A,0x5B],
     'CMP':[0x60,0x61,0x62,0x63],
-    'JMP':[0x70,0x71,0x72],
-    'JZS':[0x73,0x74,0x75],
-    'JNZ':[0x76,0x77,0x78],
-    'JCS':[0x79,0x7A,0x7B],
-    'JNC':[0x7C,0x7D,0x7E],
-    'JOS':[0x80,0x81,0x82],
-    'JNS':[0x83,0x84,0x85],
-    'SID':[]
+    'JMP':[0x70,0x71,0x72,0x73],
+    'JZS':[0x74,0x75,0x76,0x77],
+    'JNZ':[0x78,0x79,0x7A,0x7B],
+    'JCS':[0x7C,0x7D,0x7E,0x7F],
+    'JNC':[0x80,0x81,0x82,0x83],
+    'JOS':[0x84,0x85,0x86,0x87],
+    'JNS':[0x88,0x89,0x8A,0x8B]
 }
 
 
@@ -98,6 +98,20 @@ def getVariables(tokens):
 
 def handleConstant(tokens):
     print("Found a Constant")
+    size = 0
+    name = tokens[1]
+    if(tokens[0] == "word"):
+        #Add position. need a position counter
+        print("word")
+    elif(tokens[0] == "byte"):
+        #Add position, need a position counter
+        print("byte")   
+    else:
+        error("Invalid size given: {}".format(tokens[0]))
+
+
+    
+    
     return 0
 
 def handleVariable(tokens):
@@ -165,9 +179,9 @@ def main():
         print("Please supply a file")
         return -1
 
-    bytearray.append(0x70)
-    bytearray.append(0x00) #Where the program will jump to after all the variables are allocated
-    bytearray.append(0x00)
+    output.append(0x70)
+    output.append(0x00) #Where the program will jump to after all the variables are allocated
+    output.append(0x00) 
 
     #Put's all read instructions into a list by line
     inputFile = open(sys.argv[1],'r')
@@ -195,7 +209,9 @@ def main():
 
        
     
-
+    print("\n\n-= Output: =-")
+    for i in range(0, len(output)):
+        print(hex(output[i]))
     outputFile = open('output.bin','w+b')
     outputFile.write(output)
     outputFile.close()
