@@ -838,7 +838,7 @@ void cosproc::OR(uint16_t src){
 
 /* 0x57 OR with Accumulator from register */
 void cosproc::ORR(uint16_t src){
-	r[0] |= Read(src);
+	r[0] |= r[src];
 
 	//Set Zero
 	st[0] = r[0] == 0;
@@ -854,7 +854,7 @@ void cosproc::XOR(uint16_t src){
 
 /* 0x5B XOR with Accumulator from register */
 void cosproc::XORR(uint16_t src){
-	r[0] ^= Read(src);
+	r[0] ^= r[src];
 
 	//Set Zero
 	st[0] = r[0] == 0;

@@ -401,6 +401,198 @@ TEST_CASE("movx", "[opcodes]"){
     REQUIRE(proc.r[3] == 0x01);
 }
 
+/* 0x50-0x53 */
+TEST_CASE("and", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //Imm
+    /*
+    0000: 50 FF ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x0F;
+    memory[0x00] = 0x50;
+    memory[0x01] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x0F);
+    REQUIRE(proc.st[0] == 0);
+    //Abs
+    /*
+    0000: 51 00 03 FF ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x0F;
+    memory[0x00] = 0x51;
+    memory[0x02] = 0x03;
+    memory[0x03] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x0F);
+    REQUIRE(proc.st[0] == 0);
+    //Ind
+    /*
+    0000: 52 00 03 00 05 FF ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    memory[0x00] = 0x52;
+    memory[0x02] = 0x03;
+    memory[0x04] = 0x05;
+    memory[0x05] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xF0);
+    REQUIRE(proc.st[0] == 0);
+    //Reg
+    /*
+    0000: 53 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    proc.r[1] = 0xFF;
+    memory[0x00] = 0x53;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xF0);
+    REQUIRE(proc.st[0] == 0);
+    //Zero Flag
+    /*
+    0000: 53 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    proc.r[1] = 0x0F;
+    memory[0x00] = 0x53;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1);
+}
+
+/* 0x54-0x57 */
+TEST_CASE("or", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite); 
+    //Imm
+    /*
+    0000: 54 F0 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x0F;
+    memory[0x00] = 0x54;
+    memory[0x01] = 0xF0;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Abs
+    /*
+    0000: 55 00 03 F0 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x0F;
+    memory[0x00] = 0x55;
+    memory[0x02] = 0x03;
+    memory[0x03] = 0xF0;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Ind
+    /*
+    0000: 56 00 03 00 05 0F ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    memory[0x00] = 0x56;
+    memory[0x02] = 0x03;
+    memory[0x04] = 0x05;
+    memory[0x05] = 0x0F;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Reg
+    /*
+    0000: 57 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    proc.r[1] = 0xFF;
+    memory[0x00] = 0x57;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Zero Flag
+    /*
+    0000: 57 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x57;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1);
+}
+
+/* 0x58-0x5B */
+TEST_CASE("xor", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //Imm
+    /*
+    0000: 58 F0 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x0F;
+    memory[0x00] = 0x58;
+    memory[0x01] = 0xF0;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Abs
+    /*
+    0000: 59 00 03 F0 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xFF;
+    memory[0x00] = 0x59;
+    memory[0x02] = 0x03;
+    memory[0x03] = 0xF0;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x0F);
+    REQUIRE(proc.st[0] == 0);
+    //Ind
+    /*
+    0000: 5A 00 03 00 05 0F ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    memory[0x00] = 0x5A;
+    memory[0x02] = 0x03;
+    memory[0x04] = 0x05;
+    memory[0x05] = 0x0F;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0);
+    //Reg
+    /*
+    0000: 5B 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0xF0;
+    proc.r[1] = 0xFF;
+    memory[0x00] = 0x5B;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x0F);
+    REQUIRE(proc.st[0] == 0);
+    //Zero Flag
+    /*
+    0000: 5B 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x5B;
+    memory[0x01] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1);
+
+}
+
 /* 0x70-0x73 */
 TEST_CASE("jmp", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite); 
