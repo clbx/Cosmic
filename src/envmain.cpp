@@ -64,12 +64,7 @@ uint8_t MemoryRead(uint16_t address){
 void LoadIntoMemory(char* filepath){
     std::ifstream File;
     File.open(filepath);
-    for(int i = 0; i < 65536; i ++){
-        File >> memory[i];
-        if(i < 0x30){
-            printf("%d: %xD \n",i,memory[i]);
-        }
-    }
+    File.read((char*)memory, 65536);
     File.close();
 }
 
