@@ -64,13 +64,12 @@ uint8_t MemoryRead(uint16_t address){
 void LoadIntoMemory(char* filepath){
     std::ifstream File;
     File.open(filepath);
-    int i = 0;
-
-    while(!File.eof()){
+    for(int i = 0; i < 65536; i ++){
         File >> memory[i];
-        i++;
+        if(i < 0x30){
+            printf("%d: %xD \n",i,memory[i]);
+        }
     }
-
     File.close();
 }
 
@@ -268,8 +267,14 @@ int runGUI(){
             ImGui::EndMainMenuBar();
         }
 
-        if(menu_action == "loadbin"){ImGui::OpenPopup("Load Binary");}
-        if(menu_action == "dumpmem"){ImGui::OpenPopup("Dump Memory");}
+        if(menu_action == "loadbin"){
+            ImGui::SetNextWindowSize(ImVec2(500,100),ImGuiCond_Once);
+            ImGui::OpenPopup("Load Binary");
+        }
+        if(menu_action == "dumpmem"){
+            ImGui::SetNextWindowSize(ImVec2(500,100),ImGuiCond_Once);
+            ImGui::OpenPopup("Dump Memory");
+        }
 
         if (ImGui::BeginPopupModal("Load Binary",NULL)){
             ImGui::Text("Insert Filepath Here: ");
