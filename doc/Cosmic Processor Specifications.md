@@ -841,7 +841,7 @@ interrupt = false 		x x I L  O C N Z
 
 ### CALL
 
-Call subroutine at location. Pushes current location onto stack, jumps to new location **Maybe axe absolute and indirect since you'll need to know what you're calling and that'll be handled mostly by the assembler**
+Call subroutine at location. Pushes current location onto stack, jumps to new location
 
 ```
 push pc; pc = oper		x x I L  O C N Z
@@ -941,8 +941,13 @@ _Note: This is where the principals of RISC start to break down in favor of a mo
 Swap registers
 
 ```
+<<<<<<< HEAD
 R1 <-> R2   	        				x x I L  O C N Z
 							- - - -  - - + +
+=======
+R1 <-> R2   	        				x x I P  O C N Z
+							- - - -  - - - -
+>>>>>>> 86843553238a78fd3c5b50362923bc37b5d0d238
 ```
 
 | Addressing | Assembler  | Opcode | Bytes                  |
