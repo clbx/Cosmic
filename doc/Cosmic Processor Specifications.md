@@ -582,7 +582,7 @@ interrupt = false 		x x I P  O C N Z
 
 ### CALL
 
-Call subroutine at location. Pushes current location onto stack, jumps to new location **Maybe axe absolute and indirect since you'll need to know what you're calling and that'll be handled mostly by the assembler**
+Call subroutine at location. Pushes current location onto stack, jumps to new location
 
 ```
 push pc; pc = oper		x x I P  O C N Z
@@ -683,7 +683,7 @@ Swap registers
 
 ```
 R1 <-> R2   	        				x x I P  O C N Z
-							- - - -  - - + +
+							- - - -  - - - -
 ```
 
 | Addressing | Assembler  | Opcode | Bytes                  |

@@ -60,28 +60,144 @@ TEST_CASE("indirect","[addressing]"){
     REQUIRE(proc.IND() == 0x0020);
 }
 
+/* 0x00 */
+TEST_CASE("nop", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    proc.cycle();
+    REQUIRE(proc.pc == 1);
+}
 
-// TEST_CASE("add","[opcodes]"){
-//     cosproc proc = cosproc(MemoryRead, MemoryWrite); 
-//     resetMemory();
-//     //Normal
-//     memory[0x01] = 0x01;
-//     proc.ADD(0x01);
-//     REQUIRE(proc.r[0] == 0x01);
-//     REQUIRE(proc.st[0] == false);
-//     REQUIRE(proc.st[1] == false);
-//     REQUIRE(proc.st[2] == false);
-//     REQUIRE(proc.st[3] == false);
-//     //Negative
-//     memory[0x01] = 0x80;
-//     proc.r[0] = 0;
-//     proc.ADD(0x01);
-//     REQUIRE(proc.r[0] == 0x80);
-//     REQUIRE(proc.st[0] == false);
-//     REQUIRE(proc.st[1] == true);
-//     REQUIRE(proc.st[2] == false);
-//     REQUIRE(proc.st[3] == false);
-// }
+/* 0x01 */
+TEST_CASE("hcf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    /*
+    0000: 01 ...
+    */
+    memory[0x00] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.pc == 0);
+}
+
+/* 0x02 */
+TEST_CASE("push", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    /*
+    0000: 02 02 ...
+    */
+    proc.r[0] = 0xAB;
+    memory[0x00] = 0x02;
+    memory[0x01] = 0x02;
+    proc.cycle();
+    REQUIRE(memory[0xC399] == 0xAB);
+    proc.r[0] = 0xBA;
+    proc.cycle();
+    REQUIRE(memory[0xC398] == 0xBA);
+}
+
+/* 0x03 */
+TEST_CASE("pop", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    /*
+    0000: 03 03 ...
+    */
+    memory[0x00] = 0x03;
+    memory[0x01] = 0x03;
+    memory[0xC398] = 0xBB;
+    memory[0xC399] = 0xCC;
+    proc.sp = 0xC397;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xBB);
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xCC);
+}
+
+/* 0x04 */
+TEST_CASE("swp", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    /*
+    0000: 04 00 01 ...
+    */
+    proc.r[0] = 0xAA;
+    proc.r[1] = 0xBB;
+    memory[0x00] = 0x04;
+    memory[0x02] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xBB);
+    REQUIRE(proc.r[1] == 0xAA);
+}
+
+/* 0x05-0x07 */
+TEST_CASE("call", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //Imm
+    /*
+    1110: 05 AA BB ...
+    */
+    reset(&proc);
+    memory[0x1110] = 0x05;
+    memory[0x1111] = 0xAA;
+    memory[0x1112] = 0xBB;
+    proc.pc = 0x1110;
+    proc.cycle();
+    REQUIRE(memory[0xC398] == 0x11);
+    REQUIRE(memory[0xC399] == 0x10);
+    REQUIRE(proc.pc == 0xAABB);
+    //Abs
+    /*
+    1110: 06 11 20 ...
+    1120: AA BB ...
+    */
+    reset(&proc);
+    memory[0x1110] = 0x06;
+    memory[0x1111] = 0x11;
+    memory[0x1112] = 0x20;
+    memory[0x1120] = 0xAA;
+    memory[0x1121] = 0xBB;
+    proc.pc = 0x1110;
+    proc.cycle();
+    REQUIRE(memory[0xC398] == 0x11);
+    REQUIRE(memory[0xC399] == 0x10);
+    REQUIRE(proc.pc == 0xAABB);
+    //Ind
+    /*
+    1110: 07 11 20 ...
+    1120: 11 22 AA BB ...
+    */
+    reset(&proc);
+    memory[0x1110] = 0x07;
+    memory[0x1111] = 0x11;
+    memory[0x1112] = 0x20;
+    memory[0x1120] = 0x11;
+    memory[0x1121] = 0x22;
+    memory[0x1122] = 0xAA;
+    memory[0x1123] = 0xBB;
+    proc.pc = 0x1110;
+    proc.cycle();
+    REQUIRE(memory[0xC398] == 0x11);
+    REQUIRE(memory[0xC399] == 0x10);
+    REQUIRE(proc.pc == 0xAABB);
+}
+
+/* 0x08 */
+TEST_CASE("ret", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    reset(&proc);
+    /*
+    0000: 08 ...
+    */
+    memory[0x00] = 0x08;
+    memory[0xC398] = 0xAA;
+    memory[0xC399] = 0xCC;
+    proc.sp = 0xC397;
+    proc.cycle();
+    REQUIRE(proc.pc == 0xAACF); //Adds 3 to jump over the original CALL
+    REQUIRE(proc.sp == 0xC399);
+}
 
 /* 0x30-0x3B */
 TEST_CASE("mov", "[opcodes]"){
