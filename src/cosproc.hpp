@@ -132,7 +132,7 @@ class cosproc{
         void SHRX(uint16_t src);  //Shift the 16-bit Accumulator right
         void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
 
-        /* 0x70-0x7F */
+        /* Jumps */
         void JMP(uint16_t src); //Jump to a location in memory
         void JMPR(uint16_t src); //Jump to a location in memory from register
         void JZS(uint16_t src); //Jump if zero flag is set
@@ -141,14 +141,37 @@ class cosproc{
         void JNZR(uint16_t src); //Jump if zero flag is not set from register
         void JCS(uint16_t src); //Jump if carry flag is set
         void JCSR(uint16_t src); //Jump if carry flag is set from register
-
-        /* 0x80-0x8F */
         void JNC(uint16_t src); //Jump if carry flag is not set
         void JNCR(uint16_t src); //Jump if carry flag is not set register
         void JOS(uint16_t src); //Jump if overflow is set
         void JOSR(uint16_t src); //Jump if overflow is set register
-        void JNS(uint16_t src); //Jump if overflow is not set
-        void JNSR(uint16_t src); //Jump if overflow is not set register
+        void JNO(uint16_t src); //Jump if overflow is not set
+        void JNOR(uint16_t src); //Jump if overflow is not set register
+        void JNS(uint16_t src); //Jump if negative is set
+        void JNSR(uint16_t src); //Jump if negative is set register
+        void JNN(uint16_t src); //Jump if negative is not set
+        void JNNR(uint16_t src); //Jump if negative is not register
+        void JLS(uint16_t src); //Jump if less is set
+        void JLSR(uint16_t src); //Jump if less is set register
+        void JNL(uint16_t src); //Jump if less is not set
+        void JNLR(uint16_t src); //Jump if less is not set register
+
+        /* Status Flags */
+        void CSF(uint16_t src); //Clear all flags
+        void CZF(uint16_t src); //Clear zero flag 
+        void SZF(uint16_t src); //Set zero flag
+        void CNF(uint16_t src); //Clear negative flag
+        void SNF(uint16_t src); //Set negative flag
+        void COF(uint16_t src); //Clear overflow flag
+        void SOF(uint16_t src); //Set overflow flag
+        void CCF(uint16_t src); //Clear carry flag
+        void SCF(uint16_t src); //Set carry flag
+        void CLF(uint16_t src); //Clear less flag
+        void SLF(uint16_t src); //Set less flag
+        void CIF(uint16_t src); //Set interrupt flag
+        void SIF(uint16_t src); //Clear interrupt flag
+
+
 
     public:
         //Public for Debugger Only (Package this up eventually)
