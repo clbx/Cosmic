@@ -898,54 +898,86 @@ void cosproc::SHRR(uint16_t src){
 
 /* 0x60-0x62 CMP Compare with Accumulator */
 void cosproc::CMP(uint16_t src){
-	unsigned int temp = r[0] - Read(src);
-
-	//Set Zero
-	st[0] = (temp & 0xFF) == 0;
-	//Set Negative
-	st[1] = (temp & 0xFF) >= 0x80;
-	//Set Carry
-	st[2] = temp > 0x100;
+	uint8_t temp = (unsigned int)Read(src);
+	CLF(0x00); //Clear Flags
+	if(temp == r[0]){
+		st[0] = true;
+	}
+	if(temp > r[0]){
+		st[1] = true;
+	}
+	if(temp < r[0]){
+		st[2] = true;
+	}
+	if(int8_t(temp) > int8_t(r[0])){
+		st[3] = true;
+	}
+	if(int8_t(temp) < int8_t(r[0])){
+		st[4] = true;
+	}
 }
 
 /* 0x63 CMPR Compare with Accumulator from register*/
 void cosproc::CMPR(uint16_t src){
-	unsigned int temp = r[0] - r[src];
+	unsigned int temp = r[src];
 
-	//Set Zero
-	st[0] = (temp & 0xFF) == 0;
-	//Set Negative
-	st[1] = (temp & 0xFF) >= 0x80;
-	//Set Carry
-	st[2] = temp > 0x100;
+	if(temp == r[0]){
+		st[0] = true;
+	}
+	if(temp > r[0]){
+		st[1] = true;
+	}
+	if(temp < r[0]){
+		st[2] = true;
+	}
+	if(int8_t(temp) > int8_t(r[0])){
+		st[3] = true;
+	}
+	if(int8_t(temp) < int8_t(r[0])){
+		st[4] = true;
+	}
 }
 
 /* 0x64-0x66 CMPX Compare with 16-bit Accumulator */
 void cosproc::CMPX(uint16_t src){
-	uint16_t data = (Read(src) << 8) | Read(src+1);
-	uint16_t acc = (r[0] << 8) | r[1];
-	unsigned int res = acc - data;
+	uint16_t temp = (Read(src) << 8) | Read(src+1);
 
-	//Set Zero
-	st[0] = (res & 0xFFFF) == 0;
-	//Set Negative
-	st[1] = (res & 0xFFFF) >= 0x8000;
-	//Set Carry
-	st[2] = res > 0x10000;
+	if(temp == r[0]){
+		st[0] = true;
+	}
+	if(temp > r[0]){
+		st[1] = true;
+	}
+	if(temp < r[0]){
+		st[2] = true;
+	}
+	if(int16_t(temp) > int16_t(r[0])){
+		st[3] = true;
+	}
+	if(int16_t(temp) < int16_t(r[0])){
+		st[4] = true;
+	}
 }
 
 /* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
 void cosproc::CMPXR(uint16_t src){
-	uint16_t data = (r[src] << 8) | r[src+1];
-	uint16_t acc = (r[0] << 8) | r[1];
-	unsigned int res = acc - data;
+	uint16_t temp = (r[src] << 8) | r[src+1];
 
-	//Set Zero
-	st[0] = (res & 0xFFFF) == 0;
-	//Set Negative
-	st[1] = (res & 0xFFFF) >= 0x8000;
-	//Set Carry
-	st[2] = res > 0x10000;
+	if(temp == r[0]){
+		st[0] = true;
+	}
+	if(temp > r[0]){
+		st[1] = true;
+	}
+	if(temp < r[0]){
+		st[2] = true;
+	}
+	if(int16_t(temp) > int16_t(r[0])){
+		st[3] = true;
+	}
+	if(int16_t(temp) < int16_t(r[0])){
+		st[4] = true;
+	}
 }
 
 /* 0x68 INC Increment the Accumulator */
