@@ -1714,3 +1714,310 @@ TEST_CASE("jnl", "[opcodes]"){
     proc.cycle();
     REQUIRE(proc.pc == 0x0002);
 }
+
+/* 0xA0 */
+TEST_CASE("csf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flags set
+    /*
+    0000: A0 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA0;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 0);
+    REQUIRE(proc.st[1] == 0);
+    REQUIRE(proc.st[2] == 0);
+    REQUIRE(proc.st[3] == 0);
+    REQUIRE(proc.st[4] == 0);
+    REQUIRE(proc.st[5] == 0);
+    REQUIRE(proc.st[6] == 0);
+    REQUIRE(proc.st[7] == 0);
+    //All flags set
+    /*
+    0000: A0 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA0;
+    proc.st[0] = 1;
+    proc.st[1] = 1;
+    proc.st[2] = 1;
+    proc.st[3] = 1;
+    proc.st[4] = 1;
+    proc.st[5] = 1;
+    proc.st[6] = 1;
+    proc.st[7] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 0);
+    REQUIRE(proc.st[1] == 0);
+    REQUIRE(proc.st[2] == 0);
+    REQUIRE(proc.st[3] == 0);
+    REQUIRE(proc.st[4] == 0);
+    REQUIRE(proc.st[5] == 0);
+    REQUIRE(proc.st[6] == 0);
+    REQUIRE(proc.st[7] == 0);
+}
+
+/* 0xA1 */
+TEST_CASE("czf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A1 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA1;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 0);
+    //Flag set
+    /*
+    0000: A1 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA1;
+    proc.st[0] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 0);
+}
+
+/* 0xA2 */
+TEST_CASE("szf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A2 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA2;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 1);
+    //Flag set
+    /*
+    0000: A2 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA2;
+    proc.st[0] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[0] == 1);
+}
+
+/* 0xA3 */
+TEST_CASE("cnf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A3 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA3;
+    proc.cycle();
+    REQUIRE(proc.st[1] == 0);
+    //Flag set
+    /*
+    0000: A3 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA3;
+    proc.st[1] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[1] == 0);
+}
+
+/* 0xA4 */
+TEST_CASE("snf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A4 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA4;
+    proc.cycle();
+    REQUIRE(proc.st[1] == 1);
+    //Flag set
+    /*
+    0000: A4 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA4;
+    proc.st[1] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[1] == 1);
+}
+
+/* 0xA5 */
+TEST_CASE("cof", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A5 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA5;
+    proc.cycle();
+    REQUIRE(proc.st[3] == 0);
+    //Flag set
+    /*
+    0000: A5 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA5;
+    proc.st[3] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[3] == 0);
+}
+
+/* 0xA6 */
+TEST_CASE("sof", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A6 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA6;
+    proc.cycle();
+    REQUIRE(proc.st[3] == 1);
+    //Flag set
+    /*
+    0000: A6 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA6;
+    proc.st[3] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[3] == 1);
+}
+
+/* 0xA7 */
+TEST_CASE("ccf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A7 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA7;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 0);
+    //Flag set
+    /*
+    0000: A7 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA7;
+    proc.st[2] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 0);
+}
+
+/* 0xA8 */
+TEST_CASE("scf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A8 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA8;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 1);
+    //Flag set
+    /*
+    0000: A8 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA8;
+    proc.st[2] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 1);
+}
+
+/* 0xA9 */
+TEST_CASE("clf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A9 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA9;
+    proc.cycle();
+    REQUIRE(proc.st[4] == 0);
+    //Flag set
+    /*
+    0000: A9 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA9;
+    proc.st[4] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[4] == 0);
+}
+
+/* 0xAA */
+TEST_CASE("slf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: AA ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAA;
+    proc.cycle();
+    REQUIRE(proc.st[4] == 1);
+    //Flag set
+    /*
+    0000: AA ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAA;
+    proc.st[4] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[4] == 1);
+}
+
+/* 0xAB */
+TEST_CASE("cif", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: AB ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAB;
+    proc.cycle();
+    REQUIRE(proc.st[5] == 0);
+    //Flag set
+    /*
+    0000: AB ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAB;
+    proc.st[5] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[5] == 0);
+}
+
+/* 0xAC */
+TEST_CASE("sif", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: AC ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAC;
+    proc.cycle();
+    REQUIRE(proc.st[5] == 1);
+    //Flag set
+    /*
+    0000: AA ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xAC;
+    proc.st[5] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[5] == 1);
+}

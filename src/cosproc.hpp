@@ -132,7 +132,7 @@ class cosproc{
         void SHRX(uint16_t src);  //Shift the 16-bit Accumulator right
         void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
 
-        /* Jumps */
+        /* 0x70-0x9B Jumps */
         void JMP(uint16_t src); //Jump to a location in memory
         void JMPR(uint16_t src); //Jump to a location in memory from register
         void JZS(uint16_t src); //Jump if zero flag is set
@@ -156,7 +156,7 @@ class cosproc{
         void JNL(uint16_t src); //Jump if less is not set
         void JNLR(uint16_t src); //Jump if less is not set register
 
-        /* Status Flags */
+        /* 0xA0-0xAC Status Flags */
         void CSF(uint16_t src); //Clear all flags
         void CZF(uint16_t src); //Clear zero flag 
         void SZF(uint16_t src); //Set zero flag
@@ -170,8 +170,6 @@ class cosproc{
         void SLF(uint16_t src); //Set less flag
         void CIF(uint16_t src); //Set interrupt flag
         void SIF(uint16_t src); //Clear interrupt flag
-
-
 
     public:
         //Public for Debugger Only (Package this up eventually)
@@ -189,7 +187,6 @@ class cosproc{
 
         Instruction InstructionSet[257];
         
-
         struct Debug{
             int pc;
             Instruction instruction;
