@@ -912,7 +912,9 @@ void cosproc::SHRR(uint16_t src){
 /* 0x60-0x62 CMP Compare with Accumulator */
 void cosproc::CMP(uint16_t src){
 	uint8_t temp = (unsigned int)Read(src);
+
 	CLF(0x00); //Clear Flags
+	
 	if(temp == r[0]){
 		st[0] = true;
 	}
@@ -922,10 +924,10 @@ void cosproc::CMP(uint16_t src){
 	if(temp < r[0]){
 		st[2] = true;
 	}
-	if(int8_t(temp) > int8_t(r[0])){
+	if(int8_t(temp) < int8_t(r[0])){
 		st[3] = true;
 	}
-	if(int8_t(temp) < int8_t(r[0])){
+	if(int8_t(temp) > int8_t(r[0])){
 		st[4] = true;
 	}
 }
@@ -934,6 +936,8 @@ void cosproc::CMP(uint16_t src){
 void cosproc::CMPR(uint16_t src){
 	unsigned int temp = r[src];
 
+	CLF(0x00); //Clear Flags
+
 	if(temp == r[0]){
 		st[0] = true;
 	}
@@ -943,10 +947,10 @@ void cosproc::CMPR(uint16_t src){
 	if(temp < r[0]){
 		st[2] = true;
 	}
-	if(int8_t(temp) > int8_t(r[0])){
+	if(int8_t(temp) < int8_t(r[0])){
 		st[3] = true;
 	}
-	if(int8_t(temp) < int8_t(r[0])){
+	if(int8_t(temp) > int8_t(r[0])){
 		st[4] = true;
 	}
 }
@@ -954,20 +958,24 @@ void cosproc::CMPR(uint16_t src){
 /* 0x64-0x66 CMPX Compare with 16-bit Accumulator */
 void cosproc::CMPX(uint16_t src){
 	uint16_t temp = (Read(src) << 8) | Read(src+1);
+	uint16_t uacc = (r[0] << 8) | r[1];
+	int16_t sacc = (r[0] << 8) | r[1];
 
-	if(temp == r[0]){
+	CLF(0x00); //Clear Flags
+
+	if(temp == uacc){
 		st[0] = true;
 	}
-	if(temp > r[0]){
+	if(temp > uacc){
 		st[1] = true;
 	}
-	if(temp < r[0]){
+	if(temp < uacc){
 		st[2] = true;
 	}
-	if(int16_t(temp) > int16_t(r[0])){
+	if(int16_t(temp) < sacc){
 		st[3] = true;
 	}
-	if(int16_t(temp) < int16_t(r[0])){
+	if(int16_t(temp) > sacc){
 		st[4] = true;
 	}
 }
@@ -975,20 +983,24 @@ void cosproc::CMPX(uint16_t src){
 /* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
 void cosproc::CMPXR(uint16_t src){
 	uint16_t temp = (r[src] << 8) | r[src+1];
+	uint16_t uacc = (r[0] << 8) | r[1];
+	int16_t sacc = (r[0] << 8) | r[1];
 
-	if(temp == r[0]){
+	CLF(0x00); //Clear Flags
+
+	if(temp == uacc){
 		st[0] = true;
 	}
-	if(temp > r[0]){
+	if(temp > uacc){
 		st[1] = true;
 	}
-	if(temp < r[0]){
+	if(temp < uacc){
 		st[2] = true;
 	}
-	if(int16_t(temp) > int16_t(r[0])){
+	if(int16_t(temp) < sacc){
 		st[3] = true;
 	}
-	if(int16_t(temp) < int16_t(r[0])){
+	if(int16_t(temp) > sacc){
 		st[4] = true;
 	}
 }
