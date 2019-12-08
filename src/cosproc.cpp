@@ -1213,7 +1213,7 @@ void cosproc::JOSR(uint16_t src){
 	}
 }
 
-/* 0x88 - 0x8A JNO */
+/* 0x88-0x8A JNO from Imm/Abs/Ind */
 void cosproc::JNO(uint16_t src){
 	if(!st[3]){
 		pc = ((Read(src) << 8) | Read(src+1));
@@ -1222,7 +1222,7 @@ void cosproc::JNO(uint16_t src){
 	}
 }
 
-/* 0x8B JNO from register*/
+/* 0x8B JNO from Reg */
 void cosproc::JNOR(uint16_t src){
 	int data;
 	if(!st[3]){
@@ -1237,7 +1237,7 @@ void cosproc::JNOR(uint16_t src){
 	}
 }
 
-/* 0x8C-0x8E JNS from Imm/Abs/Ind*/
+/* 0x8C-0x8E JNS from Imm/Abs/Ind */
 void cosproc::JNS(uint16_t src){
 	if(st[1]){
 		pc = ((Read(src) << 8) | Read(src+1));
@@ -1261,7 +1261,7 @@ void cosproc::JNSR(uint16_t src){
 	}
 }
 
-/* 0x90 - 0x92 JNN */
+/* 0x90-0x92 JNN from Imm/Abs/Ind */
 void cosproc::JNN(uint16_t src){
 	if(!st[1]){
 		pc = ((Read(src) << 8) | Read(src+1));
@@ -1270,7 +1270,7 @@ void cosproc::JNN(uint16_t src){
 	}
 }
 
-/* 0x93 JNN from Register */
+/* 0x93 JNN from Reg */
 void cosproc::JNNR(uint16_t src){
 	int data;
 	if(!st[1]){
@@ -1285,7 +1285,7 @@ void cosproc::JNNR(uint16_t src){
 	}
 }
 
-/* 0x94-0x96 JLS */
+/* 0x94-0x96 JLS from Imm/Abs/Ind */
 void cosproc::JLS(uint16_t src){
 	if(st[4]){
 		pc = ((Read(src) << 8) | Read(src+1));
@@ -1309,7 +1309,7 @@ void cosproc::JLSR(uint16_t src){
 	}
 }
 
-/* 0x98 - 0x9A JNL */
+/* 0x98-0x9A JNL from Imm/Abs/Ind */
 void cosproc::JNL(uint16_t src){
 	if(!st[4]){
 		pc = ((Read(src) << 8) | Read(src+1));
@@ -1333,68 +1333,68 @@ void cosproc::JNLR(uint16_t src){
 	}
 }
 
-/* A0 CSF */
+/* 0xA0 CSF */
 void cosproc::CSF(uint16_t src){
 	for(int i = 0; i < 8; i++){
 		st[i] = 0;
 	}
 }
 
-/* A1 CZF */
+/* 0xA1 CZF */
 void cosproc::CZF(uint16_t src){
 	st[0] = 0;
 }
 
-/* A2 SZF */
+/* 0xA2 SZF */
 void cosproc::SZF(uint16_t src){
 	st[0] = 1;
 }
 
-/* A3 CNF */
+/* 0xA3 CNF */
 void cosproc::CNF(uint16_t src){
 	st[1] = 0;
 }
 
-/* A4 SNF */
+/* 0xA4 SNF */
 void cosproc::SNF(uint16_t src){
 	st[1] = 1;
 }
 
-/* A5 COF */
+/* 0xA5 COF */
 void cosproc::COF(uint16_t src){
 	st[3] = 0;
 }
 
-/* A6 SOF */
+/* 0xA6 SOF */
 void cosproc::SOF(uint16_t src){
 	st[3] = 1; 
 }
 
-/* A7 CCF */
+/* 0xA7 CCF */
 void cosproc::CCF(uint16_t src){
 	st[2] = 0;
 }
 
-/* A8 SCF */
+/* 0xA8 SCF */
 void cosproc::SCF(uint16_t src){
 	st[2] = 1;
 }
 
-/* A9 CLF */
+/* 0xA9 CLF */
 void cosproc::CLF(uint16_t src){
 	st[4] = 0;
 }
 
-/* AA SLF */
+/* 0xAA SLF */
 void cosproc::SLF(uint16_t src){
 	st[4] = 1;
 }
 
-/* AB CIF */
+/* 0xAB CIF */
 void cosproc::CIF(uint16_t src){
 	st[5] = 0;
 }
-/* AC SIF */
+/* 0xAC SIF */
 void cosproc::SIF(uint16_t src){
 	st[5] = 1;
 }
