@@ -772,6 +772,93 @@ TEST_CASE("shr", "[opcodes]"){
     REQUIRE(proc.st[0] == 1);
 }
 
+/* 0x6C-0x6F */
+TEST_CASE("shrx", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //Imm
+    /*
+    0000: 6C 00 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x6C;
+    memory[0x02] = 0x01;
+    proc.r[0] = 0x44;
+    proc.r[1] = 0x22;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x22);
+    REQUIRE(proc.r[1] == 0x11);
+    //Abs
+    /*
+    0000: 6D 00 10 ...
+    0010: 00 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x44;
+    proc.r[1] = 0x22;
+    memory[0x00] = 0x6D;
+    memory[0x02] = 0x10;
+    memory[0x11] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x22);
+    REQUIRE(proc.r[1] == 0x11);
+    //Ind
+    /*
+    0000: 6E 00 10 ...
+    0010: 00 12 00 01 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x22;
+    proc.r[1] = 0x44;
+    memory[0x00] = 0x6E;
+    memory[0x02] = 0x10;
+    memory[0x11] = 0x12;
+    memory[0x13] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x11);
+    REQUIRE(proc.r[1] == 0x22);
+    //Reg
+    /*
+    0000: 6F 02 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x22;
+    proc.r[1] = 0x44;
+    proc.r[3] = 0x01;
+    memory[0x00] = 0x6F;
+    memory[0x01] = 0x02;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x11);
+    REQUIRE(proc.r[1] == 0x22);
+    //Zero Flag
+    /*
+    0000: 6F 02 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x22;
+    proc.r[1] = 0x44;
+    proc.r[3] = 0xFF;
+    memory[0x00] = 0x6F;
+    memory[0x01] = 0x02;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x00);
+    REQUIRE(proc.st[0] == 1);
+    //Extra Case
+    /*
+    0000: 6F 02 ...
+    */
+    reset(&proc);
+    proc.r[0] = 0x01;
+    proc.r[1] = 0x00;
+    proc.r[3] = 0x01;
+    memory[0x00] = 0x6F;
+    memory[0x01] = 0x02;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x80);
+    REQUIRE(proc.st[0] == 0);
+}
+
 /* 0x70-0x73 */
 TEST_CASE("jmp", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite); 
