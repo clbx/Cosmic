@@ -229,8 +229,6 @@ void cosproc::reset()
 
 cosproc::Debug cosproc::cycle()
 {
-	
-	
 	uint8_t opcode = Read(pc); //Fetch
 	Instruction currentInstruction = InstructionSet[opcode]; //Decode
 	execute(currentInstruction); //Execute
@@ -559,7 +557,13 @@ void cosproc::MULX(uint16_t src){
 
 /* 0x27 MULX from 16-bit register */
 void cosproc::MULXR(uint16_t src){
-	uint16_t data = ((r[src] << 8) | r[src+1]);
+	uint16_t data;
+
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[src+1]);
+	}else{
+		data = ((r[src-1] << 8) | r[src]);
+	}
 	unsigned int temp =  ((r[0] << 8) | r[1] ) * data;
 
 	//Set Negative
@@ -637,7 +641,13 @@ void cosproc::DIVX(uint16_t src){
 
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
-	uint16_t data = ((r[src] << 8) | r[src+1]);
+	uint16_t data;
+
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[src+1]);
+	}else{
+		data = ((r[src-1] << 8) | r[src]);
+	}
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
 	//Set Negative
@@ -760,8 +770,11 @@ void cosproc::MOVXA(uint16_t src){
 /* 0x43 MOVX to Absolute from Register */
 void cosproc::MOVXAR(uint16_t src){
 	uint16_t dst = ((Read(pc+2) << 8 | Read(pc+3))); //Get the 16bit destination
-	Write(dst, r[src]);
-	Write(dst+1, r[src+1]);
+	int reg;
+	src % 2 == 0 ? reg = src : reg = src-1;
+
+	Write(dst, r[reg]);
+	Write(dst+1, r[reg+1]);
 }
 
 /* 0x44 MOVX to Indirect from Immediate */
@@ -784,13 +797,20 @@ void cosproc::MOVXI(uint16_t src){
 void cosproc::MOVXIR(uint16_t src){
 	uint16_t pre_dst = ((Read(pc+2) << 8) | Read(pc+3)); //Get the 16bit pre-destination
 	uint16_t dst = ((Read(pre_dst) << 8) | Read(pre_dst+1)); //Get the 16bit destination
-	Write(dst, r[src]);
-	Write(dst+1, r[src+1]);
+	int reg;
+	src % 2 ==0 ? reg = src : reg = src-1;
+
+	Write(dst, r[reg]);
+	Write(dst+1, r[reg+1]);
 }
 
 /* 0x48 MOVX to Register from Immediate */
 void cosproc::MOVXRI(uint16_t src){
 	int reg = Read(pc+3);
+	if(reg % 2 != 0){
+		reg -= 1;
+	}
+
 	r[reg] = Read(src);
 	r[reg+1] = Read(src+1);
 }
@@ -798,6 +818,10 @@ void cosproc::MOVXRI(uint16_t src){
 /* 0x49-0x4A MOVX to Register from Absolute/Indirect */
 void cosproc::MOVXR(uint16_t src){
 	int reg = Read(pc+3);
+	if(reg % 2 != 0){
+		reg -= 1;
+	}
+
 	r[reg] = Read(src);
 	r[reg+1] = Read(src+1);
 }
@@ -805,8 +829,15 @@ void cosproc::MOVXR(uint16_t src){
 /* 0x4B MOVX to Register from Register */
 void cosproc::MOVXRR(uint16_t src){
 	int reg = Read(pc+2);
-	r[reg] = r[src];
-	r[reg+1] = r[src+1];
+	if(reg % 2 != 0){
+		reg -= 1;
+	}
+
+	int reg2;
+	src % 2 == 0 ? reg2 = src : reg2 = src-1;
+
+	r[reg] = r[reg2];
+	r[reg+1] = r[reg2+1];
 }
 
 /* 0x4C-0x4E SHLX Shift the 16-bit Accumulator left from Imm/Abs/Ind */
@@ -829,7 +860,13 @@ void cosproc::SHLX(uint16_t src){
 
 /* 0x4F SHLX Shift the 16-bit Accumulator left from register */
 void cosproc::SHLXR(uint16_t src){
-	uint16_t shift = (r[src] << 8 | r[src+1]);
+	uint16_t shift;
+
+	if(src % 2 == 0){
+		shift = ((r[src] << 8) | r[src+1]);
+	}else{
+		shift = ((r[src-1] << 8) | r[src]);
+	}
 	if(shift > 16){
 		shift = 16;
 	}
@@ -914,7 +951,7 @@ void cosproc::CMP(uint16_t src){
 	uint8_t temp = (unsigned int)Read(src);
 
 	CLF(0x00); //Clear Flags
-	
+
 	if(temp == r[0]){
 		st[0] = true;
 	}
@@ -982,7 +1019,13 @@ void cosproc::CMPX(uint16_t src){
 
 /* 0x67 CMPXR Compare with 16-bit Accumulator from register*/
 void cosproc::CMPXR(uint16_t src){
-	uint16_t temp = (r[src] << 8) | r[src+1];
+	uint16_t temp;
+
+	if(src % 2 == 0){
+		temp = ((r[src] << 8) | r[src+1]);
+	}else{
+		temp = ((r[src-1] << 8) | r[src]);
+	}
 	uint16_t uacc = (r[0] << 8) | r[1];
 	int16_t sacc = (r[0] << 8) | r[1];
 
@@ -1093,7 +1136,13 @@ void cosproc::SHRX(uint16_t src){
 
 /* 0x6F SHRX Shift the 16-bit Accumulator right from register */
 void cosproc::SHRXR(uint16_t src){
-	uint16_t shift = (r[src] << 8) | r[src+1];
+	uint16_t shift;
+
+	if(src % 2 == 0){
+		shift = ((r[src] << 8) | r[src+1]);
+	}else{
+		shift = ((r[src-1] << 8) | r[src]);
+	}
 	uint16_t temp = ((r[0] << 8) | r[1]) >> shift;
 
 	r[0] = (temp & 0xFF00) >> 8;
