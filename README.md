@@ -29,6 +29,7 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 * Kinda cool
 * A good way to learn assembly and how processors work
 * Fun to play with
+* Made by two guys learning as they went along
 
 #### What isn't Cosmic
 * An optimized, properly designed processor
