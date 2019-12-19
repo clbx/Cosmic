@@ -92,7 +92,7 @@ make
 
 ``/lib`` contains some included software:
 *  [ImGui](https://github.com/ocornut/imgui) is a GUI library used for the interface, along with a slightly modified memory editor addon. This is under the MIT License and the license file is included accordingly
-* [gl3w](https://github.com/skaslev/gl3w) A OpenGL core loader. This is not under a license. 
+* [gl3w](https://github.com/skaslev/gl3w) A OpenGL core loader. This is under the unlicense. 
 
 * [catch2](https://github.com/catchorg/Catch2) is used for testing. This is under the BSL Software License
 
