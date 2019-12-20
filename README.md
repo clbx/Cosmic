@@ -9,8 +9,6 @@
 
 <p align="center">
 <a href="https://travis-ci.org/clbx/Cosmic"><img src="https://travis-ci.org/clbx/Cosmic.svg?branch=master"/></a>
-
-
 <a href="https://www.codefactor.io/repository/github/clbx/cosmic"><img src="https://www.codefactor.io/repository/github/clbx/cosmic/badge" alt="CodeFactor" /></a>
 </p>
 
