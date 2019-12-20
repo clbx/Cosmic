@@ -178,12 +178,12 @@ class cosproc{
         uint8_t r[8]; // General Registers
         bool st[8];   //Status Register
         
-        typedef struct {
+        struct Instruction{
             Addressing addressing;
             Opcode opcode;
             const char* mnemonic;
             int bytes;
-        } Instruction;
+        };
 
         Instruction InstructionSet[257];
         
