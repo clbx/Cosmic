@@ -1,1 +1,2 @@
 lib/* linguist-vendored=true
+test/catch-2.hpp linguist-vendored=true
