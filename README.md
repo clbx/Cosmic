@@ -10,6 +10,7 @@
 <p align="center">
 <a href="https://travis-ci.org/clbx/Cosmic"><img src="https://travis-ci.org/clbx/Cosmic.svg?branch=master"/></a>
 <a href="https://www.codefactor.io/repository/github/clbx/cosmic"><img src="https://www.codefactor.io/repository/github/clbx/cosmic/badge" alt="CodeFactor" /></a>
+<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/clbx/Cosmic">
 </br>
 <a href="https://codescene.io/projects/6415/jobs/latest-successful/results"><img src="https://codescene.io/projects/6415/status.svg" /></a>
 </p>
