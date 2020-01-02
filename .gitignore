@@ -3,7 +3,6 @@
 *.aux
 *.log
 *.synctex.gz
-cosmic
 test/test
 cosasm
 .vscode/
@@ -11,6 +10,8 @@ imgui.ini
 asm/output.bin
 *.gcda
 *.gcno
+bin/
+cosmic
 
 
 # Prerequisites
