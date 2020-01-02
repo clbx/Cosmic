@@ -20,7 +20,7 @@ absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-F]{1,4}$")
 indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
-vairablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
+variablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
 
 labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
@@ -41,7 +41,7 @@ InstructionSet = {
     'RET':[0x08],
     'SID':[0x09],
     'ADD':[0x10,0x11,0x12,0x13],
-    'ADDX':[0x14,0x15,0x17,0x17],
+    'ADDX':[0x14,0x15,0x16,0x17],
     'SUB':[0x18,0x19,0x1A,0x1B],
     'SUBX':[0x1C,0x1D,0x1E,0x1F],
     'MUL':[0x20,0x21,0x22,0x23],
@@ -91,7 +91,7 @@ def getAddrMode(instruction):
 def getVariables(tokens):
     if(constantPattern.match(" ".join(tokens))):
         handleConstant(tokens)
-    elif(vairablePattern.match(" ".join(tokens))):
+    elif(variablePattern.match(" ".join(tokens))):
         handleVariable(tokens)
     else:
         return
@@ -157,7 +157,7 @@ def assemble(tokens):
         handleLabel(tokens)
         return
     #Check if it's a constant or variable
-    if(constantPattern.match(" ".join(tokens)) or vairablePattern.match(" ".join(tokens))):
+    if(constantPattern.match(" ".join(tokens)) or variablePattern.match(" ".join(tokens))):
         print("Skipping: Variable or constant") #It should have already been handled in the first pass
         return
     #Check if it's a comment
