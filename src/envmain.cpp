@@ -99,11 +99,8 @@ void runCMD(char *filepath)
     }
 }
 
-int runGUI()
-{
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
-    {
+int runGUI(){
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
@@ -125,8 +122,7 @@ int runGUI()
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
     bool err = gl3wInit() != 0;
-    if (err)
-    {
+    if (err){
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
         return 1;
     }
@@ -156,67 +152,61 @@ int runGUI()
     bool ctrlState = false;
 
     bool showGraphics = false;
-    while (!done)
-    {
+    while (!done){
         SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
+        while (SDL_PollEvent(&event)){
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
                 done = true;
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
                 done = true;
-            if (event.type == SDL_KEYDOWN)
-            {
+            if (event.type == SDL_KEYDOWN){
                 //TODO: Add scope to this with only affecting the active window
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_SPACE:
-                    if (ctrlState)
-                    {
-                        debugPackage = proc.cycle();
-                        debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
-                    }
-                    break;
-                case SDLK_r:
-                    if (ctrlState)
-                    {
-                        proc.reset();
-                        debugLog.Clear();
-                        debugLog.AddLog("Processor Reset\n");
-                    }
-                    break;
-                case SDLK_m:
-                    if (ctrlState)
-                    {
-                        memset(memory, 0, sizeof(memory));
-                        debugLog.AddLog("Memory Reset\n");
-                    }
-                    break;
-                case SDLK_c:
-                    if (ctrlState)
-                    {
-                        debugLog.Clear();
-                    }
-                    break;
-                case SDLK_RCTRL:
-                    ctrlState = true;
-                    break;
-                case SDLK_LCTRL:
-                    ctrlState = true;
-                    break;
+                switch (event.key.keysym.sym){
+                    case SDLK_SPACE:
+                        if (ctrlState)
+                        {
+                            debugPackage = proc.cycle();
+                            debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
+                        }
+                        break;
+                    case SDLK_r:
+                        if (ctrlState)
+                        {
+                            proc.reset();
+                            debugLog.Clear();
+                            debugLog.AddLog("Processor Reset\n");
+                        }
+                        break;
+                    case SDLK_m:
+                        if (ctrlState)
+                        {
+                            memset(memory, 0, sizeof(memory));
+                            debugLog.AddLog("Memory Reset\n");
+                        }
+                        break;
+                    case SDLK_c:
+                        if (ctrlState)
+                        {
+                            debugLog.Clear();
+                        }
+                        break;
+                    case SDLK_RCTRL:
+                        ctrlState = true;
+                        break;
+                    case SDLK_LCTRL:
+                        ctrlState = true;
+                        break;
                 }
             }
-            if (event.type == SDL_KEYUP)
-            {
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_RCTRL:
-                    ctrlState = false;
-                    break;
-                case SDLK_LCTRL:
-                    ctrlState = false;
-                    break;
+            if (event.type == SDL_KEYUP){
+                switch (event.key.keysym.sym){
+                    case SDLK_RCTRL:
+                        ctrlState = false;
+                        break;
+                    case SDLK_LCTRL:
+                        ctrlState = false;
+                        break;
                 }
             }
         }
@@ -235,46 +225,30 @@ int runGUI()
         *     Top Menu bar.
         */
         std::string menu_action = "";
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
+        if (ImGui::BeginMainMenuBar()){
+            if (ImGui::BeginMenu("File")){
                 //Load File Into Memory
-                if (ImGui::MenuItem("Load into Memory"))
-                {
+                if (ImGui::MenuItem("Load into Memory")){
                     menu_action = "loadbin";
                 }
                 //Dump Memory to a File
-                if (ImGui::MenuItem("Dump Memory"))
-                {
+                if (ImGui::MenuItem("Dump Memory")){
                     menu_action = "dumpmem";
                 }
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Edit"))
-            {
-                if (ImGui::MenuItem("Undo", "CTRL+Z"))
-                {
-                }
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
-                {
-                } // Disabled item
+            if (ImGui::BeginMenu("Edit")){
+                if (ImGui::MenuItem("Undo", "CTRL+Z")){}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)){} // Disabled item
                 ImGui::Separator();
-                if (ImGui::MenuItem("Cut", "CTRL+X"))
-                {
-                }
-                if (ImGui::MenuItem("Copy", "CTRL+C"))
-                {
-                }
-                if (ImGui::MenuItem("Paste", "CTRL+V"))
-                {
-                }
+                if (ImGui::MenuItem("Cut", "CTRL+X")){}
+                if (ImGui::MenuItem("Copy", "CTRL+C")){}
+                if (ImGui::MenuItem("Paste", "CTRL+V")){}
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Window"))
-            {
-                if (ImGui::MenuItem("Toggle Graphics"))
-                {
+
+            if (ImGui::BeginMenu("Window")){
+                if (ImGui::MenuItem("Toggle Graphics")){
                     showGraphics = !showGraphics;
                 }
                 ImGui::EndMenu();
@@ -282,48 +256,40 @@ int runGUI()
             ImGui::EndMainMenuBar();
         }
 
-        if (menu_action == "loadbin")
-        {
+        if (menu_action == "loadbin"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
             ImGui::OpenPopup("Load Binary");
         }
-        if (menu_action == "dumpmem")
-        {
+        if (menu_action == "dumpmem"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
             ImGui::OpenPopup("Dump Memory");
         }
 
-        if (ImGui::BeginPopupModal("Load Binary", NULL))
-        {
+        if (ImGui::BeginPopupModal("Load Binary", NULL)){
             ImGui::Text("Insert Filepath Here: ");
             static char filepath[128] = "";
             ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-            if (ImGui::Button("Open"))
-            {
+            if (ImGui::Button("Open")){
                 LoadIntoMemory(filepath);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Cancel"))
-            {
+            if (ImGui::Button("Cancel")){
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
         }
 
-        if (ImGui::BeginPopupModal("Dump Memory", NULL))
-        {
+        if (ImGui::BeginPopupModal("Dump Memory", NULL)){
             ImGui::Text("Insert Filepath Here: ");
             static char filepath[128] = "";
             ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-            if (ImGui::Button("Save"))
-            {
+            if (ImGui::Button("Save")){
                 DumpMemory(filepath);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Cancel"))
-            {
+            if (ImGui::Button("Cancel")){
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -382,15 +348,12 @@ int runGUI()
         HelpMarker("I: Interrupt Disable\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
         char statusRegisterNames[] = {'Z', 'N', 'C', 'O', 'L', 'I', ' ', ' '};
         ImGui::Columns(8, "statusregister", false);
-        for (int i = 7; i >= 0; i--)
-        {
+        for (int i = 7; i >= 0; i--){
             ImGui::Text("%c", statusRegisterNames[i]);
-            if (proc.st[i])
-            {
+            if (proc.st[i]){
                 ImGui::Text("1");
             }
-            else
-            {
+            else{
                 ImGui::Text("0");
             }
             ImGui::NextColumn();
@@ -412,46 +375,38 @@ int runGUI()
         ImGui::SetNextWindowSize(ImVec2(300, 85), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(305, 30), ImGuiCond_Once);
         ImGui::Begin("Control");
-        if (ImGui::Button("Step"))
-        {
+        if (ImGui::Button("Step")){
             debugPackage = proc.cycle();
             debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
         }
         ImGui::SameLine();
-        if (ImGui::Button("Processor Reset"))
-        {
+        if (ImGui::Button("Processor Reset")){
             proc.reset();
             debugLog.Clear();
             debugLog.AddLog("Processor Reset\n");
             running = false;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Memory Reset"))
-        {
+        if (ImGui::Button("Memory Reset")){
             memset(memory, 0, sizeof(memory));
             debugLog.AddLog("Memory Reset\n");
             running = false;
         }
-        if (ImGui::Button("Run"))
-        {
+        if (ImGui::Button("Run")){
             running = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Pause"))
-        {
+        if (ImGui::Button("Pause")){
             running = false;
         }
         ImGui::SameLine();
         const char *speeds[] = {"3000", "1500", "600", "300", "60"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
-        if (ImGui::BeginCombo("Speed", current_speed, flags))
-        {
-            for (int n = 0; n < IM_ARRAYSIZE(speeds); n++)
-            {
+        if (ImGui::BeginCombo("Speed", current_speed, flags)){
+            for (int n = 0; n < IM_ARRAYSIZE(speeds); n++){
                 bool is_selected = (current_speed == speeds[n]);
-                if (ImGui::Selectable(speeds[n], is_selected))
-                {
+                if (ImGui::Selectable(speeds[n], is_selected)){
                     current_speed = speeds[n];
                     procFrequency = atoi(speeds[n]);
                 }
@@ -469,13 +424,11 @@ int runGUI()
         ImGui::SetNextWindowPos(ImVec2(845, 30), ImGuiCond_Once);
         ImGui::Begin("Editor");
 
-        if (ImGui::Button("Assemble"))
-        {
+        if (ImGui::Button("Assemble")){
             debugLog.AddLog("Assembling...\n");
             editorAssembled = true;
         }
-        if (editorAssembled)
-        {
+        if (editorAssembled){
             ImGui::SameLine();
             ImGui::Text(" File saved to /filepath/file.bin\n");
         }
@@ -487,11 +440,9 @@ int runGUI()
         ImGui::End();
 
         //Run if the run button it pushed
-        if (running)
-        {
+        if (running){
             int i = 0;
-            while (i < procFrequency / 60)
-            {
+            while (i < procFrequency / 60){
                 debugPackage = proc.cycle();
                 debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
                 i++;
@@ -510,8 +461,7 @@ int runGUI()
         *   Shows the video out of
         *   Cosmic, VRAM is memory mapped
         */
-        if (showGraphics)
-        {
+        if (showGraphics){
             ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
             ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
             ImGui::Begin("Video Out");
@@ -556,14 +506,11 @@ int runGUI()
     return 0;
 }
 
-int main(int argc, char **argv)
-{
-    if (argc > 1)
-    {
+int main(int argc, char **argv){
+    if (argc > 1){
         runCMD(argv[1]);
     }
-    else
-    {
+    else{
         runGUI();
     }
 }
