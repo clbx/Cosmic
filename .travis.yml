@@ -18,5 +18,5 @@ script:
 - cd test
 - make
 - ./test
-- cd ../src
+- cd ..
 - make
