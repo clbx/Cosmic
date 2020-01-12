@@ -99,6 +99,19 @@ void runCMD(char *filepath)
     }
 }
 
+void MessageCallback( unsigned int source,
+                 unsigned int type,
+                 unsigned int id,
+                 unsigned int severity,
+                 int length,
+                 const char* message,
+                 void* userParam )
+{
+  printf(  "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 int runGUI(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
@@ -152,6 +165,15 @@ int runGUI(){
     bool ctrlState = false;
 
     bool showGraphics = false;
+    GLuint vramTexture;
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback( MessageCallback, 0 );
+    glGenTextures(1,&vramTexture);
+    glBindTexture(GL_TEXTURE_2D,vramTexture);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,64,64,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+
     while (!done){
         SDL_Event event;
         while (SDL_PollEvent(&event)){
@@ -210,6 +232,9 @@ int runGUI(){
                 }
             }
         }
+
+        glBindTexture(GL_TEXTURE_2D,vramTexture);
+        glTexSubImage2D(GL_TEXTURE_2D,0,0,0,64,64,GL_RGBA,GL_UNSIGNED_BYTE,memory+0x8000);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
@@ -466,23 +491,10 @@ int runGUI(){
             ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
             ImGui::Begin("Video Out");
             ImDrawList *draw_list = ImGui::GetWindowDrawList();
-            const ImU32 col = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
             ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
-            static ImVector<ImVec2> pixels;
-            float x = canvas_pos.x;
-            float y = canvas_pos.y;
-            static float size = 1.0f;
-
-            draw_list->AddRectFilled(ImVec2(x + 5, y + 5), ImVec2(x + size, y + size), col);
-
-            /* Change this to only draw on change instead of every frame
-                for(int i = 0; i < 640; i++){
-                    for(int j = 0; j < 400; j++){
-                        draw_list->AddRectFilled(ImVec2(x+i, y+j), ImVec2(x + size, y + size), col);
-                    }
-                }
-                */
-
+            ImVec2 canvas_size = ImGui::GetContentRegionAvail();
+            draw_list->AddImage((void*)(intptr_t)vramTexture,canvas_pos,ImVec2(canvas_pos.x+canvas_size.x,canvas_pos.y+canvas_size.y));
+            draw_list->AddCallback(ImDrawCallback_ResetRenderState,NULL);
             ImGui::End();
         }
 
@@ -494,6 +506,8 @@ int runGUI(){
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
     }
+
+    glDeleteBuffers(1,&vramTexture);
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
