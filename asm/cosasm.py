@@ -12,6 +12,8 @@ import re
 
 output = bytearray()
 
+
+
 bitnessPattern = re.compile("[A-Z]{3}[X].*$")
 #Addressing Modes
 impliedPattern = re.compile("[A-Z]{3,4}$")
@@ -29,6 +31,8 @@ variableTable = {}
 labelTable = {}
 
 currentLine = 0
+
+
 
 #The instruction Set (Except MOV)
 InstructionSet = {
@@ -96,26 +100,41 @@ def getVariables(tokens):
     else:
         return
 
+# Handles a constant, loads it into memory and assigns it a location
 def handleConstant(tokens):
-    print("Found a Constant")
-    size = 0
-    name = tokens[1]
     if(tokens[0] == "word"):
-        #Add position. need a position counter
-        print("word")
+        constantTable[tokens[1]] = len(output)
+        output.append(int(tokens[3][2:4],16))
+        output.append(int(tokens[3][4:6],16))
+        print("Created constant of size word pointing to {}".format(len(output)-2))
     elif(tokens[0] == "byte"):
-        #Add position, need a position counter
-        print("byte")   
+        constantTable[tokens[1]] = len(output)
+        output.append(int(tokens[3][2:4],16))
+        print("Created variable of size byte pointing to {}".format(len(output)-1))   
     else:
-        error("Invalid size given: {}".format(tokens[0]))
-
-
-    
-    
+        error("Invalid size given: {}".format(tokens[0]))    
     return 0
 
 def handleVariable(tokens):
-    print("Found a Variable")
+    if(tokens[1] == "word"):
+        output.append(int(tokens[4][2:4],16))
+        output.append(int(tokens[4][4:6],16))
+
+        if(tokens[2] not in variableTable):
+            variableTable[tokens[2]] = len(output)-2
+
+        print("Created variable of size word pointing to {}".format(len(output)-2))
+
+    elif(tokens[1] == "byte"):
+        output.append(int(tokens[4][2:4],16))   
+
+        if(tokens[2] not in variableTable):
+            variableTable[tokens[2]] = len(output)-1
+
+        print("Created variable of size byte pointing to {}".format(len(output)-1))
+
+    else:
+        error("Invalid size given: {}".format(tokens[0]))
     return 0
 
 
@@ -179,9 +198,11 @@ def main():
         print("Please supply a file")
         return -1
 
+    # The original jump instruction to go to start of program
     output.append(0x70)
-    output.append(0x00) #Where the program will jump to after all the variables are allocated
-    output.append(0x00) 
+    output.append(0xFF)
+    output.append(0xFF)
+
 
     #Put's all read instructions into a list by line
     inputFile = open(sys.argv[1],'r')
@@ -193,10 +214,14 @@ def main():
     #Go through the instructions    
 
     print("-= First Pass: Variables and Constants =-")
-    #Gather Variables and put them in
+    #Gather Variables and Constants and put them in
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         getVariables(tokens)
+
+    output[1] = (len(output) >> 8) & 0xff
+    output[2] = len(output) & 0xff 
+
 
     print("\n\n-= Second Pass: Assembly =-")    
     #Go through line by line
