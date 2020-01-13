@@ -5,6 +5,7 @@ start:
     byte anotherValue = 0x69
     var word avariable = 0x420B
     ;this is a comment
+    word start = 0x5050
     JMP start
 anotherlabel:
     MOV nowhere

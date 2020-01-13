@@ -23,6 +23,7 @@ indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
 variablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
+hasVarConstPattern = re.compile("[A-Z]{3,4} (#|@|R)?[0-9,A-Z,a-z]{1,}$")
 
 labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
@@ -80,7 +81,7 @@ MovSet = {
     
 #Returns the addressing mode
 def getAddrMode(instruction):
-    if(immmediatePattern.match(instruction)):
+    if(immmediatePattern.match(instruction) or impliedPattern.match(instruction)):
         return 0
     elif(absolutePattern.match(instruction)):
         return 1
@@ -139,6 +140,35 @@ def handleVariable(tokens):
 
 
 def handleOpcode(tokens):
+    print("OPCODE HANDLING {}".format(tokens))
+    if(hasVarConstPattern.match(" ".join(tokens))):
+        if(not absolutePattern.match(" ".join(tokens))):
+            if(tokens[1][1:] in constantTable):
+                tokens[1] = tokens[1][0] + constantTable[tokens[1][1:]]
+            if(tokens[1][1:] in variableTable):
+                tokens[1] = tokens[1][0] + variableTable[tokens[1][1:]]
+        else:
+            if(tokens[1] in constantTable):
+                tokens[1] = constantTable[tokens[1]]
+            if(tokens[1][1:] in variableTable):
+                tokens[1] = variableTable[tokens[1]]
+
+    addressingMode = getAddrMode(" ".join(tokens))
+    print("Addressing Mode: {}".format(addressingMode))
+    instruction = InstructionSet[tokens[0]][addressingMode]
+    output.append(instruction)
+    if(impliedPattern.match(" ".join(tokens))):
+        return 0 
+    elif(absolutePattern.match(" ".join(tokens))):
+        if((int(tokens[1],16])) < 256):
+            output.append(int(tokens[1],16))
+        else:
+            
+            
+    else:
+        
+
+
     return 0
 
 def handleMovOpcode(tokens):
@@ -147,7 +177,6 @@ def handleMovOpcode(tokens):
 #Handle a label being encountered
 def handleLabel(tokens):
     label = tokens[0][:-1]
-    print("Encountered label {}".format(label))
     #check if the label is already in the label
     if(label in labelTable):
         error("Label \"{}\" already exists".format(label))
@@ -170,9 +199,9 @@ def assemble(tokens):
         print("Handling Move Opcode")
         handleMovOpcode(tokens)
         return
+
     #Check if it's a label
     if(labelPattern.match(" ".join(tokens))):
-        print("Handling Label")
         handleLabel(tokens)
         return
     #Check if it's a constant or variable
@@ -186,6 +215,7 @@ def assemble(tokens):
 
     error("{} did not match any proper input".format(" ".join(tokens)))
     return 0
+
 
 
 #Writes an error to the console. Stops exectuion
@@ -213,14 +243,15 @@ def main():
 
     #Go through the instructions    
 
-    print("-= First Pass: Variables and Constants =-")
+    print("-= First Pass: Finding Variables and Constants =-")
     #Gather Variables and Constants and put them in
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         getVariables(tokens)
 
     output[1] = (len(output) >> 8) & 0xff
-    output[2] = len(output) & 0xff 
+    output[2] = len(output) & 0xff
+    print("Starting program at position {}".format(len(output)))
 
 
     print("\n\n-= Second Pass: Assembly =-")    
@@ -228,7 +259,6 @@ def main():
     #Everything else, give Assemble one line at a time
     #Set current line
     for i in range(0, len(instructions)):
-        curentLine = i+1
         tokens = instructions[i].split()
         assemble(tokens)
 
