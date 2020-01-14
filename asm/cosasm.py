@@ -12,6 +12,8 @@ import re
 
 output = bytearray()
 
+
+
 bitnessPattern = re.compile("[A-Z]{3}[X].*$")
 #Addressing Modes
 impliedPattern = re.compile("[A-Z]{3,4}$")
@@ -21,6 +23,7 @@ indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
 variablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
+hasVarConstPattern = re.compile("[A-Z]{3,4} (#|@|R)?[0-9,A-Z,a-z]{1,}$")
 
 labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
@@ -29,6 +32,8 @@ variableTable = {}
 labelTable = {}
 
 currentLine = 0
+
+
 
 #The instruction Set (Except MOV)
 InstructionSet = {
@@ -76,7 +81,7 @@ MovSet = {
     
 #Returns the addressing mode
 def getAddrMode(instruction):
-    if(immmediatePattern.match(instruction)):
+    if(immmediatePattern.match(instruction) or impliedPattern.match(instruction)):
         return 0
     elif(absolutePattern.match(instruction)):
         return 1
@@ -96,30 +101,74 @@ def getVariables(tokens):
     else:
         return
 
+# Handles a constant, loads it into memory and assigns it a location
 def handleConstant(tokens):
-    print("Found a Constant")
-    size = 0
-    name = tokens[1]
     if(tokens[0] == "word"):
-        #Add position. need a position counter
-        print("word")
+        constantTable[tokens[1]] = len(output)
+        output.append(int(tokens[3][2:4],16))
+        output.append(int(tokens[3][4:6],16))
+        print("Created constant of size word pointing to {}".format(len(output)-2))
     elif(tokens[0] == "byte"):
-        #Add position, need a position counter
-        print("byte")   
+        constantTable[tokens[1]] = len(output)
+        output.append(int(tokens[3][2:4],16))
+        print("Created variable of size byte pointing to {}".format(len(output)-1))   
     else:
-        error("Invalid size given: {}".format(tokens[0]))
-
-
-    
-    
+        error("Invalid size given: {}".format(tokens[0]))    
     return 0
 
 def handleVariable(tokens):
-    print("Found a Variable")
+    if(tokens[1] == "word"):
+        output.append(int(tokens[4][2:4],16))
+        output.append(int(tokens[4][4:6],16))
+
+        if(tokens[2] not in variableTable):
+            variableTable[tokens[2]] = len(output)-2
+
+        print("Created variable of size word pointing to {}".format(len(output)-2))
+
+    elif(tokens[1] == "byte"):
+        output.append(int(tokens[4][2:4],16))   
+
+        if(tokens[2] not in variableTable):
+            variableTable[tokens[2]] = len(output)-1
+
+        print("Created variable of size byte pointing to {}".format(len(output)-1))
+
+    else:
+        error("Invalid size given: {}".format(tokens[0]))
     return 0
 
 
 def handleOpcode(tokens):
+    print("OPCODE HANDLING {}".format(tokens))
+    if(hasVarConstPattern.match(" ".join(tokens))):
+        if(not absolutePattern.match(" ".join(tokens))):
+            if(tokens[1][1:] in constantTable):
+                tokens[1] = tokens[1][0] + constantTable[tokens[1][1:]]
+            if(tokens[1][1:] in variableTable):
+                tokens[1] = tokens[1][0] + variableTable[tokens[1][1:]]
+        else:
+            if(tokens[1] in constantTable):
+                tokens[1] = constantTable[tokens[1]]
+            if(tokens[1][1:] in variableTable):
+                tokens[1] = variableTable[tokens[1]]
+
+    addressingMode = getAddrMode(" ".join(tokens))
+    print("Addressing Mode: {}".format(addressingMode))
+    instruction = InstructionSet[tokens[0]][addressingMode]
+    output.append(instruction)
+    if(impliedPattern.match(" ".join(tokens))):
+        return 0 
+    elif(absolutePattern.match(" ".join(tokens))):
+        if((int(tokens[1],16])) < 256):
+            output.append(int(tokens[1],16))
+        else:
+            
+            
+    else:
+        
+
+
     return 0
 
 def handleMovOpcode(tokens):
@@ -128,7 +177,6 @@ def handleMovOpcode(tokens):
 #Handle a label being encountered
 def handleLabel(tokens):
     label = tokens[0][:-1]
-    print("Encountered label {}".format(label))
     #check if the label is already in the label
     if(label in labelTable):
         error("Label \"{}\" already exists".format(label))
@@ -151,9 +199,9 @@ def assemble(tokens):
         print("Handling Move Opcode")
         handleMovOpcode(tokens)
         return
+
     #Check if it's a label
     if(labelPattern.match(" ".join(tokens))):
-        print("Handling Label")
         handleLabel(tokens)
         return
     #Check if it's a constant or variable
@@ -169,6 +217,7 @@ def assemble(tokens):
     return 0
 
 
+
 #Writes an error to the console. Stops exectuion
 def error(msg):
     print("Error on line {} : {} ".format(currentLine,msg))
@@ -179,9 +228,11 @@ def main():
         print("Please supply a file")
         return -1
 
+    # The original jump instruction to go to start of program
     output.append(0x70)
-    output.append(0x00) #Where the program will jump to after all the variables are allocated
-    output.append(0x00) 
+    output.append(0xFF)
+    output.append(0xFF)
+
 
     #Put's all read instructions into a list by line
     inputFile = open(sys.argv[1],'r')
@@ -192,18 +243,22 @@ def main():
 
     #Go through the instructions    
 
-    print("-= First Pass: Variables and Constants =-")
-    #Gather Variables and put them in
+    print("-= First Pass: Finding Variables and Constants =-")
+    #Gather Variables and Constants and put them in
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         getVariables(tokens)
+
+    output[1] = (len(output) >> 8) & 0xff
+    output[2] = len(output) & 0xff
+    print("Starting program at position {}".format(len(output)))
+
 
     print("\n\n-= Second Pass: Assembly =-")    
     #Go through line by line
     #Everything else, give Assemble one line at a time
     #Set current line
     for i in range(0, len(instructions)):
-        curentLine = i+1
         tokens = instructions[i].split()
         assemble(tokens)
 
