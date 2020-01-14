@@ -138,38 +138,53 @@ def handleVariable(tokens):
         error("Invalid size given: {}".format(tokens[0]))
     return 0
 
-
+#im garbage fix me
 def handleOpcode(tokens):
-    print("OPCODE HANDLING {}".format(tokens))
-    if(hasVarConstPattern.match(" ".join(tokens))):
-        if(not absolutePattern.match(" ".join(tokens))):
-            if(tokens[1][1:] in constantTable):
-                tokens[1] = tokens[1][0] + constantTable[tokens[1][1:]]
-            if(tokens[1][1:] in variableTable):
-                tokens[1] = tokens[1][0] + variableTable[tokens[1][1:]]
+    #print("OPCODE HANDLING {}".format(tokens))
+    if(hasVar(tokens)):
+        if(hasVarConstPattern.match(" ".join(tokens))):
+            if(tokens[1][0] == "#" or tokens[1][0] == "@" or tokens[1][0] == "R"):
+                front = tokens[1][0]
+                if(tokens[1][1:] in constantTable):
+                    tokens[1][1] = front + constantTable[tokens[1][1:]]
+                elif(tokens[1][1:] in variableTable):
+                    tokens[1][1] = front + variableTable[tokens[1][1:]]
+                elif(tokens[1][1:] in labelTable):
+                    tokens[1][1] = front + labelTable[tokens[1][1:]]
+                else:
+                    error("Invalid variable or constant {}".format(tokens[1]))
+            else:
+                if(tokens[1] in constantTable):
+                    tokens[1] = str(constantTable[tokens[1]])
+                elif(tokens[1] in variableTable):
+                    tokens[1] = str(variableTable[tokens[1]])
+                elif(tokens[1] in labelTable):
+                    tokens[1] = str(labelTable[tokens[1]])
+                else:
+                    error("Invalid variable or constant {}".format(tokens[1]))
         else:
-            if(tokens[1] in constantTable):
-                tokens[1] = constantTable[tokens[1]]
-            if(tokens[1][1:] in variableTable):
-                tokens[1] = variableTable[tokens[1]]
+            error("Something went wrong, idk what right now, maybe i'll not write shit code in the future and find out")
 
-    addressingMode = getAddrMode(" ".join(tokens))
-    print("Addressing Mode: {}".format(addressingMode))
-    instruction = InstructionSet[tokens[0]][addressingMode]
-    output.append(instruction)
-    if(impliedPattern.match(" ".join(tokens))):
-        return 0 
-    elif(absolutePattern.match(" ".join(tokens))):
-        if((int(tokens[1],16])) < 256):
-            output.append(int(tokens[1],16))
-        else:
-            
-            
+    #at this point all var/const _should_ be resolved to a value
+    print(tokens)
+    addrMode = getAddrMode(" ".join(tokens))
+    opcode = InstructionSet[tokens[0]][addrMode]
+    output.append(opcode)
+    if(tokens[1][0] == "#" or tokens[1][0] == "@" or tokens[1][0] == "R"):
+        output.append(int(tokens[1][1:],16))
     else:
-        
+        output.append(int(tokens[1],16))
+      
 
 
     return 0
+
+# im garbage fix me
+def hasVar(tokens):
+    if(impliedPattern.match(" ".join(tokens)) or immmediatePattern.match(" ".join(tokens)) or absolutePattern.match(" ".join(tokens)) or indirectPattern.match(" ".join(tokens)) or registerPattern.match(" ".join(tokens))):
+        return False
+    else:
+        return True
 
 def handleMovOpcode(tokens):
     return 0
