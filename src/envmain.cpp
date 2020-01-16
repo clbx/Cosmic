@@ -21,6 +21,7 @@
 #include "imgui_logger.h"
 
 #include "cosproc.hpp"
+#include "pgu.hpp"
 
 /*
 * -= Memory and Address Bus=-
@@ -164,15 +165,12 @@ int runGUI(){
 
     bool ctrlState = false;
 
-    bool showGraphics = false;
-    GLuint vramTexture;
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback( MessageCallback, 0 );
-    glGenTextures(1,&vramTexture);
-    glBindTexture(GL_TEXTURE_2D,vramTexture);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,64,64,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+
+    bool showGraphics = false;
+    PGU pgu;
+    pgu.init();
 
     while (!done){
         SDL_Event event;
@@ -233,8 +231,7 @@ int runGUI(){
             }
         }
 
-        glBindTexture(GL_TEXTURE_2D,vramTexture);
-        glTexSubImage2D(GL_TEXTURE_2D,0,0,0,64,64,GL_RGBA,GL_UNSIGNED_BYTE,memory+0x8000);
+				pgu.copy(memory+0x8000);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
@@ -490,11 +487,7 @@ int runGUI(){
             ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
             ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
             ImGui::Begin("Video Out");
-            ImDrawList *draw_list = ImGui::GetWindowDrawList();
-            ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
-            ImVec2 canvas_size = ImGui::GetContentRegionAvail();
-            draw_list->AddImage((void*)(intptr_t)vramTexture,canvas_pos,ImVec2(canvas_pos.x+canvas_size.x,canvas_pos.y+canvas_size.y));
-            draw_list->AddCallback(ImDrawCallback_ResetRenderState,NULL);
+            pgu.show();
             ImGui::End();
         }
 
@@ -507,7 +500,7 @@ int runGUI(){
         SDL_GL_SwapWindow(window);
     }
 
-    glDeleteBuffers(1,&vramTexture);
+    pgu.kill();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
