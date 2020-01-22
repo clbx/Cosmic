@@ -4,6 +4,13 @@ language: cpp
 matrix:
   include:
     - os: linux
+      arch: arm64
+      sudo: required
+      before_install:
+        - sudo apt update
+        - sudo apt install libsdl2-dev
+    - os: linux
+      arch: amd64
       sudo: required
       before_install:
         - sudo apt update
