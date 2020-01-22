@@ -16,6 +16,7 @@ matrix:
         - sudo apt update
         - sudo apt install libsdl2-dev
     - os: windows
+      arch: amd64
       before_install:
       - |-
       case $TRAVIS_OS_NAME in
