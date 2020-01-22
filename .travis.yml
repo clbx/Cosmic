@@ -19,6 +19,7 @@ matrix:
       arch: amd64
       before_install:
         - echo $PATH
+        - echo $UNAME_S
         - mkdir /lib
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
         - tar -xf SDL2-devel-2.0.10-mingw.tar.gz -C /lib
