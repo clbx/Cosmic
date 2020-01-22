@@ -18,7 +18,7 @@ matrix:
     - os: windows
       before_install:
         - ls
-        - g++
+        - echo $PATH
     - os: osx
       before_install:
         - brew update
