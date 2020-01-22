@@ -18,6 +18,7 @@ matrix:
     - os: windows
       arch: amd64
       before_install:
+        - nuget
         - choco install make
     - os: osx
       before_install:
