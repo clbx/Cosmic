@@ -18,11 +18,8 @@ matrix:
     - os: windows
       arch: amd64
       before_install:
-        - powershell -c "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine"
-        - powershell -c "Import-Module PackageManagement; Install-PackageProvider Nuget"
-        - powershell -c "Import-Module PackageManagement; Register-PackageSource -Name NuGetOrg -Location https://www.nuget.org/api/v2 -ProviderName NuGet"
-        - powershell -c "Import-Module PackageManagement; Install-Package -Source NuGetOrg -Name NuGet.CommandLine -Force -ExcludeVersion -Destination C:\tools"
-        - powershell -c "Install-Package sdl2"
+        - echo $PATH
+        - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
         - choco install make
     - os: osx
       before_install:
