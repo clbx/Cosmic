@@ -18,7 +18,11 @@ matrix:
     - os: windows
       arch: amd64
       before_install:
-        - nuget
+        - powershell -c "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine"
+        - powershell -c "Import-Module PackageManagement; Install-PackageProvider Nuget"
+        - powershell -c "Import-Module PackageManagement; Register-PackageSource -Name NuGetOrg -Location https://www.nuget.org/api/v2 -ProviderName NuGet"
+        - powershell -c "Import-Module PackageManagement; Install-Package -Source NuGetOrg -Name NuGet.CommandLine -Force -ExcludeVersion -Destination C:\tools"
+        - Install-Package sdl2.nuget -Version 2.0.10
         - choco install make
     - os: osx
       before_install:
