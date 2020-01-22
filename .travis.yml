@@ -17,6 +17,8 @@ matrix:
         - sudo apt install libsdl2-dev
     - os: windows
       arch: amd64
+      before_install:
+        - export make=mingw32-make
     - os: osx
       before_install:
         - brew update
