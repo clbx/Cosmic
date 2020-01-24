@@ -113,102 +113,40 @@ def getVariables(tokens):
             output.append(int(tokens[4][2:4],16))
             print("Added word {} val {} at {}".format(tokens[2],tokens[4],len(output)))
         else:
-            error("Type {} is not a valid type (byte|word)".format(tokens[1]))    
+            error("Type {} is not a valid type (byte|word)".format(tokens[1]))     
 
 
-
-#im garbage fix me
 def handleOpcode(tokens):
-    #print("OPCODE HANDLING {}".format(tokens))
-    if(hasVar(tokens)):
-        if(hasVarConstPattern.match(" ".join(tokens))):
-            if(tokens[1][0] == "#" or tokens[1][0] == "@" or tokens[1][0] == "R"):
-                front = tokens[1][0]
-                if(tokens[1][1:] in constantTable):
-                    tokens[1][1] = front + constantTable[tokens[1][1:]]
-                elif(tokens[1][1:] in variableTable):
-                    tokens[1][1] = front + variableTable[tokens[1][1:]]
-                elif(tokens[1][1:] in labelTable):
-                    tokens[1][1] = front + labelTable[tokens[1][1:]]
-                else:
-                    error("Invalid variable or constant {}".format(tokens[1]))
-            else:
-                if(tokens[1] in constantTable):
-                    tokens[1] = str(constantTable[tokens[1]])
-                elif(tokens[1] in variableTable):
-                    tokens[1] = str(variableTable[tokens[1]])
-                elif(tokens[1] in labelTable):
-                    tokens[1] = str(labelTable[tokens[1]])
-                else:
-                    error("Invalid variable or constant {}".format(tokens[1]))
+    #Check if it has a variable in it
+    if(checkVar(tokens)):
+        if("MOV" in tokens[0]):
+            tokens = resolveVarMov(tokens)
         else:
-            error("Something went wrong, idk what right now, maybe i'll not write shit code in the future and find out")
-
-    #at this point all var/const _should_ be resolved to a value
-    print(tokens)
-    addrMode = getAddrMode(" ".join(tokens))
-    opcode = InstructionSet[tokens[0]][addrMode]
-    output.append(opcode)
-    if(tokens[1][0] == "#" or tokens[1][0] == "@" or tokens[1][0] == "R"):
-        output.append(int(tokens[1][1:],16))
+            tokens = resolveVar(tokens)
+    #If no vars or vars resolved
+    if("MOV" in tokens[0]):
+        tokens = resolveVarMov(tokens)
     else:
-        output.append(int(tokens[1],16))
-      
+        tokens = resolveVar(tokens)
+    
 
+        
 
-    return 0
-
-# im garbage fix me
-def hasVar(tokens):
-    if(impliedPattern.match(" ".join(tokens)) or immmediatePattern.match(" ".join(tokens)) or absolutePattern.match(" ".join(tokens)) or indirectPattern.match(" ".join(tokens)) or registerPattern.match(" ".join(tokens))):
-        return False
-    else:
-        return True
-
-def handleMovOpcode(tokens):
-    return 0
-
-#Handle a label being encountered
-def handleLabel(tokens):
-    label = tokens[0][:-1]
-    #check if the label is already in the label
-    if(label in labelTable):
-        error("Label \"{}\" already exists".format(label))
-    #if its not already in the label table then we need to add it
-    currentByte = len(output)
-    print("Label {} correlates to position {}".format(label,currentByte))
-    labelTable[label] = currentByte
-    return
+    
 
 
 def assemble(tokens):
-    #Check if it's in the opcode table
-    if(tokens[0] in InstructionSet):
-        print("Handling Opcode")
-        handleOpcode(tokens)
-        return
-    #Check if it's a MOV
-
-    if(tokens[0] == "MOV"):
-        print("Handling Move Opcode")
-        handleMovOpcode(tokens)
-        return
-
-    #Check if it's a label
-    if(labelPattern.match(" ".join(tokens))):
+    #It can be a label, lables always end with ":"
+    if(tokens[0][:-1] == ":"):
         handleLabel(tokens)
-        return
-    #Check if it's a constant or variable
-    if(constantPattern.match(" ".join(tokens)) or variablePattern.match(" ".join(tokens))):
-        print("Skipping: Variable or constant") #It should have already been handled in the first pass
-        return
-    #Check if it's a comment
-    if(tokens[0][0] == ';'):
-        print("Skipping: Comment")
-        return
-
-    error("{} did not match any proper input".format(" ".join(tokens)))
-    return 0
+    #If its an opcode
+    elif(xyz):
+        handleOpcode(tokens)
+    elif(tokens[0][0] == ";"):
+        continue
+    else:
+        error("Unknown thing")
+    
 
 
 
