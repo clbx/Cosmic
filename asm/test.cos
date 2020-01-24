@@ -1,5 +1,4 @@
-start:
-    ADD #50
-loop:
-    ADD #1
-    JMP #loop
+JMP #50
+ADD @50
+var byte name = 75
+var word bigname = 3744

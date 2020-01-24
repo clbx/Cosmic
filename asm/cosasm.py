@@ -27,7 +27,6 @@ hasVarConstPattern = re.compile("[A-Z]{3,4} (#|@|R)?[0-9,A-Z,a-z]{1,}$")
 
 labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
 
-constantTable = {}
 variableTable = {}
 labelTable = {}
 
@@ -68,6 +67,12 @@ InstructionSet = {
     'JNS':[0x88,0x89,0x8A,0x8B]
 }
 
+x16Instructions = {
+    'PUSH','CALL','ADDX','SUBX','MULX',
+    'DIVX','SHLX','JMP','JZS','JNZ','JCS',
+    'JNC','JOS','JNS','MOVXA','MOVXI','MOVXR'
+}
+
 
 MovSet = {
     'MOVA':[0x30,0x31,0x32,0x33], #Moving to an Absolute Location
@@ -93,50 +98,24 @@ def getAddrMode(instruction):
         return -1
 
 
+
 def getVariables(tokens):
-    if(constantPattern.match(" ".join(tokens))):
-        handleConstant(tokens)
-    elif(variablePattern.match(" ".join(tokens))):
-        handleVariable(tokens)
-    else:
-        return
+    if(tokens[1] == "byte" or tokens[1] == "word"):
+        if(tokens[2] in variableTable):
+            error("Variable {} already initalized".format(tokens[2]))   
+        if(tokens[1] == "byte"):
+            variableTable[tokens[2]] = len(output)
+            output.append(int(tokens[4],16))
+            print("Added byte var {} val {} at {}".format(tokens[2],tokens[4],len(output)))
+        elif(tokens[1] == "word"):
+            variableTable[tokens[2]] = len(output)
+            output.append(int(tokens[4][0:2],16))
+            output.append(int(tokens[4][2:4],16))
+            print("Added word {} val {} at {}".format(tokens[2],tokens[4],len(output)))
+        else:
+            error("Type {} is not a valid type (byte|word)".format(tokens[1]))    
 
-# Handles a constant, loads it into memory and assigns it a location
-def handleConstant(tokens):
-    if(tokens[0] == "word"):
-        constantTable[tokens[1]] = len(output)
-        output.append(int(tokens[3][2:4],16))
-        output.append(int(tokens[3][4:6],16))
-        print("Created constant of size word pointing to {}".format(len(output)-2))
-    elif(tokens[0] == "byte"):
-        constantTable[tokens[1]] = len(output)
-        output.append(int(tokens[3][2:4],16))
-        print("Created variable of size byte pointing to {}".format(len(output)-1))   
-    else:
-        error("Invalid size given: {}".format(tokens[0]))    
-    return 0
 
-def handleVariable(tokens):
-    if(tokens[1] == "word"):
-        output.append(int(tokens[4][2:4],16))
-        output.append(int(tokens[4][4:6],16))
-
-        if(tokens[2] not in variableTable):
-            variableTable[tokens[2]] = len(output)-2
-
-        print("Created variable of size word pointing to {}".format(len(output)-2))
-
-    elif(tokens[1] == "byte"):
-        output.append(int(tokens[4][2:4],16))   
-
-        if(tokens[2] not in variableTable):
-            variableTable[tokens[2]] = len(output)-1
-
-        print("Created variable of size byte pointing to {}".format(len(output)-1))
-
-    else:
-        error("Invalid size given: {}".format(tokens[0]))
-    return 0
 
 #im garbage fix me
 def handleOpcode(tokens):
@@ -235,8 +214,15 @@ def assemble(tokens):
 
 #Writes an error to the console. Stops exectuion
 def error(msg):
-    print("Error on line {} : {} ".format(currentLine,msg))
+    print("[Error] line {} : {} ".format(currentLine,msg))
     sys.exit()
+
+#Writes a warning to the console
+def warning(msg):
+    print("[Warning] line {} : {}".format(currentLine,msg))
+
+
+
 
 def main():
     if(len(sys.argv) < 2):
