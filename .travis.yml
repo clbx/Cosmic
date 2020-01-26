@@ -25,6 +25,7 @@ matrix:
         - tar -xf SDL2-devel-2.0.10-mingw.tar.gz -C /lib
         - PATH=$PATH:/lib
         - choco install make
+        - cat \c\ProgramData\chocolatey\logs\chocolatey.log
     - os: osx
       before_install:
         - brew update
