@@ -19,6 +19,7 @@ SOURCES += lib/gl3w/GL/gl3w.c
 CXXFLAGS += -Ilib/gl3w
 
 ifeq ($(UNAME_S), Linux) #LINUX
+	echo "Starting Build for Linux"
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl `sdl2-config --libs`
 
@@ -27,6 +28,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 endif
 
 ifeq ($(UNAME_S), Darwin) #APPLE
+	echo "Starting Build for macOS"
 	ECHO_MESSAGE = "macOS"
 	LIBS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
 	LIBS += -L/usr/local/lib -L/opt/local/lib
@@ -37,11 +39,11 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 endif
 
 ifeq ($(findstring MINGW,$(UNAME_S)),MINGW)
-   ECHO_MESSAGE = "MinGW"
-   LIBS += -lgdi32 -lopengl32 -limm32 `pkg-config --static --libs sdl2`
-
-   CXXFLAGS += -Ilibs/gl3w `pkg-config --cflags sdl2` -lmingw32 -lSDL2main -lSDL2 -mwindows
-   CFLAGS = $(CXXFLAGS)
+	echo "Starting Build for Windows (MinGW)"
+	ECHO_MESSAGE = "MinGW"
+	LIBS += -lgdi32 -lopengl32 -limm32 `pkg-config --static --libs sdl2`
+	CXXFLAGS += -Ilibs/gl3w `pkg-config --cflags sdl2` -lmingw32 -lSDL2main -lSDL2 -mwindows
+	CFLAGS = $(CXXFLAGS)
 endif
 
 ##---------------------------------------------------------------------
