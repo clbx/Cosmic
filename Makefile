@@ -55,12 +55,12 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/imgui/%.cpp
-	@echo $(ARCH)
+	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/gl3w/GL/%.c
-	@echo $(ARCH)
+	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
 
@@ -69,8 +69,10 @@ all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
 
 $(EXE): $(OBJS)
+	@echo $(ECHO_MESSAGE)
 	$(CXX) -o $@ $(BINS) $(CXXFLAGS) $(LIBS)
 	rm -f imgui.ini
 
 clean:
+	@echo $(ECHO_MESSAGE)
 	rm -f $(EXE) $(OBJS)
