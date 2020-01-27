@@ -8,6 +8,7 @@ VPATH = src:bin
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
+ARCH := $(shell gcc -dumpmachine)
 
 CXXFLAGS = -Ilib/imgui
 CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
@@ -36,12 +37,12 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	CFLAGS = $(CXXFLAGS)
 endif
 
-ifeq ($(findstring MINGW,$(UNAME_S)),MINGW)
-   ECHO_MESSAGE = "MinGW"
-   LIBS += -lgdi32 -lopengl32 -limm32 `pkg-config --static --libs sdl2`
 
-   CXXFLAGS += -Ilibs/gl3w `pkg-config --cflags sdl2` -lmingw32 -lSDL2main -lSDL2 -mwindows -Wall
-   CFLAGS = $(CXXFLAGS)
+ifeq ($(ARCH),x86_64-w64-mingw32)
+	ECHO_MESSAGE = "MinGW"
+	LIBS += -lgdi32 -lopengl32 -limm32
+	CXXFLAGS += -Ilibs/gl3w -I/lib -lmingw32 -lSDL2main -lSDL2 -mwindows -static-libgcc -static-libstdc++ -lpthread
+	CFLAGS = $(CXXFLAGS)
 endif
 
 ##---------------------------------------------------------------------
@@ -50,18 +51,17 @@ endif
 
 
 %.o:%.cpp
-	mkdir -p bin
-	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
-
-%.o:%.cpp
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/imgui/%.cpp
+	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/gl3w/GL/%.c
+	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
 
@@ -70,8 +70,11 @@ all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
 
 $(EXE): $(OBJS)
+	@echo $(ARCH)
 	$(CXX) -o $@ $(BINS) $(CXXFLAGS) $(LIBS)
+	ls -al
 	rm -f imgui.ini
 
 clean:
+	@echo $(ECHO_MESSAGE)
 	rm -f $(EXE) $(OBJS)
