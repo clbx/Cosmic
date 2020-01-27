@@ -82,9 +82,12 @@ Be sure to add both MinGW and SDL2.dll to your path
 Get [Chocolatey](https://chocolatey.org/install) if you don't have it already, it helps for installing tools
 
 Install MinGW ``choco install mingw``
+
 Install make ``choco install make``
 
+
 Download SDL2 Development Library
+
 Untar SDL to the MinGW install directory
 
 ```
