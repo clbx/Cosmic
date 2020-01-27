@@ -46,3 +46,4 @@ deploy:
   draft: true
   on:
     branch: travis
+    tags: true
