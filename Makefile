@@ -39,7 +39,7 @@ endif
 
 ifeq ($(ARCH),x86_64-w64-mingw32)
 	ECHO_MESSAGE = "MinGW"
-	LIBS += -lgdi32 -lopengl32 -limm32 `pkg-config --static --libs sdl2`
+	LIBS += -lgdi32 -lopengl32 -limm32
 	CXXFLAGS += -Ilibs/gl3w -I/lib -lmingw32 -lSDL2main -lSDL2 -mwindows -static-libgcc -static-libstdc++ -static
 	CFLAGS = $(CXXFLAGS)
 endif
