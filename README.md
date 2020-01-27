@@ -59,7 +59,6 @@ Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank)
 
 ### Linux
 Install ``SDL2`` using your distributions package manager
-Go into the Project directory
 ```
 make
 ```
