@@ -23,8 +23,9 @@ matrix:
         - echo $UNAME_S
         - mkdir /lib
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
-        - tar -xf SDL2-devel-2.0.10-mingw.tar.gz -C /lib
-        - PATH=$PATH:/lib
+        - tar -xf SDL2-devel-2.0.10-mingw.tar.gz
+        - cd SDL2-2.0.10
+        - where gcc
         - choco install make -version 4.3
     - os: osx
       before_install:
