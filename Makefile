@@ -50,12 +50,7 @@ endif
 
 
 %.o:%.cpp
-	@echo $(ARCH)
-	mkdir -p bin
-	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
-
-%.o:%.cpp
-	@echo $(ARCH)
+	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
