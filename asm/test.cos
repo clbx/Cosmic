@@ -2,3 +2,4 @@ JMP #50
 ADD @50
 var byte name = 75
 var word bigname = 3744
+ADD name
