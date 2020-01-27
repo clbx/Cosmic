@@ -25,7 +25,7 @@ matrix:
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
         - tar -xf SDL2-devel-2.0.10-mingw.tar.gz -C /lib
         - PATH=$PATH:/lib
-        - choco install make
+        - choco install make -version 4.3
         - cat \c\ProgramData\chocolatey\logs\chocolatey.log
     - os: osx
       before_install:
