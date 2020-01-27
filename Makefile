@@ -50,7 +50,7 @@ endif
 
 
 %.o:%.cpp
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
@@ -69,7 +69,7 @@ all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
 
 $(EXE): $(OBJS)
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	$(CXX) -o $@ $(BINS) $(CXXFLAGS) $(LIBS)
 	rm -f imgui.ini
 
