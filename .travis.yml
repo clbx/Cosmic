@@ -19,11 +19,20 @@ matrix:
       before_install:
         - brew update
         - brew install sdl2
-     
-
+    
 script:
 - cd test
 - make
 - ./test
 - cd ..
 - make
+
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_OATH
+  file: "cosmic"
+  skip_cleanup: true
+  on:
+    tags: true
+
