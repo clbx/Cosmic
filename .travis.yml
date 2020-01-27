@@ -41,7 +41,7 @@ script:
 deploy:
   provider: releases
   api_key: $GITHUB_OATH
-  file: "cosmic"
+  file: "cosmic.exe"
   skip_cleanup: true
   draft: true
   on:
