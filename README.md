@@ -58,38 +58,41 @@ Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank)
 ## Installation Instructions
 
 ### Linux
-
-Install SDL2 using your distros package manager
+Install ``SDL2`` using your distributions package manager
+Go into the Project directory
 ```
-cd Cosmic
-cd src
 make
 ```
+
+
 ### Mac
-Install SDL2
+Install SDL2 using brew. Get brew [here](brew.sh) if you don't already have it. 
 ```
 brew install sdl2
-```
-Then make
-```
-cd Cosmic
-cd src
 make
 ```
 
-### Windows (Unsupported)
-Windows requires MSYS2/MinGW
-Install the following packages:
-```
-pacman -S git mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_ttf mingw64/mingw-w64-x86_64-SDL2_net mingw64/mingw-w64-x86_64-cmake make
-```
-Add MinGW to your Path
+### Windows 
+_Windows is not offically supported. The tests run, the binary builds, we've tested it to make sure it executes, but thats about it_
+
+A pre-compiled binary can be downloaded from the release page. You will still need to install MinGW and SDL2
+Be sure to add both MinGW and SDL2.dll to your path
+
+**Compilation Instructions:**
+
+Get [Chocolatey](https://chocolatey.org/install) if you don't have it already, it helps for installing tools
+
+Install MinGW ``choco install mingw``
+Install make ``choco install make``
+
+Download SDL2 Development Library
+Untar SDL to the MinGW install directory
 
 ```
-cd Cosmic
-cd src
 make
 ```
+
+
 
 ----
 
