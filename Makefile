@@ -71,6 +71,7 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	@echo $(ARCH)
 	$(CXX) -o $@ $(BINS) $(CXXFLAGS) $(LIBS)
+	ls -al
 	rm -f imgui.ini
 
 clean:
