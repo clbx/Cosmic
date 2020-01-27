@@ -8,6 +8,7 @@ VPATH = src:bin
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
+ARCH := $(shell gcc -dumpmachine)
 
 CXXFLAGS = -Ilib/imgui
 CXXFLAGS += -g -Wall -Wformat -Wno-unknown-pragmas
@@ -49,22 +50,22 @@ endif
 
 
 %.o:%.cpp
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:%.cpp
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/imgui/%.cpp
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/gl3w/GL/%.c
-	@echo $(ECHO_MESSAGE)
+	@echo $(ARCH)
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
 
