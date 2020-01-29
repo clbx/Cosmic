@@ -51,17 +51,14 @@ endif
 
 
 %.o:%.cpp
-	@echo $(ARCH)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/imgui/%.cpp
-	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/gl3w/GL/%.c
-	@echo $(ECHO_MESSAGE)
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
 
@@ -70,9 +67,7 @@ all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
 
 $(EXE): $(OBJS)
-	@echo $(ARCH)
 	$(CXX) -o $@ $(BINS) $(CXXFLAGS) $(LIBS)
-	ls -al
 	rm -f imgui.ini
 
 clean:
