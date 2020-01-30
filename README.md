@@ -96,6 +96,10 @@ make
 
 
 
+### Assembler
+
+The assembler is written in Python, so if you plan on assembling anything for Cosmic, Python 3 is required
+
 ----
 
 ``/lib`` contains some included software:
