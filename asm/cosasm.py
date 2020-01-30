@@ -119,14 +119,18 @@ def getAddrMode(tokens):
     instruction = " ".join(tokens)
     if(impliedPattern.match(instruction)):
         return 0
-    if(immmediatePattern.match(instruction)):
+    
+    elif(immmediatePattern.match(instruction)):
         return 1
+    #Register is moved out front because absolute was shorting it, since it technically fits the regex.
+    #I should be fixed somehow as well.
+    elif(registerPattern.match(instruction)):
+        return 4
     elif(absolutePattern.match(instruction)):
         return 2
     elif(indirectPattern.match(instruction)):
         return 3
-    elif(registerPattern.match(instruction)):
-        return 4
+   
     else:
         return -1
 
@@ -173,10 +177,32 @@ def checkVar(tokens):
     #Check if it's a MOV instruciton, if it is the variables could be in different places and an extra place
     #Come back to me and add for addressing modes
     if('MOV' in tokens[0]):
-        if(tokens[1] in variableTable):
-            tokens[1] = str(variableTable[tokens[1]])
+
+        dstAddrMode = getAddrMode(tokens[0] + tokens[2])
+        srcAddrMode = getAddrMode(tokens[0] + tokens[1])
+        
+        dstOperator = ""
+        dstOperand = ""
+        srcOperator = ""
+        srcOperand = ""
+
+        if(dstAddrMode == 0 or dstAddrMode == 2):
+            dstOperand = tokens[2]
+        else:
+            dstOperator = tokens[2][0]
+            dstOperand = tokens[2][1:]
+
+        if(srcAddrMode == 0 or srcAddrMode == 2):
+            srcOperand = tokens[1]
+        else:
+            srcOperator = tokens[1][0]
+            srcOperand = tokens[1][1:]
+
+
+        if(dstOperand in variableTable):
+            tokens[1] = str(srcOperator) + str(variableTable[srcOperand])
         if(tokens[2]) in variableTable:
-            tokens[2] = str(variableTable[tokens[2]])
+            tokens[2] =  str(dstOperator) + str(variableTable[dstOperand])
 
         return tokens
 
@@ -198,14 +224,10 @@ def checkVar(tokens):
         if(hexNumberPattern.match(operand)):
             return tokens
 
-        print(operator)
-        print(operand)
-        print(addrmode)
-
         #Check if it's a jump to check for lables, Jumps should be the only opcode using labels
         if(tokens[0] in Jumps):
             if(operand in labelTable):
-                tokens[1] = str(labelTable[operand])
+                tokens[1] = str(operator) + str(labelTable[operand])
                 return tokens
             else:
                 error("Label {} not in label table".format(operand))
@@ -237,45 +259,52 @@ def handleOpcode(tokens):
     print("TOKENS" + str(tokens))
     #handle the rest here
     #if its a mov
-    if(tokens[0] in Moves):
-        dstMode = getAddrMode(tokens[0] + " " + tokens[2])
-        srcMode = getAddrMode(tokens[0] + " " + tokens[1])
+    if("MOV" in tokens[0]):
+        dstMode = getAddrMode([tokens[0],tokens[2]])
+        srcMode = getAddrMode([tokens[0],tokens[1]])
+
+
         dstOperand = ""
         srcOperand = ""
 
         #Fix me too PLEASE
         if(dstMode == 1):
             dstMode = 0
+        
         if(srcMode == 1):
             srcMode = 0
-        elif(dstMode == 2):
+        
+        if(dstMode == 2):
             dstMode = 1
-        elif(srcMode == 2):
+        
+        if(srcMode == 2):
             srcMode = 1
-        elif(dstMode == 3):
+        
+        if(dstMode == 3):
             dstMode = 2
-        elif(srcMode == 3):
+        
+        if(srcMode == 3):
             srcMode = 2
-        elif(dstMode == 4):
+        
+        if(dstMode == 4):
             dstMode = 3
-        elif(srcMode == 4):
+        
+        if(srcMode == 4):
             srcMode = 3
 
-        if(dstMode == 0 or dstMode == 2):
+        if(dstMode == 0 or dstMode == 1):
             dstOperand = tokens[2]
         else:
             dstOperand = tokens[2][1:]
         
-        if(srcMode == 0 or srcMode == 2):
+        if(srcMode == 0 or srcMode == 1):
             srcOperand = tokens[1]
         else:
-            srcOperand = tokens[1][1:]
+            srcOperand = tokens[1][1:]         
 
         #This will need to be improved to allow for 16 bit operations. though preferably when im not tired
-
         output.append(MovSet[dstMode][srcMode])
-
-        if(srcMode == 2 or srcMode == 3):
+        if(srcMode == 1 or srcMode == 2):
             val = int(srcOperand,16)
             output.append((val >> 8) & 0xFF)
             output.append((val & 0xFF))
@@ -283,7 +312,7 @@ def handleOpcode(tokens):
             output.append(int(srcOperand,16))
 
 
-        if(dstMode == 2 or dstMode == 3):
+        if(dstMode == 1 or dstMode == 2):
             val = int(dstOperand,16)
             output.append((val >> 8) & 0xFF)
             output.append((val & 0xFF))
@@ -299,7 +328,16 @@ def handleOpcode(tokens):
         
         #Done because i changed how it return addr mode.
         #fix me later PLEASE
+        '''
+        before i forget. it was changed so that I could reference the position in the
+        instruction set lists, but that fucks up what on line 339 with getting the prefix in
+        so I changed the prefix, so now it works, but it's really just a band-aid. A more solid
+        solution will need to be made.
+        '''
         addrmode = getAddrMode(tokens)
+
+        print(addrmode)
+
         if(addrmode == 1):
             addrmode = 0
         elif(addrmode == 2):
@@ -311,10 +349,17 @@ def handleOpcode(tokens):
 
         output.append(InstructionSet[tokens[0]][addrmode])
         
-        if(addrmode == 0 or addrmode == 2):
+        if(len(tokens) == 1):
+            return
+
+        print("addr:" + str(addrmode))
+        if(addrmode == 1):
             operand = tokens[1]
         else:
             operand = tokens[1][1:]
+
+        print(tokens)
+        
 
         #Need to pad for 16 bit instructions        
         if(tokens[0] in x16Instructions):
