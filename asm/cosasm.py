@@ -17,9 +17,9 @@ output = bytearray()
 bitnessPattern = re.compile("[A-Z]{3}[X].*$")
 #Addressing Modes
 impliedPattern = re.compile("[A-Z]{3,4}$")
-immmediatePattern = re.compile("[A-Z]{3,4} [#][0-9,A-Z,a-z]{1,4}$")
-absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-Z,a-z]{1,4}$")
-indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-Z,a-z]{1,4}$")
+immmediatePattern = re.compile("[A-Z]{3,4} [#][0-9,A-Z,a-z]{1,}$")
+absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-Z,a-z]{1,}$")
+indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-Z,a-z]{1,}$")
 registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
 constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
 variablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
@@ -60,6 +60,9 @@ InstructionSet = {
     'OR':[0x54,0x55,0x56,0x57],
     'XOR':[0x58,0x59,0x5A,0x5B],
     'CMP':[0x60,0x61,0x62,0x63],
+    'CMPX':[0x64,0x65,0x66,0x67],
+    'INC':[0x68,0x69,0x6A,0x6B],
+    'DEC':[0x6C,0x6D,0x6E,0x6F],
     'JMP':[0x70,0x71,0x72,0x73],
     'JZS':[0x74,0x75,0x76,0x77],
     'JNZ':[0x78,0x79,0x7A,0x7B],
@@ -70,7 +73,9 @@ InstructionSet = {
     'JNS':[0x8C,0x8D,0x8E,0x8F],
     'JNN':[0x90,0x91,0x92,0x93],
     'JLS':[0x94,0x95,0x96,0x97],
-    'JNL':[0x98,0x99,0x9A,0x9B]
+    'JNL':[0x98,0x99,0x9A,0x9B],
+    'MOV':[0xFF],
+    'MOVX':[0xFF]
 }
 
 #All of the instructions that use 16 bit operands
@@ -87,15 +92,27 @@ Jumps  = {
 }
 
 #All of the move instructions
-MovSet = {
-    'MOVA':[0x30,0x31,0x32,0x33], #Moving to an Absolute Location
-    'MOVI':[0x34,0x35,0x36,0x37], #Moving to an Indirect Location
-    'MOVR':[0x38,0x39,0x3A,0x3B], #Moving to a Register
-    'MOVXA':[0x40,0x41,0x42,0x43], #Moving 16 bits to an Absolute Location
-    'MOVXI':[0x44,0x45,0x46,0x47], #Moving 16 bits to an Indirect Location
-    'MOVXR':[0x48,0x49,0x4A,0x4B]  #Moving 16 bits to a register
+Moves = {
+    'MOVA','MOVI','MOVR'
 }
 
+Movesx16 = {
+    'MOVXA','MOVXI','MOVXR'
+}
+
+MovSet = [
+    [0xFF],                #This is to pad out immediate
+    [0x30,0x31,0x32,0x33], #MOVA Moving to an Absolute Location
+    [0x34,0x35,0x36,0x37], #MOVI Moving to an Indirect Location
+    [0x38,0x39,0x3A,0x3B]  #MOVR Moving to a Register
+]
+
+MovSetx16 = [
+    [0xFF],
+    [0x40,0x41,0x42,0x43], #MOVXA Moving 16 bits to an Absolute Location
+    [0x44,0x45,0x46,0x47], #MOVXI Moving 16 bits to an Indirect Location
+    [0x48,0x49,0x4A,0x4B]  #MOVXR Moving 16 bits to a register
+]
     
 #Returns the addressing mode
 def getAddrMode(tokens):
@@ -119,7 +136,7 @@ Goes through the assembly code and picks out any variable declarations, then add
 them to the front of the program to be used later
 '''
 def getVariables(tokens):
-    if(tokens[1] == "byte" or tokens[1] == "word"):
+    if(tokens[0] == "var"):
         if(tokens[2] in variableTable):
             error("Variable {} already initalized".format(tokens[2]))   
         if(tokens[1] == "byte"):
@@ -128,8 +145,9 @@ def getVariables(tokens):
             print("Added byte var {} val {} at {}".format(tokens[2],tokens[4],len(output)))
         elif(tokens[1] == "word"):
             variableTable[tokens[2]] = len(output)
-            output.append(int(tokens[4][0:2],16))
-            output.append(int(tokens[4][2:4],16))
+            val = int(tokens[4],16)
+            output.append((val >> 8) & 0xff)
+            output.append((val & 0xff))
             print("Added word {} val {} at {}".format(tokens[2],tokens[4],len(output)))
         else:
             error("Type {} is not a valid type (byte|word)".format(tokens[1]))     
@@ -144,6 +162,7 @@ def handleLabel(tokens):
     if(label in labelTable):
         error("Label {} alread in label table".format(label))
     else:
+        print("Added label {} to the label table".format(label))
         labelTable[label] = len(output)
 
 '''
@@ -152,8 +171,15 @@ Don't touch it otherwise
 '''
 def checkVar(tokens):
     #Check if it's a MOV instruciton, if it is the variables could be in different places and an extra place
+    #Come back to me and add for addressing modes
     if('MOV' in tokens[0]):
-        print("not implementing this yet")
+        if(tokens[1] in variableTable):
+            tokens[1] = str(variableTable[tokens[1]])
+        if(tokens[2]) in variableTable:
+            tokens[2] = str(variableTable[tokens[2]])
+
+        return tokens
+
     #For all the other opcodes
     else:
         #We want to break down the operand, so we want to separate the #,R or @ from the rest of the operand
@@ -162,22 +188,24 @@ def checkVar(tokens):
         operator = ""
         operand = ""
 
+
         if(addrmode == 0 or addrmode == 2):
             operand = tokens[1]
         else:
             operator = tokens[1][0]
             operand = tokens[1][1:]
-        print(addrmode)
-        print(operand)
-        print(operator)
         #If the operand is a hex number, we can hop off the bus now
         if(hexNumberPattern.match(operand)):
             return tokens
 
+        print(operator)
+        print(operand)
+        print(addrmode)
+
         #Check if it's a jump to check for lables, Jumps should be the only opcode using labels
         if(tokens[0] in Jumps):
             if(operand in labelTable):
-                tokens[1] = labelTable[operand]
+                tokens[1] = str(labelTable[operand])
                 return tokens
             else:
                 error("Label {} not in label table".format(operand))
@@ -208,6 +236,96 @@ def handleOpcode(tokens):
     tokens = checkVar(tokens)
     print("TOKENS" + str(tokens))
     #handle the rest here
+    #if its a mov
+    if(tokens[0] in Moves):
+        dstMode = getAddrMode(tokens[0] + " " + tokens[2])
+        srcMode = getAddrMode(tokens[0] + " " + tokens[1])
+        dstOperand = ""
+        srcOperand = ""
+
+        #Fix me too PLEASE
+        if(dstMode == 1):
+            dstMode = 0
+        if(srcMode == 1):
+            srcMode = 0
+        elif(dstMode == 2):
+            dstMode = 1
+        elif(srcMode == 2):
+            srcMode = 1
+        elif(dstMode == 3):
+            dstMode = 2
+        elif(srcMode == 3):
+            srcMode = 2
+        elif(dstMode == 4):
+            dstMode = 3
+        elif(srcMode == 4):
+            srcMode = 3
+
+        if(dstMode == 0 or dstMode == 2):
+            dstOperand = tokens[2]
+        else:
+            dstOperand = tokens[2][1:]
+        
+        if(srcMode == 0 or srcMode == 2):
+            srcOperand = tokens[1]
+        else:
+            srcOperand = tokens[1][1:]
+
+        #This will need to be improved to allow for 16 bit operations. though preferably when im not tired
+
+        output.append(MovSet[dstMode][srcMode])
+
+        if(srcMode == 2 or srcMode == 3):
+            val = int(srcOperand,16)
+            output.append((val >> 8) & 0xFF)
+            output.append((val & 0xFF))
+        else:
+            output.append(int(srcOperand,16))
+
+
+        if(dstMode == 2 or dstMode == 3):
+            val = int(dstOperand,16)
+            output.append((val >> 8) & 0xFF)
+            output.append((val & 0xFF))
+        else:
+            output.append(int(dstOperand,16))
+
+
+
+    #otherwise
+    else:
+        if(tokens[0] not in InstructionSet):
+            error("Unknown opcode {}".format(tokens[0]))
+        
+        #Done because i changed how it return addr mode.
+        #fix me later PLEASE
+        addrmode = getAddrMode(tokens)
+        if(addrmode == 1):
+            addrmode = 0
+        elif(addrmode == 2):
+            addrmode = 1
+        elif(addrmode == 3):
+            addrmode = 2
+        elif(addrmode == 4):
+            addrmode = 3
+
+        output.append(InstructionSet[tokens[0]][addrmode])
+        
+        if(addrmode == 0 or addrmode == 2):
+            operand = tokens[1]
+        else:
+            operand = tokens[1][1:]
+
+        #Need to pad for 16 bit instructions        
+        if(tokens[0] in x16Instructions):
+            val = int(operand,16)
+
+            output.append((val >> 8) & 0xFF)
+            output.append((val & 0xFF))
+        else:
+            output.append(int(operand[1],16))
+
+
 
         
 
@@ -216,7 +334,7 @@ def handleOpcode(tokens):
 
 def assemble(tokens):
     #It can be a label, lables always end with ":"
-    if(tokens[0][:-1] == ":"):
+    if(tokens[0][-1:] == ":"):
         handleLabel(tokens)
     #If its an opcode
     elif(opcodePattern.match(" ".join(tokens))):
@@ -225,7 +343,7 @@ def assemble(tokens):
     elif(tokens[0][0] == ";"):
         pass
     #If its a variable assignement skip it
-    elif(tokens[1] == "byte" or tokens[1] == "word"):
+    elif(tokens[0] == "var"):
         pass
     else:
         error("Unknown thing")

@@ -1,5 +1,6 @@
-JMP #50
-ADD @50
-var byte name = 75
-var word bigname = 3744
-ADD name
+start:
+    var word counterLoc = 1
+jumpback:
+    ADD #1
+    MOV counterLoc 55
+    JMP jumpback
