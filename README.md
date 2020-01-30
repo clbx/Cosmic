@@ -27,10 +27,10 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 <sub>* in deveopment</sub>
 
 #### What is Cosmic?
+* A great educational tool to teach how processors work and assembly language
 * A very interesting project
 * A Proof of Concept
 * Kinda cool
-* A good way to learn assembly and how processors work
 * Fun to play with
 * Made by two guys learning as they went along
 
