@@ -64,7 +64,7 @@ make
 ```
 
 
-### Mac
+### macOS
 Install SDL2 using brew. Get brew [here](brew.sh) if you don't already have it. 
 ```
 brew install sdl2
