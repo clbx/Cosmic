@@ -42,13 +42,7 @@
 
 ## Memory Mapping
 
-It is always assumed that 64K of memory is being used. No reason to not have all addressable memory.
-
-things that need to be in it
-
-* Video Memory
-* ROM
-* Addressing stuff
+It is always assumed that 64K of memory is being used. No reason to not have all addressable memory availble.
 
 Current Memory Map (highly subject to change)
 ```
@@ -60,20 +54,26 @@ Current Memory Map (highly subject to change)
         │      Usage Space      │
         │                       │
         │                       │
+        |                       |
+        |                       |
+        |                       |
         │                       │
         │                       │		
 0x8000  ├───────────────────────┤
         │                       │		
         │   16k Video Memory    │
+        |                       |
         │                       │		 
 0xC000	├───────────────────────┤
         │    1k Stack Space     │
 0xC400  ├───────────────────────┤
         │     1k I/O Space    	│
 0xC800	├───────────────────────┤
+        │   5k Variable Space   │
         │                       │
-        │    13k Empty Space    │
-        │                       │
+0xCD00  |-----------------------|
+        │    7k Empty Space     │
+        |                       |
 0xFFF0  ├───────────────────────┤
         │  8 Byte Vector Space  │
 0xFFFF	└───────────────────────┘
