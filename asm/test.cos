@@ -1,10 +1,8 @@
-byte deez = 25
-byte tiddies = 50
-word test = 555
-ADD 50
-MOV 45 95
-SHL 44
-SHL AF
-PUSH 6969
-POP
-MOV deez tiddies
+byte counter = 0
+start:
+    ADD #10
+    MOV R0 counter
+loop:
+    ADD #5 counter
+    MOV #FF @counter
+    JMP loop

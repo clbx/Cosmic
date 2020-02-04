@@ -46,18 +46,18 @@ InstructionSet = {
     "ABS DIVX":"0x2D",
     "IND DIVX":"0x2E",
     "REG DIVX":"0x2F",
-    "IMM MOV":"0x30",
-    "ABS MOV":"0x31",
-    "IND MOV":"0x32",
-    "REG MOV":"0x33",
-    "IMM MOV":"0x34",
-    "ABS MOV":"0x35",
-    "IND MOV":"0x36",
-    "REG MOV":"0x37",
-    "IMM MOV":"0x38",
-    "ABS MOV":"0x39",
-    "IND MOV":"0x3A",
-    "IMM MOV":"0x3B",
+    "IMM ABS MOV":"0x30",
+    "ABS ABS MOV":"0x31",
+    "IND ABS MOV":"0x32",
+    "REG ABS MOV":"0x33",
+    "IMM IND MOV":"0x34",
+    "ABS IND MOV":"0x35",
+    "IND IND MOV":"0x36",
+    "REG IND MOV":"0x37",
+    "IMM REG MOV":"0x38",
+    "ABS REG MOV":"0x39",
+    "IND REG MOV":"0x3A",
+    "REG REG MOV":"0x3B",
     "IMM SHL":"0x3C",
     "ABS SHL":"0x3D",
     "IND SHL":"0x3E",
@@ -177,6 +177,7 @@ opcodePattern = re.compile("[A-Z,a-z]{3,4}( [#,@,R]?[0-9,A-F]{1,}([ ][#,@,R]?[0-
 #   "counter" = [5,5]
 #}
 variableTable = {} #Where all variables are stored
+labelTable = {} #Where all labels are stored
 output = bytearray() #The amount of usable bytes for program data size 32768
 variables = bytearray() #The mount of usable bytes for variables size 5120
 currentLine = 0 #Current line of assembly
@@ -200,10 +201,12 @@ def getAddrMode(token):
         return "ABS"
 
 #Helper function for adding large variables to the variable table
-def addToVariables(value):
-    val = int(value)
-    bytesNeeded = int(math.ceil((val.bit_length())/8))
-    variables.extend(val.to_bytes(bytesNeeded,byteorder="big"))
+def addToVariables(value, size=0):
+    val = int(str(value),16)
+    if(size == 0):
+        size = int(math.ceil((val.bit_length())/8))
+    byteArr = val.to_bytes(size,byteorder="big")
+    variables.extend(byteArr)
     
     
 #Variable Creation: <type> <name> = <value>
@@ -218,14 +221,14 @@ def createVar(tokens):
         identifier = tokens[1]
         value = int(tokens[3],16)
         variableTable[identifier] = [len(variables),1]
-        addToVariables(value)
+        addToVariables(value,1)
         return
     #word points = 50
     elif (tokens[0] == "word"):
         identifier = tokens[1]
         value = tokens[3]
         variableTable[identifier] = [len(variables),2]
-        addToVariables(value)
+        addToVariables(value,2)
     else:
         error("Unknown type {}".format(tokens[0]))
 
@@ -246,27 +249,33 @@ def resolveVariables(tokens):
             operator = tokens[i][0]
 
         if(operand in variableTable):
-            print("HIT")
-            print(variables[variableTable[operand][0]])
+
+            #print(variables[variableTable[operand][0]])
+
 
             if(variableTable[operand][1] > 2):
                 warning("Variable {} is larger than opcode can handle".format(operand))
-            for j in range(variableTable[operand][1]): #Add all of the opcode
+            for j in range(variableTable[operand][1]): #Add all of the operand
                 newoperand += str(variables[variableTable[operand][0] + j])
-            tokens[i] = operator + newoperand
-        print("TOK " + tokens[i])
+            tokens[i] = operator + str(int(newoperand) + 0xC800)
 
-    print(tokens)
+        if(operand in labelTable):
+            operand = labelTable[operand]
+            tokens[i] = str(operator) + str(operand)
+
     return tokens
 
 def handleLabel(tokens):
-    print("handling label")  
+    label = tokens[0][:-1]
+    labelTable[label] = len(output)
+    
 
 def updateVar(tokens):
     print("Updating variable")
 
 #maybe replace with regex if we're feeling brave
 def assemble(tokens):
+    #print(tokens)
     #If its variable creation:
     if(tokens[0] in types and tokens[2] == "="):
         createVar(tokens)
@@ -276,7 +285,7 @@ def assemble(tokens):
         updateVar(tokens)
 
     #If its a label
-    elif(tokens[0][:-1] == ":"):
+    elif(tokens[0][-1] == ":"):
         handleLabel(tokens)
 
     #If its a comment
@@ -286,121 +295,123 @@ def assemble(tokens):
     #Else its an opcode
     else: 
         tokens = resolveVariables(tokens)
-        print(tokens)
-        eval(tokens[0])(tokens)
+        try:
+            eval(tokens[0])(tokens)
+        except NameError:
+            error("Unknown Input {}".format(tokens))
 
 
         
 
 # -= INSTRUCTION FUNCTIONS =- #
 def NOP(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def HCF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def PUSH(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def POP(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SWP(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CALL(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def RET(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def ADD(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def ADDX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SUB(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SUBX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def MUL(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def MULX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def DIV(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def DIVX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def MOV(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SHL(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def MOVX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SHLX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def AND(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def OR(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def XOR(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SHR(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CMP(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CMPX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def INC(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def INCX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def DEC(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def DECX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SHRX(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JMP(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JZS(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNZ(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JCS(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNC(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JOS(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNO(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNS(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNN(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JLS(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def JNL(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CSF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CZF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SZF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CNF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SNF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def COF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SOF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CCF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SCF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CLF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SLF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def CIF(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 def SI(tokens):
-    print(tokens)
+    print("Unimplemented Instruction {}".format(tokens))
 
 #Writes an error to the console. Stops exectuion
 def error(msg):
@@ -412,6 +423,8 @@ def warning(msg):
     print("[Warning] line {} : {}".format(currentLine,msg))
 
 def main():
+    global currentLine
+
     if(len(sys.argv) < 2):
         print("Usage: cosasm <input file> <output file>")
         return -1
@@ -421,24 +434,25 @@ def main():
     instructions = list(inputFile)
     inputFile.close()
 
-    print("Read " + str(len(instructions)) + " lines\n")
+    print("Read " + str(len(instructions)) + " lines")
     
 
-    #-= Pass 2: Add Instructions =-#
+    #-= Go through the file =-#
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         assemble(tokens)
+        currentLine += 1
 
-    print(variableTable)
 
 
-    print("\n\n-= Output: =-")
+    print("\n-= Output: =-")
     for i in range(0, len(output)):
-        print(hex(output[i]))
-    
-    print('\n\n-= Var Table: =-')
+        print(hex(output[i]),end=" ")
+    print("")
+    print('\n-= Var Table: =-')
     for i in range(0 , len(variables)):
-        print(hex(variables[i]))
+        print(hex(variables[i]),end=" ")
+    print("")
     #outputFile = open('output.bin','w+b')
     #outputFile.write(output)
     #outputFile.close()
