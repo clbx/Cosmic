@@ -9,19 +9,18 @@ Some current limitations of the Assembler:
 
 ----
 ## General Usage
+**Python 3 must be used** ~~you should be using it anyway~~
 
 Usage: ``python cosasm <source-file> <output-file>``
-If the output file is not included a file called ``output.bin`` will be created
+If the output file is not specified a file called ``output.bin`` will be created
 
 ### Statements
 A statement consists of one valid instruction and it's operands. Only one instruction is allowed per line
 
 ```
-ADD #50
-```
-Only a comment can be on the same line as an instruction
-```
-ADD #50 ;Add 50
+label:
+    ADD #50
+    ;comment
 ```
 
 ### Addressing Modes
@@ -48,8 +47,7 @@ start:
     SUB #50
     JMP start
 ```
-
-Variables are put into the 1k variable space between ``0xC000`` and ``0xCFFF`` 
+ 
 
 ### Pre Defined Lables:
 Some labels translate to specific machine functions
@@ -74,26 +72,19 @@ HighestValue.low = 0x05
 
 ### Variables and Constants
 
-A constant cannot change, a variable is a specified place in memory that can be changed
 
-To define a constant
+To define a variable of size word
 ```
-word myConstant = 0x1010
-```
-To define a variable
-```
-var word myVariable = 0x0000
+word myVariable = FFFF
 ```
 
-On assembly variables all variables will be put at the top of memory and a ``jmp`` instruction will be added to go to the beginning of the program.
-
-If 8 bytes worth of variables are defined the memory will look like the following:
+To define a variable of size byte
 
 ```
-   00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
-
-00 70 0A -=  Variables Here  =-  -= Program Starts =- 
+byte myByte = FF
 ```
+
+Variables are put into the 5k variable space between ``0xC800`` and ``0xCD00``
 
 
 ### Comments
@@ -107,3 +98,13 @@ SUB #50
 MUL #50
 
 ```
+
+
+### Debug Table (WIP)
+
+During assembly a debug table is also generated for the Cosmic GUI to read to help with debugging. 
+
+This table has:
+* Line numbers that correlate with memory location to see which instruction is being executed
+* Variable values
+* Detection for if the program counter does not point to a proper opcode
