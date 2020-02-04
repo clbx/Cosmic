@@ -80,11 +80,12 @@ Download SDL2 Development Library
 
 Untar SDL to the MinGW install directory
 
+
 ```
 make
 ```
 
-
+Make sure any missing .dll's are in your path
 
 ### Assembler
 
