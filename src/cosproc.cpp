@@ -79,7 +79,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVRI,"MOV #oper, RX",3};
 	InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
 	InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
-	InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
+	InstructionSet[0x3B] = (Instruction){&cosproc::REG,&cosproc::MOVRR,"MOV RX, RX",3};
 
 	InstructionSet[0x3C] = (Instruction){&cosproc::IMM,&cosproc::SHL,"SHL #oper",2};
 	InstructionSet[0x3D] = (Instruction){&cosproc::ABS,&cosproc::SHL,"SHL oper",3};
