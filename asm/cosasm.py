@@ -62,18 +62,18 @@ InstructionSet = {
     "ABS SHL":"0x3D",
     "IND SHL":"0x3E",
     "REG SHL":"0x3F",
-    "IMM MOVX":"0x40",
-    "ABS MOVX":"0x41",
-    "IND MOVX":"0x42",
-    "REG MOVX":"0x43",
-    "IMM MOVX":"0x44",
-    "ABS MOVX":"0x45",
-    "IND MOVX":"0x46",
-    "REG MOVX":"0x47",
-    "IMM MOVX":"0x48",
-    "ABS MOVX":"0x49",
-    "IND MOVX":"0x4A",
-    "REG MOVX":"0x4B",
+    "IMM ABS MOVX":"0x40",
+    "ABS ABS MOVX":"0x41",
+    "IND ABS MOVX":"0x42",
+    "REG ABS MOVX":"0x43",
+    "IMM IND MOVX":"0x44",
+    "ABS IND MOVX":"0x45",
+    "IND IND MOVX":"0x46",
+    "REG IND MOVX":"0x47",
+    "IMM REG MOVX":"0x48",
+    "ABS REG MOVX":"0x49",
+    "IND REG MOVX":"0x4A",
+    "REG REG MOVX":"0x4B",
     "IMM SHLX":"0x4C",
     "ABS SHLX":"0x4D",
     "IND SHLX":"0x4E",
@@ -193,9 +193,9 @@ types = { #Valid variable types
 def getAddrMode(token):
     if(token[0] == "#"):
         return "IMM"
-    elif(token[0] == "@"):
+    if(token[0] == "@"):
         return "IND"
-    elif(token[0] == "R"):
+    if(token[0] == "R"):
         return "REG"
     else:
         return "ABS"
@@ -224,7 +224,7 @@ def createVar(tokens):
         addToVariables(value,1)
         return
     #word points = 50
-    elif (tokens[0] == "word"):
+    if (tokens[0] == "word"):
         identifier = tokens[1]
         value = tokens[3]
         variableTable[identifier] = [len(variables),2]
@@ -459,5 +459,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
