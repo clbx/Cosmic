@@ -716,7 +716,7 @@ void cosproc:: MOVR(uint16_t src){
 
 /* 0x3B MOV to Register from Register */
 void cosproc::MOVRR(uint16_t src){
-	r[Read(src+1)] = r[Read(src)];
+	r[Read(pc+2)] = r[src];
 }
 
 /* 0x3C-0x3E SHL Shift the Accumulator left from Imm/Abs/Ind */
