@@ -1,0 +1,108 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\graphicspath{{img/}}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{verbatim}
+\usepackage{tabularx}
+
+\usepackage{listings}
+\usepackage{xcolor}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+
+
+
+\title{
+ Cosmic\\Preliminary Simulations and Code}
+
+\author{\IEEEauthorblockN{Clay Buxton}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+buxtonc@etown.edu}
+\and
+\IEEEauthorblockN{Kevin Carman}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+carmank@etown.edu}
+
+}
+
+\maketitle
+
+\section{Overview}
+During the development of Cosmic, special care has been made for the code to follow the goals of the project. Along with that all of the code has been made open source for further education and improvement.
+
+\section{Progress and Plan}
+
+\section{Design Philosophy}
+\subsection{Modularity}
+From the beginning we have been trying to make the project as modular as possible. This is partially to be similar to physical components where each chip has one purpose. However the bigger reason why we designed the system like this is to make it easily extensible to anyone.\\ Two examples of modular design are the bus system, and our execution cycle. Using callbacks, we have a easily callable memory bus that can be used by anything to easily and concurrently write and read to memory. This allows a developer creating a new subsystem to communicate with the rest of the system by just calling the memory read and write functions. 
+
+\begin{lstlisting}[language=C++, caption=Example of the Memory Bus being called]
+Write(0xFF,0x1000); //Writing to Memory
+Read(0x5000) //Reading from Memory
+\end{lstlisting}
+
+The second example, the execution cycle, allows for a developer to easily add new opcodes to the processor in just a few lines of code. All that needs to be added is a entry into the instruction set and a function to execute.
+\begin{lstlisting}[language=C++, caption=Example of instruction set entry and function]
+InstructionSet[0x02] = (Instruction){&cosproc::IMP,&cosproc::PUSH,"PUSH",1};
+
+...
+
+void cosproc::PUSH(uint16_t src){
+	Write(sp,r[0]);
+	sp--;
+}
+\end{lstlisting}
+In addition to the processor, the assembler is also built in a similar fashion. This allows the new opcodes to be easily added to the assembler as well. The modular design of the assembler also ended up being much easier to write and much more flexible. 
+
+\subsection{Readability}
+More emphasis was put on writing code that was readable and easy to understand above performance. The project isn't made to be a high performance application, and there is very little that can be done in the software that will stress a modern computer that would require optimization. Instead readable code accomplishes our desire to made the code easy to understand and extend.
+
+
+\subsection{Automation and Testing}
+
+We have included extensive testing and automatic CI/CD to our project. 
+
+
+\section{Design Implementation}
+
+\section{Example Code}
+
+\end{document}
