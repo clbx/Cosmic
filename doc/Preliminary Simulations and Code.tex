@@ -66,13 +66,16 @@ carmank@etown.edu}
 \maketitle
 
 \section{Overview}
-During the development of Cosmic, special care has been made for the code to follow the goals of the project. Along with that all of the code has been made open source for further education and improvement.
+During the development of Cosmic, special care has been made for the code to follow the goals of the project. Along with that, all of the code has been made open source for further education and improvement.
 
 \section{Progress and Plan}
+Progress has been much slower this semester compared to the last due to an increase in workload. Over the winter break, we reached out to various communities for advise and feedback on our project. They were very interested in helping us succeed and one individual even went as far as helping up rewrite our video out since he had much more experience with OpenGL than we do.
+
+Moving forward, there are a few heavy tasks and a few light tasks that we plan to accomplish before SCAD 2020. The heavy tasks include finishing the assembler, which has proven to be more difficult than we anticipated, fully implement video out, and to explore Raspberry Pi integration. Some of the easier tasks include finishing the last few instruction unit tests, writing small test programs to show off our architecture, and better interrupt handling. All of these tasks and more can be found in our GitHub project page/issues list.
 
 \section{Design Philosophy}
 \subsection{Modularity}
-From the beginning we have been trying to make the project as modular as possible. This is partially to be similar to physical components where each chip has one purpose. However the bigger reason why we designed the system like this is to make it easily extensible to anyone.\\ Two examples of modular design are the bus system, and our execution cycle. Using callbacks, we have a easily callable memory bus that can be used by anything to easily and concurrently write and read to memory. This allows a developer creating a new subsystem to communicate with the rest of the system by just calling the memory read and write functions. 
+From the beginning we have been trying to make the project as modular as possible. This is partially to be similar to physical components where each chip has one purpose. However the bigger reason why we designed the system like this is to make it easily extensible to anyone.\\ Two examples of modular design are the bus system, and our execution cycle. Using callbacks, we have an easily callable memory bus that can be used by anything to easily and concurrently write and read to memory. This allows a developer creating a new subsystem to communicate with the rest of the system by just calling the memory read and write functions. 
 
 \begin{lstlisting}[language=C++, caption=Example of the Memory Bus being called]
 Write(0xFF,0x1000); //Writing to Memory
@@ -93,7 +96,7 @@ void cosproc::PUSH(uint16_t src){
 In addition to the processor, the assembler is also built in a similar fashion. This allows the new opcodes to be easily added to the assembler as well. The modular design of the assembler also ended up being much easier to write and much more flexible. 
 
 \subsection{Readability}
-More emphasis was put on writing code that was readable and easy to understand above performance. The project isn't made to be a high performance application, and there is very little that can be done in the software that will stress a modern computer that would require optimization. Instead readable code accomplishes our desire to made the code easy to understand and extend.
+More emphasis was put on writing code that was readable and easy to understand above performance. The project isn't made to be a high performance application, and there is very little that can be done in the software that will stress a modern computer that would require optimization. Instead, readable code accomplishes our desire to make the code easy to understand and extend.
 
 
 \subsection{Automation and Testing}
