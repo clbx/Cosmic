@@ -363,6 +363,7 @@ void cosproc::ADDX(uint16_t src){
 	uint8_t dataHigh = Read(src);
 	uint8_t dataLow = Read(src+1);
 	uint16_t data = ((dataHigh << 8) | dataLow);
+	uint16_t regs = r[0] << 8 | r[1];
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
 
@@ -371,7 +372,7 @@ void cosproc::ADDX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -383,6 +384,7 @@ void cosproc::ADDX(uint16_t src){
 
 /* 0x17 ADDXR */
 void cosproc::ADDXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -398,7 +400,7 @@ void cosproc::ADDXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -450,8 +452,8 @@ void cosproc::SUBR(uint16_t src){
 void cosproc::SUBX(uint16_t src){
 	uint8_t dataHigh = Read(src++);
 	uint8_t dataLow = Read(src);
-
 	uint16_t data = ((dataHigh << 8) | dataLow);
+	uint16_t regs = r[0] << 8 | r[1];
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) - data;
 
@@ -460,7 +462,7 @@ void cosproc::SUBX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -472,6 +474,7 @@ void cosproc::SUBX(uint16_t src){
 
 /* 0x1F SUBXR  */
 void cosproc::SUBXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -487,7 +490,7 @@ void cosproc::SUBXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -538,6 +541,7 @@ void cosproc::MULR(uint16_t src){
 /* 0x24-0x26 MULX from 16-bit Imm/Abs/Ind */
 void cosproc::MULX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) * data;
 
 	//Set Negative
@@ -545,7 +549,7 @@ void cosproc::MULX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -557,6 +561,7 @@ void cosproc::MULX(uint16_t src){
 
 /* 0x27 MULX from 16-bit register */
 void cosproc::MULXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -571,7 +576,7 @@ void cosproc::MULXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -622,6 +627,7 @@ void cosproc::DIVR(uint16_t src){
 /* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
 void cosproc::DIVX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
 	//Set Negative
@@ -629,7 +635,7 @@ void cosproc::DIVX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -641,6 +647,7 @@ void cosproc::DIVX(uint16_t src){
 
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -655,7 +662,7 @@ void cosproc::DIVXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -1068,6 +1075,7 @@ void cosproc::INC(uint16_t src){
 
 /* 0x69 INC Increment the 16-bit Accumulator */
 void cosproc::INCX(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp = ((r[0] << 8) | r[1] ) + 1;
 
 	//Set Negative
@@ -1075,7 +1083,7 @@ void cosproc::INCX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x0001^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(0x0001^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -1105,6 +1113,7 @@ void cosproc::DEC(uint16_t src){
 
 /* 0x6B DECX Decrement the 16-bit Accumulator */
 void cosproc::DECX(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp = ((r[0] << 8) | r[1] ) - 1;
 
 	//Set Negative
@@ -1112,7 +1121,7 @@ void cosproc::DECX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x0001^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(0x0001^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
