@@ -234,7 +234,7 @@ Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
 ```
 A = A / D,B = R.    					x E I L  O C N Z
-							- - - +  + + + +
+							- + - -  + + + +
 ```
 
 | Addressing       | Assembler  | Opcode | Bytes                                 |
@@ -590,7 +590,7 @@ Jump if not  negative result, jump to the given location if the negative flag is
 
 ```
 if !negative; pc=data  x E I L  O C N Z
-		      - - - -  - - - -
+		       - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -626,7 +626,7 @@ Jump if not less result, jump to the given location if the less flag is not set
 
 ```
 if !less; pc=data      x E I L  O C N Z
-		      - - - -  - - - -
+		       - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
@@ -644,7 +644,7 @@ Jump if error is high, jump to the given location if the error flag is set
 
 ```
 if error; pc=data      x E I L  O C N Z
-		      - - - -  - - - -
+		       - - - -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes                                         |
