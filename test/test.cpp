@@ -355,6 +355,138 @@ TEST_CASE("add", "[opcodes]"){
     REQUIRE(proc.st[3] == 0); //Overflow    
 }
 
+/* 0x18-0x1F */
+TEST_CASE("sub", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    /*
+    1 - 0 = 1
+    0000: 18 00 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x18;
+    proc.r[0] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x01);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    0 - 1 = -1 NCO
+    0000: 19 00 10 ...
+    0010: 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x19;
+    memory[0x02] = 0x10;
+    memory[0x10] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+    /*
+    -1 - -1 = 0 ZO
+    0000: 1A 00 10 ...
+    0010: 00 12 FF ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1A;
+    memory[0x02] = 0x10;
+    memory[0x11] = 0x12;
+    memory[0x12] = 0xFF;
+    proc.r[0] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+    /*
+    -1 - 2 = -3 N
+    0000: 1B 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1B;
+    memory[0x01] = 0x01;
+    proc.r[0] = 0xFF;
+    proc.r[1] = 0x02;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFD);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    1 - 0 = 1
+    0000: 1C 00 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1C;
+    proc.r[1] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x01);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    0 - 1 = -1 ZNC
+    0000: 1D 00 10 ...
+    0010: 00 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1D;
+    memory[0x02] = 0x10;
+    memory[0x11] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.r[1] == 0xFF);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+    /*
+    -1 - -1 = 0 ZO
+    0000: 1E 00 10 ...
+    0010: 00 12 FF FF ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1E;
+    memory[0x02] = 0x10;
+    memory[0x11] = 0x12;
+    memory[0x12] = 0xFF;
+    memory[0x13] = 0xFF;
+    proc.r[0] = 0xFF;
+    proc.r[1] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+    /*
+    -1 - 2 = -3 N
+    0000: 1F 02 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x1F;
+    memory[0x01] = 0x02;
+    proc.r[0] = 0xFF;
+    proc.r[1] = 0xFF;
+    proc.r[3] = 0x02;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.r[1] == 0xFD);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+}
+
 /* 0x30-0x3B */
 TEST_CASE("mov", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
@@ -1203,6 +1335,105 @@ TEST_CASE("cmpx", "[opcodes]"){
     REQUIRE(proc.st[3] == 1); //Overflow
     REQUIRE(proc.st[4] == 0); //Less
 }
+
+/* 0x68-0x69 */
+TEST_CASE("inc", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    /*
+    0000: 68 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x68;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x01);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    0000: 68 ... ZNC
+    */
+    reset(&proc);
+    memory[0x00] = 0x68;
+    proc.r[0] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    0000: 69 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x69;
+    proc.cycle();
+    REQUIRE(proc.r[1] == 0x01);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    /*
+    0000: 69 ... ZNC
+    */
+    reset(&proc);
+    memory[0x00] = 0x69;
+    proc.r[0] = 0xFF;
+    proc.r[1] = 0xFF;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+}
+
+/* 0x6A-0x6B */
+TEST_CASE("dec", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    /*
+    0000: 6A 6A ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x6A;
+    memory[0x01] = 0x6A;
+    proc.r[0] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+    /*
+    0000: 6B 6B ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x6B;
+    memory[0x01] = 0x6B;
+    proc.r[1] = 0x01;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x00);
+    REQUIRE(proc.r[1] == 0x00);
+    REQUIRE(proc.st[0] == 1); //Zero
+    REQUIRE(proc.st[1] == 0); //Negative
+    REQUIRE(proc.st[2] == 0); //Carry
+    REQUIRE(proc.st[3] == 0); //Overflow
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0xFF);
+    REQUIRE(proc.r[1] == 0xFF);
+    REQUIRE(proc.st[0] == 0); //Zero
+    REQUIRE(proc.st[1] == 1); //Negative
+    REQUIRE(proc.st[2] == 1); //Carry
+    REQUIRE(proc.st[3] == 1); //Overflow
+}
+
 
 /* 0x6C-0x6F */
 TEST_CASE("shrx", "[opcodes]"){
