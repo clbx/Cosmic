@@ -69,7 +69,9 @@ carmank@etown.edu}
 During the development of Cosmic, special care has been made for the code to follow the goals of the project. Along with that, all of the code has been made open source for further education and improvement.
 
 \section{Progress and Plan}
-Progress has been much slower this semester compared to the last due to an increase in workload. Over the winter break, we reached out to various communities for advise and feedback on our project. They were very interested in helping us succeed and one individual even went as far as helping up rewrite our video out since he had much more experience with OpenGL than we do.
+Since the end of the fall semester, we've made many additions to the project. Most of the progress we've made has been in the assembler and the build system. We now have an automated build system in TravisCI that builds, tests, and runs our project on Windows, macOS, and Linux as well as on x86\_64 and ARM architectures. We squashed a few bugs in our processor and wrote more tests to verify the validity of the opcodes. The assembler also got a complete rewrite after a few failed attempts. The new assembler design is much more modular and easy to write for.
+
+We also gained a surprising amount of external interest in our project. Over the winter break, we reached out to various communities for advise and feedback on our project. They were very interested in helping us succeed and one individual even went as far as helping up rewrite our video out since he had much more experience with OpenGL than we do.
 
 Moving forward, there are a few heavy tasks and a few light tasks that we plan to accomplish before SCAD 2020. The heavy tasks include finishing the assembler, which has proven to be more difficult than we anticipated, fully implement video out, and to explore Raspberry Pi integration. Some of the easier tasks include finishing the last few instruction unit tests, writing small test programs to show off our architecture, and better interrupt handling. All of these tasks and more can be found in our GitHub project page/issues list.
 
@@ -101,7 +103,7 @@ More emphasis was put on writing code that was readable and easy to understand a
 
 \subsection{Automation and Testing}
 
-We have included extensive testing and automatic CI/CD to our project. 
+We have included extensive testing and automatic CI/CD to our project. After every push upstream, Travis CI kicks off a series of builds that compile, test, and run the program on x86\_64 Windows 10, macOS 10.14, and Ubuntu 16.04, along with Ubuntu 16.04 on ARM.
 
 
 \section{Design Implementation}
