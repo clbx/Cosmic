@@ -127,7 +127,7 @@ void cosproc::execute(Instruction i){
 	(this->*i.opcode)(src);
 }
 \end{lstlisting}
-In this loop, the desired opcode is read from memory and decoded in the instruction set. The instruction set gives an Instruction type that holds vital information about the instruction like size, mnemonic, and, most importantly, the function pointers for the addressing mode and instruction. The function is then executed by first running the addressing mode function, which returns the place in memory where the instruction will do its operation. After execution, a new debug package is made to return information to the debug console, and is build using the data from the Instruction Set. The program counter is then increased by the amount given from the Instruction Set, and the debug package is returned to the environment.
+In this loop, the desired opcode is read from memory and decoded in the instruction set. The instruction set gives an Instruction type that holds vital information about the instruction like size, mnemonic, and, most importantly, the function pointers for the addressing mode and instruction. The function is then executed by first running the addressing mode function, which returns the place in memory where the instruction will do its operation. After execution, a new debug package is made to return information to the debug console, and is built using the data from the Instruction Set. The program counter is then increased by the amount given from the Instruction Set, and the debug package is returned to the environment.
 
 \subsection{Cosmic Processor Addressing and Execution}
 Once the execution portion of the cycle is called, the system first calls the specified addressing mode function. This function returns a place in memory for the opcode to look at. This was made to keep the processor modular if more addressing modes were ever to be added.
@@ -139,7 +139,7 @@ uint16_t cosproc::ABS(){
 }
 \end{lstlisting}
 
-Once the position in memory is found the function opcode is called
+Once the position in memory is found, the function opcode is called.
 
 \begin{lstlisting}[language=C++, caption=The ADD function]
 /* 0x10-0x12 ADD */
@@ -211,9 +211,9 @@ If the type of input is determined to be an opcode, the function correlated with
 
 
 \subsection{Example Cosmic Code}
-Currently, Cosmic assembly is very subject to change as we add new features. Listing 7 has an example of Cosmic assembly code
+Currently, Cosmic assembly is very subject to change as we add new features. Listing 7 has an example of Cosmic assembly code.
 
-\begin{lstlisting}[language=Assembler, caption=Cosmic Assembly to find the Nth Fibonacci Number]
+\begin{lstlisting}[caption=Cosmic Assembly to find the Nth Fibonacci Number]
 start:
     ;set up our variables
     byte n = 50
@@ -237,5 +237,5 @@ loop:
     ;Fibonacci number will be in currnumber
 \end{lstlisting}
 
-This snippet of code will find the Nth Fibonacci number and put it in the memory location at currnumber
+This snippet of code will find the Nth Fibonacci number and put it in the memory location at currnumber.
 \end{document}

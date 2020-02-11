@@ -36,7 +36,7 @@
   |||| +----- (O) Overflow, result if overflows carry
   |||+------- (L) Less, used with the compare instruction
   ||+-------- (I) Interrupt disable
-  |+---------  X
+  |+--------- (E) Error, high if divide by 0
   +----------  X
   ```
 
@@ -120,8 +120,8 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 | **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMP) | [CMPX](#CMP)  | [CMPX](#CMP)  | [CMPX](#CMP)  | [INC](#INC)  | [INCX](#INC) | [DEC](#DEC)  | [DECX](#DEC) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) |
 | **0x70** | [JMP](#JMP)  | [JMP](#JMP)  | [JMP](#JMP)   | [JMP](#JMP)  | [JZS](#JZS)  | [JZS](#JZS)   | [JZS](#JZS)   | [JZS](#JZS)   | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JCS](#JCS)  | [JCS](#JCS)  | [JCS](#JCS)  | [JCS](#JCS)  |
 | **0x80** | [JNC](#JNC)  | [JNC](#JNC)  | [JNC](#JNC)   | [JNC](#JNC)  | [JOS](#JOS)  | [JOS](#JOS)   | [JOS](#JOS)   | [JOS](#JOS)   | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  |
-| **0x90** | [JNN](#JNN)  | [JNN](#JNN)  | [JNN](#JNN)   | [JNN](#JNN)  | [JLS](#JLS)  | [JLS](#JLS)   | [JLS](#JLS)   | [JLS](#JLS)   | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  |              |              |              |              |
-| **0xA0** | [CSF](#CSF)  | [CZF](#CZF)  | [SZF](#SZF)   | [CNF](#CNF)  | [SNF](#SNF)  | [COF](#COF)   | [SOF](#SOF)   | [CCF](#CCF)   | [SCF](#SCF)  | [CLF](#CLF)  | [SLF](#SLF)  | [CIF](#CIF)  | [SIF](#SIF)  |              |              |              |
+| **0x90** | [JNN](#JNN)  | [JNN](#JNN)  | [JNN](#JNN)   | [JNN](#JNN)  | [JLS](#JLS)  | [JLS](#JLS)   | [JLS](#JLS)   | [JLS](#JLS)   | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  |
+| **0xA0** | [CSF](#CSF)  | [CZF](#CZF)  | [SZF](#SZF)   | [CNF](#CNF)  | [SNF](#SNF)  | [COF](#COF)   | [SOF](#SOF)   | [CCF](#CCF)   | [SCF](#SCF)  | [CLF](#CLF)  | [SLF](#SLF)  | [CIF](#CIF)  | [SIF](#SIF)  | [CEF](#CEF)  |              |              |
 | **0xB0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xC0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xD0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
@@ -161,7 +161,7 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 Add memory to accumulator
 
 ```````
-A = A + Data										x x I L  O C N Z
+A = A + Data										x E I L  O C N Z
 											- - - -  + + + +
 ```````
 
@@ -185,7 +185,7 @@ A = A + Data										x x I L  O C N Z
 Subtract memory from accumualtor
 
 ```
-A = A - Data										x x I L  O C N Z
+A = A - Data										x E I L  O C N Z
 											- - - -  + + + +
 ```
 
@@ -209,7 +209,7 @@ A = A - Data										x x I L  O C N Z
 Multiplies the accumulator
 
 ```
-A = A * Data										x x I L  O C N Z
+A = A * Data										x E I L  O C N Z
 											- - - -  + + + +
 ```
 
@@ -233,8 +233,8 @@ A = A * Data										x x I L  O C N Z
 Divides the Accumulator, puts remainder in B(8bit mode) or C/D (16bit mode)
 
 ```
-A = A / D,B = R.    					x x I L  O C N Z
-							- - - -  + + + +
+A = A / D,B = R.    					x E I L  O C N Z
+							- - - +  + + + +
 ```
 
 | Addressing       | Assembler  | Opcode | Bytes                                 |
@@ -257,7 +257,7 @@ A = A / D,B = R.    					x x I L  O C N Z
 Shift the accumulator left,  sets carry if a high bit gets pushed off.
 
 ```
-A = A << Data        					  x x I L  O C N Z
+A = A << Data        					  x E I L  O C N Z
 						          - - - -  - + - +
 ```
 
@@ -282,7 +282,7 @@ A = A << Data        					  x x I L  O C N Z
 Shift the accumulator right.
 
 ```
-A = A >> Data        					  x x I L  O C N Z
+A = A >> Data        					  x E I L  O C N Z
 						          - - - -  - - - +
 ```
 
@@ -306,7 +306,7 @@ A = A >> Data        					  x x I L  O C N Z
 Increment the Accumulator **Do we need Increment/Decrement?**
 
 ```
-x++          					x x I L  O C N Z
+x++          					x E I L  O C N Z
 						- - - -  + + + +
 ```
 
@@ -324,7 +324,7 @@ x++          					x x I L  O C N Z
 Decrement the Accumulator **Do we need Increment/Decrement?**
 
 ```
-x--          					x x I L  O C N Z
+x--          					x E I L  O C N Z
 						- - - -  + + + +
 ```
 
@@ -342,7 +342,7 @@ x--          					x x I L  O C N Z
 AND Memory with the Accumulator
 
 ```
-data & A = A 					x x I L  O C N Z
+data & A = A 					x E I L  O C N Z
 						- - - -  - - - +
 ```
 
@@ -362,7 +362,7 @@ data & A = A 					x x I L  O C N Z
 OR Memory with the Accumulator
 
 ```
-data | A = A 					x x I L  O C N Z
+data | A = A 					x E I L  O C N Z
 						- - - -  - - - +
 ```
 
@@ -382,7 +382,7 @@ data | A = A 					x x I L  O C N Z
 XOR Memory with the Accumulator
 
 ```
-data ^ A = A 					x x I L  O C N Z
+data ^ A = A 					x E I L  O C N Z
 						- - - -  - - - +
 ```
 
@@ -402,7 +402,7 @@ data ^ A = A 					x x I L  O C N Z
 Compare memory with the Accumulator
 
 ```
-             					x x I L  O C N Z
+             					x E I L  O C N Z
 						- - - +  + + + +
 (unsigned) if accumulator > value: carry is set
 (unsigned) if accumulator < value: negative is set
@@ -433,7 +433,7 @@ Compare memory with the Accumulator
 Jump to a specified memory location
 
 ```
-pc = data    					x x I L  O C N Z
+pc = data    					x E I L  O C N Z
 						- - - -  - - - -
 ```
 
@@ -453,7 +453,7 @@ pc = data    					x x I L  O C N Z
 Jump equals zero, jump to the given location if the zero flag is set
 
 ```
-if zero; pc = data		x x I L  O C N Z
+if zero; pc = data		x E I L  O C N Z
 				- - - -  - - - -
 ```
 
@@ -473,7 +473,7 @@ if zero; pc = data		x x I L  O C N Z
 Jump not zero, jump to the given location if the zero flag is not set
 
 ```
-if !zero; pc = data		    x x I L  O C N Z
+if !zero; pc = data		    x E I L  O C N Z
 				    - - - -  - - - -
 ```
 
@@ -493,7 +493,7 @@ if !zero; pc = data		    x x I L  O C N Z
 Jump on carry, jump to the given location if the carry flag is set
 
 ```
-if carry; pc = data		x x I L  O C N Z
+if carry; pc = data		x E I L  O C N Z
 				- - - -  - - - -
 ```
 
@@ -513,7 +513,7 @@ if carry; pc = data		x x I L  O C N Z
 Jump not carry, jump to the given location if the carry flag is not set
 
 ```
-if !carry; pc = data	x x I L  O C N Z
+if !carry; pc = data	x E I L  O C N Z
 			- - - -  - - - -
 ```
 
@@ -533,7 +533,7 @@ if !carry; pc = data	x x I L  O C N Z
 Jump on overflow, jump to the given location if the overflow flag is set
 
 ```
-if over; pc = data		x x I L  O C N Z
+if over; pc = data		x E I L  O C N Z
                         	- - - -  - - - -
 ```
 
@@ -551,7 +551,7 @@ if over; pc = data		x x I L  O C N Z
 Jump not overflow, jump to the given location if the overflow flag not is set
 
 ```
-if !over; pc = data		x x I L  O C N Z
+if !over; pc = data		x E I L  O C N Z
                         	- - - -  - - - -
 ```
 
@@ -571,7 +571,7 @@ if !over; pc = data		x x I L  O C N Z
 Jump negative result, jump to the given location if the negative flag is set
 
 ```
-if negative; pc=data  x x I L  O C N Z
+if negative; pc=data  x E I L  O C N Z
 		      - - - -  - - - -
 ```
 
@@ -589,7 +589,7 @@ if negative; pc=data  x x I L  O C N Z
 Jump if not  negative result, jump to the given location if the negative flag is not set
 
 ```
-if !negative; pc=data  x x I L  O C N Z
+if !negative; pc=data  x E I L  O C N Z
 		      - - - -  - - - -
 ```
 
@@ -607,7 +607,7 @@ if !negative; pc=data  x x I L  O C N Z
 Jump if less result, jump to the given location if the less flag is set
 
 ```
-if less; pc=data      x x I L  O C N Z
+if less; pc=data      x E I L  O C N Z
 		      - - - -  - - - -
 ```
 
@@ -625,7 +625,7 @@ if less; pc=data      x x I L  O C N Z
 Jump if not less result, jump to the given location if the less flag is not set
 
 ```
-if !less; pc=data      x x I L  O C N Z
+if !less; pc=data      x E I L  O C N Z
 		      - - - -  - - - -
 ```
 
@@ -636,6 +636,24 @@ if !less; pc=data      x x I L  O C N Z
 | Indirect   | JNL @oper | 0x9A   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JNL RX    | 0x9B   | 2 ``opcode register``                         |
 
+<a name="JES"></a>
+
+### JES
+
+Jump if error is high, jump to the given location if the error flag is set
+
+```
+if error; pc=data      x E I L  O C N Z
+		      - - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes                                         |
+| ---------- | --------- | ------ | --------------------------------------------- |
+| Immediate  | JES #oper | 0x9C   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | JES oper  | 0x9D   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | JES @oper | 0x9E   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register   | JES RX    | 0x9F   | 2 ``opcode register``
+
 <a name="CLS"></a>
 
 ### CSF
@@ -643,7 +661,7 @@ if !less; pc=data      x x I L  O C N Z
 Clears all status flags
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				+ + + +  + + + +
 ```
 
@@ -660,7 +678,7 @@ Clears all status flags
 Clears zero flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - - - +
 ```
 
@@ -675,7 +693,7 @@ Clears zero flag
 Sets zero flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - - - +
 ```
 
@@ -690,7 +708,7 @@ Sets zero flag
 Clears negative flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - - + -
 ```
 
@@ -705,7 +723,7 @@ Clears negative flag
 Sets negative flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - - + -
 ```
 
@@ -720,7 +738,7 @@ Sets negative flag
 Clears carry flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - + - -
 ```
 
@@ -735,7 +753,7 @@ Clears carry flag
 Sets carry flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  - + - -
 ```
 
@@ -750,7 +768,7 @@ Sets carry flag
 Clears Overflow flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  + - - -
 ```
 
@@ -765,7 +783,7 @@ Clears Overflow flag
 Sets Overflow flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - -  + - - -
 ```
 
@@ -780,7 +798,7 @@ Sets Overflow flag
 Clears Less flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - +  - - - -
 ```
 
@@ -795,7 +813,7 @@ Clears Less flag
 Sets Less flag
 
 ```
-                  		x x I L  O C N Z
+                  		x E I L  O C N Z
 				- - - +  - - - -
 ```
 
@@ -812,7 +830,7 @@ Sets Less flag
 Clear interrupt flag
 
 ```
-interrupt = false 		x x I L  O C N Z
+interrupt = false 		x E I L  O C N Z
 				- - + -  - - - -
 ```
 
@@ -827,7 +845,7 @@ interrupt = false 		x x I L  O C N Z
 Set interrupt disable.
 
 ```
-interrupt = false 		x x I L  O C N Z
+interrupt = false 		x E I L  O C N Z
 				- - + -  - - - -
 ```
 
@@ -835,7 +853,20 @@ interrupt = false 		x x I L  O C N Z
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SIF       | 0xAC   | 1 ``opcode`` |
 
+<a name="CEF"></a>
 
+### CEF
+
+Clear error flag
+
+```
+error = false     		x E I L  O C N Z
+				- + - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | CEF       | 0xAD   | 1 ``opcode`` |
 
 <a name="CALL"></a>
 
@@ -844,7 +875,7 @@ interrupt = false 		x x I L  O C N Z
 Call subroutine at location. Pushes current location onto stack, jumps to new location
 
 ```
-push pc; pc = oper		x x I L  O C N Z
+push pc; pc = oper		x E I L  O C N Z
 				- - - -  - - - -
 ```
 
@@ -863,7 +894,7 @@ push pc; pc = oper		x x I L  O C N Z
 Returns from subroutine, pops old location off of stack, jumps back
 
 ```
-pc = pop.          		x x I L  O C N Z
+pc = pop.          		x E I L  O C N Z
 				- - - -  - - - -
 ```
 
@@ -880,7 +911,7 @@ pc = pop.          		x x I L  O C N Z
 Halt and Catch Fire, Stops execution of the machine entirely 
 
 ```
-rip.              		x x I L  O C N Z
+rip.              		x E I L  O C N Z
 				- - - -  - - - -
 ```
 
@@ -899,7 +930,7 @@ rip.              		x x I L  O C N Z
 Copies memory from one location to another
 
 ```
-Loc = Data.          					x x I L  O C N Z
+Loc = Data.          					x E I L  O C N Z
 							- - - -  - - - -
 ```
 
@@ -941,7 +972,7 @@ _Note: This is where the principals of RISC start to break down in favor of a mo
 Swap registers
 
 ```
-R1 <-> R2   	        				x x I P  O C N Z
+R1 <-> R2   	        				x E I P  O C N Z
 							- - - -  - - - -
 ```
 
@@ -958,7 +989,7 @@ R1 <-> R2   	        				x x I P  O C N Z
 Pushes value in accumulator to the stack
 
 ```
-sp[++i] = A 					x x I L  O C N Z
+sp[++i] = A 					x E I L  O C N Z
 						- - - -  - - + +
 ```
 
@@ -975,7 +1006,7 @@ sp[++i] = A 					x x I L  O C N Z
 Pops value from stack into the accumulator
 
 ```
-sp[i--] = A    					x x I L  O C N Z
+sp[i--] = A    					x E I L  O C N Z
 						- - - -  - - + +
 ```
 
@@ -992,7 +1023,7 @@ sp[i--] = A    					x x I L  O C N Z
 No Operation
 
 ```
-Nothing Happened!   					x x I L  O C N Z
+Nothing Happened!   					x E I L  O C N Z
 							- - - -  - - - - 
 ```
 

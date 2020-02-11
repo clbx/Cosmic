@@ -199,6 +199,11 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x9A] = (Instruction){&cosproc::IND,&cosproc::JNL,"JNL @oper",0};
 	InstructionSet[0x9B] = (Instruction){&cosproc::REG,&cosproc::JNLR,"JNL RX",0};
 
+	InstructionSet[0x9C] = (Instruction){&cosproc::IMM,&cosproc::JES,"JES #oper",0};
+	InstructionSet[0x9D] = (Instruction){&cosproc::ABS,&cosproc::JES,"JES oper",0};
+	InstructionSet[0x9E] = (Instruction){&cosproc::IND,&cosproc::JES,"JES @oper",0};
+	InstructionSet[0x9F] = (Instruction){&cosproc::REG,&cosproc::JESR,"JES RX",0};
+
 	InstructionSet[0xA0] = (Instruction){&cosproc::IMP,&cosproc::CSF,"CSF",1};
 	InstructionSet[0xA1] = (Instruction){&cosproc::IMP,&cosproc::CZF,"CZF",1};
 	InstructionSet[0xA2] = (Instruction){&cosproc::IMP,&cosproc::SZF,"SZF",1};
@@ -212,6 +217,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0xAA] = (Instruction){&cosproc::IMP,&cosproc::SLF,"SLF",1};
 	InstructionSet[0xAB] = (Instruction){&cosproc::IMP,&cosproc::CIF,"CIF",1};
 	InstructionSet[0xAC] = (Instruction){&cosproc::IMP,&cosproc::SIF,"SIF",1};
+	InstructionSet[0xAD] = (Instruction){&cosproc::IMP,&cosproc::CEF,"CEF",1};
 
 	reset();
 }
@@ -589,6 +595,10 @@ void cosproc::MULXR(uint16_t src){
 /* 0x28-0x2A DIV from Imm/Abs/Ind */
 void cosproc::DIV(uint16_t src){
 	uint8_t data = Read(src);
+	if(!data){
+		st[6] = 1;
+		return;
+	}
 	unsigned int temp = r[0] / data;
 
 	//Set Negative
@@ -608,6 +618,10 @@ void cosproc::DIV(uint16_t src){
 /* 0x2B DIV from register */
 void cosproc::DIVR(uint16_t src){
 	uint8_t data = r[src];
+	if(!data){
+		st[6] = 1;
+		return;
+	}
 	unsigned int temp = r[0] / data;
 
 	//Set Negative
@@ -627,6 +641,10 @@ void cosproc::DIVR(uint16_t src){
 /* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
 void cosproc::DIVX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	if(!data){
+		st[6] = 1;
+		return;
+	}
 	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
@@ -647,14 +665,18 @@ void cosproc::DIVX(uint16_t src){
 
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
-	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
-
 	if(src % 2 == 0){
 		data = ((r[src] << 8) | r[src+1]);
 	}else{
 		data = ((r[src-1] << 8) | r[src]);
 	}
+	if(!data){
+		st[6] = 1;
+		return;
+	}
+
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
 	//Set Negative
@@ -1416,6 +1438,30 @@ void cosproc::JNLR(uint16_t src){
 	}
 }
 
+/* 0x9C-0x9E JES from Imm/Abs/Ind */
+void cosproc::JES(uint16_t src){
+	if(st[6]){
+		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
+	}
+}
+
+/* 0x9F JES from Reg */
+void cosproc::JESR(uint16_t src){
+	int data;
+	if(st[6]){
+		if(src % 2 == 0){
+			data = ((r[src] << 8) | r[src+1]);
+		}else{
+			data = ((r[src-1] << 8) | r[src]);
+		}
+		pc = (data);
+	}else{
+		pc += 2;
+	}
+}
+
 /* 0xA0 CSF */
 void cosproc::CSF(uint16_t src){
 	for(int i = 0; i < 8; i++){
@@ -1477,12 +1523,16 @@ void cosproc::SLF(uint16_t src){
 void cosproc::CIF(uint16_t src){
 	st[5] = 0;
 }
+
 /* 0xAC SIF */
 void cosproc::SIF(uint16_t src){
 	st[5] = 1;
 }
 
-
+/* 0xAD CEF */
+void cosproc::CEF(uint16_t src){
+	st[6] = 0;
+}
 
 /* Low Priority Interrupt */
 void cosproc::LPI(){
