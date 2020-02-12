@@ -1,8 +1,0 @@
-byte counter = 0
-start:
-    ADD #10
-    MOV R0 counter
-loop:
-    ADD #5 counter
-    MOV #FF @counter
-    JMP loop
