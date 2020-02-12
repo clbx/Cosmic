@@ -325,8 +325,13 @@ the operand is 8 bits.
 '''
 def handleStd8bitOpcode(tokens):
     addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " " + tokens[0]])
-    output.append(operand)
+    if(addrMode == "IMM" or addrMode == "REG"):
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append(operand)
+    else:
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand >> 8) & 0xFF)
+        output.append((operand & 0xFF))
 
 '''
 Handle a Standard 16 Bit opcode
@@ -369,10 +374,7 @@ def SWP(tokens):
     output.append(operand)
 
 def CALL(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " CALL"])
-    output.append((operand >> 8) & 0xFF)
-    output.append((operand & 0xFF))
+    handleStd16bitOpcode(tokens)
     
 def RET(tokens):
     output.append(InstructionSet["IMP RET"])
@@ -380,71 +382,50 @@ def RET(tokens):
 def ADD(tokens):
     handleStd8bitOpcode(tokens)
     
-
 def ADDX(tokens):
-    if(getAddrMode(tokens) == "REG"):
-        
-    else:
-        handleStd16bitOpcode(tokens)
-
+    handleStd16bitOpcode(tokens)
 
 def SUB(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " SUB"])
-    output.append(operand)
+    handleStd8bitOpcode(tokens)
 
 def SUBX(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " SUBX"])
-    output.append((operand >> 8) & 0xFF)
-    output.append((operand & 0xFF))
+    handleStd16bitOpcode(tokens)
 
 def MUL(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " MUL"])
-    output.append(operand)
+    handleStd8bitOpcode(tokens)
 
 def MULX(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " MULX"])
-    output.append((operand >> 8) & 0xFF)
-    output.append((operand & 0xFF))
+    handleStd16bitOpcode(tokens)
 
 def DIV(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " DIV"])
-    output.append(operand)
+    handleStd8bitOpcode(tokens)
 
 def DIVX(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " DIVX"])
-    output.append((operand >> 8) & 0xFF)
-    output.append((operand & 0xFF))
+    handleStd16bitOpcode(tokens)
 
 def MOV(tokens):
-    srcAddrMode,_,srcOperand = getOperand(tokens[1])
-    dstAddrMode,_,dstOperand = getOperand(tokens[2])
     print("Unimplemented Instruction {}".format(tokens))
 
 def MOVX(tokens):
     print("Unimplemented Instruction {}".format(tokens))
 
 def SHL(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
+
 def SHLX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def AND(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd8bitOpcode(tokens)
 def OR(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd8bitOpcode(tokens)
 def XOR(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd8bitOpcode(tokens)
 def SHR(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd8bitOpcode(tokens)
 def CMP(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd8bitOpcode(tokens)
 def CMPX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def INC(tokens):
     output.append(InstructionSet["IMP INC"])
 def INCX(tokens):
@@ -454,55 +435,55 @@ def DEC(tokens):
 def DECX(tokens):
     output.append(InstructionSet["IMP DECX"])
 def SHRX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JMP(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JZS(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNZ(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JCS(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNC(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JOS(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNO(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNS(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNN(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JLS(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def JNL(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    handleStd16bitOpcode(tokens)
 def CSF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CSF"])
 def CZF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CZF"])
 def SZF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SZF"])
 def CNF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CNF"])
 def SNF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SNF"])
 def COF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP COF"])
 def SOF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SOF"])
 def CCF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CCF"])
 def SCF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SCF"])
 def CLF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CLF"])
 def SLF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SLF"])
 def CIF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP CIF"])
 def SIF(tokens):
-    output.append(InstructionSet["IMP "])
+    output.append(InstructionSet["IMP SIF"])
 
 #Writes an error to the console. Stops exectuion
 def error(msg):
