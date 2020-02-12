@@ -317,6 +317,34 @@ def getOperand(token):
     return addrMode,operator,int(operand,16) 
 
 
+'''
+Handle a Standard 8 Bit opcode
+
+General function for opcodes with the format [opcode] [operand] where
+the operand is 8 bits.
+'''
+def handleStd8bitOpcode(tokens):
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " " + tokens[0]])
+    output.append(operand)
+
+'''
+Handle a Standard 16 Bit opcode
+
+General function for opcodes with the format [opcode] [operand] where
+the operand is 16 bits.
+'''
+def handleStd16bitOpcode(tokens):
+    addrMode,_,operand = getOperand(tokens[1])
+    if(addrMode == "REG"):
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand & 0xFF))
+    else:       
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand >> 8) & 0xFF)
+        output.append((operand & 0xFF))
+
+
         
 
 # -= INSTRUCTION FUNCTIONS =- #
@@ -350,34 +378,58 @@ def RET(tokens):
     output.append(InstructionSet["IMP RET"])
 
 def ADD(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " ADD"])
-    output.append(operand)
+    handleStd8bitOpcode(tokens)
+    
 
 def ADDX(tokens):
-    addrMode,_,operand = getOperand(tokens[1])
-    output.append(InstructionSet[addrMode + " ADDX"])
-    output.append((operand >> 8) & 0xFF)
-    output.append((operand & 0xFF))
+    if(getAddrMode(tokens) == "REG"):
+        
+    else:
+        handleStd16bitOpcode(tokens)
 
 
 def SUB(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " SUB"])
+    output.append(operand)
+
 def SUBX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " SUBX"])
+    output.append((operand >> 8) & 0xFF)
+    output.append((operand & 0xFF))
+
 def MUL(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " MUL"])
+    output.append(operand)
+
 def MULX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " MULX"])
+    output.append((operand >> 8) & 0xFF)
+    output.append((operand & 0xFF))
+
 def DIV(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " DIV"])
+    output.append(operand)
+
 def DIVX(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+    addrMode,_,operand = getOperand(tokens[1])
+    output.append(InstructionSet[addrMode + " DIVX"])
+    output.append((operand >> 8) & 0xFF)
+    output.append((operand & 0xFF))
+
 def MOV(tokens):
+    srcAddrMode,_,srcOperand = getOperand(tokens[1])
+    dstAddrMode,_,dstOperand = getOperand(tokens[2])
     print("Unimplemented Instruction {}".format(tokens))
-def SHL(tokens):
-    print("Unimplemented Instruction {}".format(tokens))
+
 def MOVX(tokens):
+    print("Unimplemented Instruction {}".format(tokens))
+
+def SHL(tokens):
     print("Unimplemented Instruction {}".format(tokens))
 def SHLX(tokens):
     print("Unimplemented Instruction {}".format(tokens))
