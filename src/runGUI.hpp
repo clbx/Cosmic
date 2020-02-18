@@ -17,12 +17,7 @@
 
 class runGUI{
     private:
-        uint8_t memory[65538];
-        static Logger debugLog;
-        static MemoryEditor ramEdit;
 
-        void MemoryWrite(uint16_t address, uint8_t value);
-        uint8_t MemoryRead(uint16_t address);
         void LoadIntoMemory(char *filepath);
         void DumpMemory(char *filepath);
         static void HelpMarker(const char *desc);

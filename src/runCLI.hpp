@@ -6,24 +6,27 @@
  * 
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <iostream>
 #include <time.h>
-#include <cstring>
-#include <string>
 #include <map>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fstream>
+#include <curses.h>
 
-#include "cosmic.hpp"
+
 
 /**
  * A Command Line Interface for ImGUI
  */
 class runCLI{    
     private:
+        void LoadIntoMemory(char *filepath);
+        void DumpMemory(char *filepath);
 
 
     public:
-        runCLI(std::string filename);
+        int run();
 };

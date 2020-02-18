@@ -1,17 +1,19 @@
 #include "runGUI.hpp"
 
+
 uint8_t memory[65536] = {};
+
 
 static MemoryEditor ramEdit;
 static Logger debugLog;
 
-void runGUI::MemoryWrite(uint16_t address, uint8_t value)
+void MemoryWrite(uint16_t address, uint8_t value)
 {
     debugLog.AddLog("Wrote %X to %X\n", value, address);
     memory[address] = value;
 }
 
-uint8_t runGUI::MemoryRead(uint16_t address)
+uint8_t MemoryRead(uint16_t address)
 {
     debugLog.AddLog("READ: %X from %X\n", memory[address], address);
     return memory[address];
@@ -39,7 +41,7 @@ void runGUI::DumpMemory(char *filepath)
     File.close();
 }
 
-static void runGUI::HelpMarker(const char *desc){
+void runGUI::HelpMarker(const char *desc){
     ImGui::TextDisabled("(?)");
     if (ImGui::IsItemHovered())
     {
