@@ -18,7 +18,7 @@ matrix:
     - os: windows
       arch: amd64
       before_install:
-        - [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
+        - rm -rf C:/tools/msys64
         - choco uninstall -y mingw
         - choco upgrade --no-progress -y msys2
         - export msys2='cmd //C RefreshEnv.cmd '
