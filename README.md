@@ -12,6 +12,7 @@
 <a href="https://www.codefactor.io/repository/github/clbx/cosmic"><img src="https://www.codefactor.io/repository/github/clbx/cosmic/badge" alt="CodeFactor" /></a>
 <a href="https://gitter.im/CosmicProcessor/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/CosmicProcessor/community.svg"/></a>
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/clbx/Cosmic">
+</br>
 <a href="https://gitpod.io/#https://github.com/clbx/Cosmic"><img src="https://gitpod.io/button/open-in-gitpod.svg"></a>
 </p>
 
