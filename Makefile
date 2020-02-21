@@ -1,6 +1,6 @@
 EXE = cosmic
 SOURCES = main.cpp cosproc.cpp runGUI.cpp runCLI.cpp
-SOURCES += lib/imgui/imgui_impl_sdl.cpp lib/imgui/imgui_impl_opengl3.cpp
+SOURCES += lib/imgui/examples/imgui_impl_sdl.cpp lib/imgui/examples/imgui_impl_opengl3.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
 SOURCES += lib/imtui/imtui-impl-text.cpp lib/timtui/imtui-impl-ncurses.h
 
@@ -11,7 +11,7 @@ BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
 ARCH := $(shell gcc -dumpmachine)
 
-CXXFLAGS = -Ilib/imgui
+CXXFLAGS = -Ilib/imgui -Ilib/misc -Ilib/imtui
 CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
 LIBS =
 
@@ -56,6 +56,14 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:lib/imgui/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
+%.o:lib/imgui/examples/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
+%.o:lib/imtui/%.cpp
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
