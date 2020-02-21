@@ -12,7 +12,7 @@ UNAME_S := $(shell uname -s)
 ARCH := $(shell gcc -dumpmachine)
 
 CXXFLAGS = -Ilib/imgui -Ilib/misc -Ilib/imtui
-CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
+CXXFLAGS += -g -Wformat -Wno-unknown-pragmas -lncurses
 LIBS =
 
 
