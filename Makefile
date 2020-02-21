@@ -24,7 +24,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl `sdl2-config --libs`
 
-	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall -std=c++11
+	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
 	CFLAGS = $(CXXFLAGS)
 endif
 
