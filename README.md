@@ -12,6 +12,7 @@
 <a href="https://www.codefactor.io/repository/github/clbx/cosmic"><img src="https://www.codefactor.io/repository/github/clbx/cosmic/badge" alt="CodeFactor" /></a>
 <a href="https://gitter.im/CosmicProcessor/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/CosmicProcessor/community.svg"/></a>
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/clbx/Cosmic">
+<a href="https://gitpod.io/#https://github.com/clbx/Cosmic"><img src="https://gitpod.io/button/open-in-gitpod.svg"></a>
 </p>
 
 Cosmic is a fully simulated computer architecture that provides a full environment to use the Cosmic Processor, specialized devices, ROM, RAM, graphics, and more. The cosmic processor can also be used on a Raspberry Pi to interface with real-world devices. The cosmic system is all entirely accessible in a rich GUI interface that allows for full customization of the system environment and code execution.*
