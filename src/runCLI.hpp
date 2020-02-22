@@ -16,7 +16,9 @@
 #include <fstream>
 #include <curses.h>
 
-
+#include "imtui.h"
+#include "imtui-impl-ncurses.h"
+#include "imgui.h"
 
 /**
  * A Command Line Interface for ImGUI
