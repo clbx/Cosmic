@@ -55,11 +55,6 @@ int runCLI::run() {
         ImGui::SliderFloat("##float", &fval, 0.0f, 10.0f);
         ImGui::End();
 
-        ImGui::SetNextWindowPos(ImVec2(630, 30), ImGuiCond_Once);
-        ImGui::Begin("Debug");
-        ImVec2 mousePos = ImGui::GetMousePos();
-        ImGui::Text("%f, %f", mousePos.x, mousePos.y);
-        ImGui::End();
 
         ImGui::Render();
 
