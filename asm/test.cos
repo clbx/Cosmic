@@ -1,2 +1,2 @@
 start:
-    ADDX R1
+    MOVX #2 ABC
