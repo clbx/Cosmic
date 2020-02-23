@@ -30,7 +30,7 @@ matrix:
         - export PATH=/C/tools/msys64/mingw64/bin:$PATH
         - export MAKE=mingw32-make  # so that Autotools can find it
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
-        - $msys2 pacman -S --noconfirm sdl ncurses
+        - $msys2 pacman -S --noconfirm sdl2 ncurses
         #- tar -xf SDL2-devel-2.0.10-mingw.tar.gz
         #- cd SDL2-2.0.10
         #- cp -r x86_64-w64-mingw32 /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
