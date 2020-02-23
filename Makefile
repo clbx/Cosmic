@@ -1,6 +1,6 @@
 EXE = cosmic
 SOURCES = main.cpp cosproc.cpp runGUI.cpp runCLI.cpp
-SOURCES += lib/imgui/examples/imgui_impl_sdl.cpp lib/imgui/examples/imgui_impl_opengl3.cpp
+SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
 #SOURCES += lib/imtui/imtui-impl-text.cpp lib/timtui/imtui-impl-ncurses.h
 
@@ -59,7 +59,7 @@ endif
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
-%.o:lib/imgui/examples/%.cpp
+%.o:lib/misc/%.cpp
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
