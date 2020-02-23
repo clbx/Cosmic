@@ -12,7 +12,7 @@ UNAME_S := $(shell uname -s)
 ARCH := $(shell gcc -dumpmachine)
 
 CXXFLAGS = -Ilib/imgui -Ilib/misc -Ilib/imtui
-CXXFLAGS += -g -Wformat -Wno-unknown-pragmas -lncurses
+CXXFLAGS += -g -Wformat -Wno-unknown-pragmas -lncurses -fno-omit-frame-pointer -fsanitize=thread
 LIBS =
 
 
@@ -80,5 +80,5 @@ $(EXE): $(OBJS)
 	rm -f imgui.ini
 
 clean:
-	@echo $(ECHO_MESSAGE)
-	rm -f $(EXE) $(OBJS)
+	rm -rf bin 
+	rm cosmic

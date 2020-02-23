@@ -18,6 +18,7 @@
 
 #include "imtui.h"
 #include "imtui-impl-ncurses.h"
+#include "imtui-impl-text.h"
 
 /**
  * A Command Line Interface for ImGUI
