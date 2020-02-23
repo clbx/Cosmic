@@ -1,7 +1,8 @@
 EXE = cosmic
-SOURCES = envmain.cpp cosproc.cpp
-SOURCES += lib/imgui/imgui_impl_sdl.cpp lib/imgui/imgui_impl_opengl3.cpp
+SOURCES = main.cpp cosproc.cpp runGUI.cpp runCLI.cpp
+SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
+#SOURCES += lib/imtui/imtui-impl-text.cpp lib/timtui/imtui-impl-ncurses.h
 
 VPATH = src:bin
 
@@ -10,8 +11,8 @@ BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
 ARCH := $(shell gcc -dumpmachine)
 
-CXXFLAGS = -Ilib/imgui
-CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
+CXXFLAGS = -Ilib/imgui -Ilib/misc -Ilib/imtui
+CXXFLAGS += -g -Wformat -Wno-unknown-pragmas #-lncurses -fno-omit-frame-pointer -fsanitize=thread
 LIBS =
 
 
@@ -23,7 +24,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl `sdl2-config --libs`
 
-	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
+	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall -std=c++11
 	CFLAGS = $(CXXFLAGS)
 endif
 
@@ -58,6 +59,14 @@ endif
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
+%.o:lib/misc/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
+%.o:lib/imtui/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
 %.o:lib/gl3w/GL/%.c
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
@@ -71,5 +80,5 @@ $(EXE): $(OBJS)
 	rm -f imgui.ini
 
 clean:
-	@echo $(ECHO_MESSAGE)
-	rm -f $(EXE) $(OBJS)
+	rm -rf bin 
+	rm cosmic

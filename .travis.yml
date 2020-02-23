@@ -8,13 +8,13 @@ matrix:
       sudo: required
       before_install:
         - sudo apt update
-        - sudo apt install libsdl2-dev
+        - sudo apt -y install libsdl2-dev libncurses-dev
     - os: linux
       arch: amd64
       sudo: required
       before_install:
         - sudo apt update
-        - sudo apt install libsdl2-dev
+        - sudo apt -y install libsdl2-dev libncurses-dev
     - os: windows
       arch: amd64
       before_install:

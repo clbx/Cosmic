@@ -1,37 +1,8 @@
-/**
- * @breif The main class when running in the debugging simulation environtment. Shows status of the processor when running
- * 
- * @author Clay Buxton  (clbx, buxtonc@etown.edu)
- * @author Kevin Carman (carmank, carmank@etown.edu)
- * 
- */
+#include "runGUI.hpp"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <SDL2/SDL.h>
-#include <GL/gl3w.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_memory_editor.h"
-#include "imgui_logger.h"
-
-#include "cosproc.hpp"
-
-/*
-* -= Memory and Address Bus=-
-*  
-* These two functions act as a memory and address bus would on a physical machine
-* They pull from a postision in memory and return to wherever calls them.
-* Callbacks make for a wonderful way to emulate a system that is connected 
-* that avoids using a centralized stationary memory location. 
-*/
 
 uint8_t memory[65536] = {};
+
 
 static MemoryEditor ramEdit;
 static Logger debugLog;
@@ -49,7 +20,7 @@ uint8_t MemoryRead(uint16_t address)
 }
 
 //TODO: Fix this once proper memory is added
-void LoadIntoMemory(char *filepath)
+void runGUI::LoadIntoMemory(char *filepath)
 {
     std::ifstream File;
     File.open(filepath);
@@ -58,7 +29,7 @@ void LoadIntoMemory(char *filepath)
 }
 
 //TODO: Fix this once proper memory is added
-void DumpMemory(char *filepath)
+void runGUI::DumpMemory(char *filepath)
 {
     std::ofstream File;
     File.open(filepath);
@@ -70,8 +41,7 @@ void DumpMemory(char *filepath)
     File.close();
 }
 
-static void HelpMarker(const char *desc)
-{
+void runGUI::HelpMarker(const char *desc){
     ImGui::TextDisabled("(?)");
     if (ImGui::IsItemHovered())
     {
@@ -83,23 +53,9 @@ static void HelpMarker(const char *desc)
     }
 }
 
-void runCMD(char *filepath)
-{
-    LoadIntoMemory(filepath);
-    //TODO: Fix when memory is not only 256bytes
-    int k = 0;
-    for (int i = 0; i < 256 / 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            printf("%X ", memory[k]);
-            k++;
-        }
-        printf("\n");
-    }
-}
 
-int runGUI(){
+
+int runGUI::run(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
@@ -504,13 +460,4 @@ int runGUI(){
     SDL_Quit();
 
     return 0;
-}
-
-int main(int argc, char **argv){
-    if (argc > 1){
-        runCMD(argv[1]);
-    }
-    else{
-        runGUI();
-    }
 }
