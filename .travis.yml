@@ -15,21 +15,30 @@ matrix:
       before_install:
         - sudo apt update
         - sudo apt -y install libsdl2-dev libncurses-dev
-    - os: windows
+     - os: windows
       arch: amd64
       before_install:
-        - rm -rf C:/tools/msys64
-        - choco uninstall -y mingw
-        - choco upgrade --no-progress -y msys2
-        - export msys2='cmd //C RefreshEnv.cmd '
-        - export msys2+='& set MSYS=winsymlinks:nativestrict '
-        - export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        - export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
-        - export msys2+=" -msys2 -c "\"\$@"\" --"
-        - $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_ttf mingw64/mingw-w64-x86_64-SDL2_net mingw64/mingw-w64-x86_64-make make
-        - export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        - export MAKE=mingw32-make  # so that Autotools can find it
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
+        - tar -xf SDL2-devel-2.0.10-mingw.tar.gz
+        - cd SDL2-2.0.10
+        - cp -r x86_64-w64-mingw32 /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
+        - cd ..
+        - choco install make -version 4.3
+    #- os: windows
+    #  arch: amd64
+    #  before_install:
+    #    - rm -rf C:/tools/msys64
+    #    - choco uninstall -y mingw
+    #    - choco upgrade --no-progress -y msys2
+    #    - export msys2='cmd //C RefreshEnv.cmd '
+    #    - export msys2+='& set MSYS=winsymlinks:nativestrict '
+    #    - export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
+    #    - export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+    #    - export msys2+=" -msys2 -c "\"\$@"\" --"
+    #    - $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_ttf mingw64/mingw-w64-x86_64-SDL2_net mingw64/mingw-w64-x86_64-make make
+    #    - export PATH=/C/tools/msys64/mingw64/bin:$PATH
+    #    - export MAKE=mingw32-make  # so that Autotools can find it
+    #    - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
         #- tar -xf SDL2-devel-2.0.10-mingw.tar.gz
         #- cd SDL2-2.0.10
         #- cp -r x86_64-w64-mingw32 /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
