@@ -367,8 +367,8 @@ int runGUI(){
         ImGui::Separator();
         ImGui::Text("Status: ");
         ImGui::SameLine();
-        HelpMarker("I: Interrupt Disable\nP: Parity\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
-        char statusRegisterNames[] = {'Z', 'N', 'C', 'O', 'L', 'I', ' ', ' '};
+        HelpMarker("E: Error\nI: Interrupt Disable\nL: Less\nO: Overflow\nC: Carry\nN: Negative\nZ: Zero\n");
+        char statusRegisterNames[] = {'Z', 'N', 'C', 'O', 'L', 'I', 'E', ' '};
         ImGui::Columns(8, "statusregister", false);
         for (int i = 7; i >= 0; i--){
             ImGui::Text("%c", statusRegisterNames[i]);

@@ -8,9 +8,10 @@ VPATH = src:bin
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
+ARCH := $(shell gcc -dumpmachine)
 
 CXXFLAGS = -Ilib/imgui
-CXXFLAGS += -g -Wall -Wformat -Wno-unknown-pragmas
+CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
 LIBS =
 
 
@@ -22,7 +23,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl `sdl2-config --libs`
 
-	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags`
+	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
 	CFLAGS = $(CXXFLAGS)
 endif
 
@@ -31,27 +32,23 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	LIBS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
 	LIBS += -L/usr/local/lib -L/opt/local/lib
 
-	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags`
+	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
 	CXXFLAGS += -I/usr/local/include -I/opt/local/include
 	CFLAGS = $(CXXFLAGS)
 endif
 
-ifeq ($(findstring MINGW,$(UNAME_S)),MINGW)
-   ECHO_MESSAGE = "MinGW"
-   LIBS += -lgdi32 -lopengl32 -limm32 `pkg-config --static --libs sdl2`
 
-   CXXFLAGS += -Ilibs/gl3w `pkg-config --cflags sdl2` -lmingw32 -lSDL2main -lSDL2 -mwindows
-   CFLAGS = $(CXXFLAGS)
+ifeq ($(ARCH),x86_64-w64-mingw32)
+	ECHO_MESSAGE = "MinGW"
+	LIBS += -lgdi32 -lopengl32 -limm32
+	CXXFLAGS += -Ilibs/gl3w -I/lib -lmingw32 -lSDL2main -lSDL2 -mwindows -static-libgcc -static-libstdc++ -lpthread
+	CFLAGS = $(CXXFLAGS)
 endif
 
 ##---------------------------------------------------------------------
 ## BUILD RULES
 ##---------------------------------------------------------------------
 
-
-%.o:%.cpp
-	mkdir -p bin
-	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
 %.o:%.cpp
 	mkdir -p bin
@@ -74,4 +71,5 @@ $(EXE): $(OBJS)
 	rm -f imgui.ini
 
 clean:
+	@echo $(ECHO_MESSAGE)
 	rm -f $(EXE) $(OBJS)

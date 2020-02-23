@@ -133,28 +133,30 @@ class cosproc{
         void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
 
         /* 0x70-0x9B Jumps */
-        void JMP(uint16_t src); //Jump to a location in memory
+        void JMP(uint16_t src);  //Jump to a location in memory
         void JMPR(uint16_t src); //Jump to a location in memory from register
-        void JZS(uint16_t src); //Jump if zero flag is set
+        void JZS(uint16_t src);  //Jump if zero flag is set
         void JZSR(uint16_t src); //Jump if zero flag is set from register
-        void JNZ(uint16_t src); //Jump if zero flag is not set
+        void JNZ(uint16_t src);  //Jump if zero flag is not set
         void JNZR(uint16_t src); //Jump if zero flag is not set from register
-        void JCS(uint16_t src); //Jump if carry flag is set
+        void JCS(uint16_t src);  //Jump if carry flag is set
         void JCSR(uint16_t src); //Jump if carry flag is set from register
-        void JNC(uint16_t src); //Jump if carry flag is not set
+        void JNC(uint16_t src);  //Jump if carry flag is not set
         void JNCR(uint16_t src); //Jump if carry flag is not set register
-        void JOS(uint16_t src); //Jump if overflow is set
+        void JOS(uint16_t src);  //Jump if overflow is set
         void JOSR(uint16_t src); //Jump if overflow is set register
-        void JNO(uint16_t src); //Jump if overflow is not set
+        void JNO(uint16_t src);  //Jump if overflow is not set
         void JNOR(uint16_t src); //Jump if overflow is not set register
-        void JNS(uint16_t src); //Jump if negative is set
+        void JNS(uint16_t src);  //Jump if negative is set
         void JNSR(uint16_t src); //Jump if negative is set register
-        void JNN(uint16_t src); //Jump if negative is not set
+        void JNN(uint16_t src);  //Jump if negative is not set
         void JNNR(uint16_t src); //Jump if negative is not register
-        void JLS(uint16_t src); //Jump if less is set
+        void JLS(uint16_t src);  //Jump if less is set
         void JLSR(uint16_t src); //Jump if less is set register
-        void JNL(uint16_t src); //Jump if less is not set
+        void JNL(uint16_t src);  //Jump if less is not set
         void JNLR(uint16_t src); //Jump if less is not set register
+        void JES(uint16_t src);  //Jump if error is set
+        void JESR(uint16_t src); //Jump if error is set register
 
         /* 0xA0-0xAC Status Flags */
         void CSF(uint16_t src); //Clear all flags
@@ -170,6 +172,7 @@ class cosproc{
         void SLF(uint16_t src); //Set less flag
         void CIF(uint16_t src); //Set interrupt flag
         void SIF(uint16_t src); //Clear interrupt flag
+        void CEF(uint16_t src); //Clear error flag
 
     public:
         //Public for Debugger Only (Package this up eventually)

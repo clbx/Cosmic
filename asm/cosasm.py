@@ -1,276 +1,598 @@
-# Cosmic Assembler
-# Author: Clay Buxton
-#
-# Assembles assembly code into machine code
-#
-#
-# I have no idea how to (if you even can) write clean python code
-
-
 import sys
-import re 
-
-output = bytearray()
-
+import math
+import re
 
 
-bitnessPattern = re.compile("[A-Z]{3}[X].*$")
-#Addressing Modes
-impliedPattern = re.compile("[A-Z]{3,4}$")
-immmediatePattern = re.compile("[A-Z]{3,4} [#][0-9,A-F]{1,4}$")
-absolutePattern = re.compile("[A-Z]{3,4} [0-9,A-F]{1,4}$")
-indirectPattern = re.compile("[A-Z]{3,4} [@][0-9,A-F]{1,4}$")
-registerPattern = re.compile("[A-Z]{3,4} [R][0-7]$")
-constantPattern = re.compile("(word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
-variablePattern = re.compile("var (word|byte) [A-Z,a-z]{1}[A-Z,a-z,0-9]{0,128} [=] (0x)?[0-9,A-F,a-f]{1,4}")
-hasVarConstPattern = re.compile("[A-Z]{3,4} (#|@|R)?[0-9,A-Z,a-z]{1,}$")
-
-labelPattern = re.compile("[A-Z,a-z,0-9]{1,}:$")
-
-constantTable = {}
-variableTable = {}
-labelTable = {}
-
-currentLine = 0
-
-
-
-#The instruction Set (Except MOV)
+#The Instruction Set
 InstructionSet = {
-    'NOP':[0x00],
-    'HCF':[0x01],
-    'PUSH':[0x02],
-    'POP':[0x03],
-    'SWP':[0x04],
-    'CALL':[0x05,0x06,0x07],
-    'RET':[0x08],
-    'SID':[0x09],
-    'ADD':[0x10,0x11,0x12,0x13],
-    'ADDX':[0x14,0x15,0x16,0x17],
-    'SUB':[0x18,0x19,0x1A,0x1B],
-    'SUBX':[0x1C,0x1D,0x1E,0x1F],
-    'MUL':[0x20,0x21,0x22,0x23],
-    'MULX':[0x24,0x25,0x26,0x27],
-    'DIV':[0x28,0x29,0x2A,0x2B],
-    'DIVX':[0x2C,0x2D,0x2E,0x2F],
-    'SHL':[0x3C,0x3D,0x3E,0x3F],
-    'SHLX':[0x4C,0x4D,0x4E,0x4F],
-    'AND':[0x50,0x51,0x52,0x53],
-    'OR':[0x54,0x55,0x56,0x57],
-    'XOR':[0x58,0x59,0x5A,0x5B],
-    'CMP':[0x60,0x61,0x62,0x63],
-    'JMP':[0x70,0x71,0x72,0x73],
-    'JZS':[0x74,0x75,0x76,0x77],
-    'JNZ':[0x78,0x79,0x7A,0x7B],
-    'JCS':[0x7C,0x7D,0x7E,0x7F],
-    'JNC':[0x80,0x81,0x82,0x83],
-    'JOS':[0x84,0x85,0x86,0x87],
-    'JNS':[0x88,0x89,0x8A,0x8B]
+    "IMP NOP":0x00,
+    "IMP HCF":0x01,
+    "IMP PUSH":0x02,
+    "IMP POP":0x03,
+    "REG SWP":0x04,
+    "IMM CALL":0x05,
+    "ABS CALL":0x06,
+    "IND CALL":0x07,
+    "IMP RET":0x08,
+    "IMM ADD":0x10,
+    "ABS ADD":0x11,
+    "IND ADD":0x12,
+    "REG ADD":0x13,
+    "IMM ADDX":0x14,
+    "ABS ADDX":0x15,
+    "IND ADDX":0x16,
+    "REG ADDX":0x17,
+    "IMM SUB":0x18,
+    "ABS SUB":0x19,
+    "IND SUB":0x1A,
+    "REG SUB":0x1B,
+    "IMM SUBX":0x1C,
+    "ABS SUBX":0x1D,
+    "IND SUBX":0x1E,
+    "REG SUBX":0x1F,
+    "IMM MUL":0x20,
+    "ABS MUL":0x21,
+    "IND MUL":0x22,
+    "REG MUL":0x23,
+    "IMM MULX":0x24,
+    "ABS MULX":0x25,
+    "IND MULX":0x26,
+    "REG MULX":0x27,
+    "IMM DIV":0x28,
+    "ABS DIV":0x29,
+    "IND DIV":0x2A,
+    "REG DIV":0x2B,
+    "IMM DIVX":0x2C,
+    "ABS DIVX":0x2D,
+    "IND DIVX":0x2E,
+    "REG DIVX":0x2F,
+    "IMM ABS MOV":0x30,
+    "ABS ABS MOV":0x31,
+    "IND ABS MOV":0x32,
+    "REG ABS MOV":0x33,
+    "IMM IND MOV":0x34,
+    "ABS IND MOV":0x35,
+    "IND IND MOV":0x36,
+    "REG IND MOV":0x37,
+    "IMM REG MOV":0x38,
+    "ABS REG MOV":0x39,
+    "IND REG MOV":0x3A,
+    "REG REG MOV":0x3B,
+    "IMM SHL":0x3C,
+    "ABS SHL":0x3D,
+    "IND SHL":0x3E,
+    "REG SHL":0x3F,
+    "IMM ABS MOVX":0x40,
+    "ABS ABS MOVX":0x41,
+    "IND ABS MOVX":0x42,
+    "REG ABS MOVX":0x43,
+    "IMM IND MOVX":0x44,
+    "ABS IND MOVX":0x45,
+    "IND IND MOVX":0x46,
+    "REG IND MOVX":0x47,
+    "IMM REG MOVX":0x48,
+    "ABS REG MOVX":0x49,
+    "IND REG MOVX":0x4A,
+    "REG REG MOVX":0x4B,
+    "IMM SHLX":0x4C,
+    "ABS SHLX":0x4D,
+    "IND SHLX":0x4E,
+    "REG SHLX":0x4F,
+    "IMM AND":0x50,
+    "ABS AND":0x51,
+    "IND AND":0x52,
+    "REG AND":0x53,
+    "IMM OR":0x54,
+    "ABS OR":0x55,
+    "IND OR":0x56,
+    "REG OR":0x57,
+    "IMM XOR":0x58,
+    "ABS XOR":0x59,
+    "IND XOR":0x5A,
+    "REG XOR":0x5B,
+    "IMM SHR":0x5C,
+    "ABS SHR":0x5D,
+    "IND SHR":0x5E,
+    "REG SHR":0x5F,
+    "IMM CMP":0x60,
+    "ABS CMP":0x61,
+    "IND CMP":0x62,
+    "REG CMP":0x63,
+    "IMM CMPX":0x64,
+    "ABS CMPX":0x65,
+    "IND CMPX":0x66,
+    "REG CMPX":0x67,
+    "IMP INC":0x68,
+    "IMP INCX":0x69,
+    "IMP DEC":0x6A,
+    "IMP DECX":0x6B,
+    "IMM SHRX":0x6C,
+    "ABS SHRX":0x6D,
+    "IND SHRX":0x6E,
+    "REG SHRX":0x6F,
+    "IMM JMP":0x70,
+    "ABS JMP":0x71,
+    "IND JMP":0x72,
+    "REG JMP":0x73,
+    "IMM JZS":0x74,
+    "ABS JZS":0x75,
+    "IND JZS":0x76,
+    "REG JZS":0x77,
+    "IMM JNZ":0x78,
+    "ABS JNZ":0x79,
+    "IND JNZ":0x7A,
+    "REG JNZ":0x7B,
+    "IMM JCS":0x7C,
+    "ABS JCS":0x7D,
+    "IND JCS":0x7E,
+    "REG JCS":0x7F,
+    "IMM JNC":0x80,
+    "ABS JNC":0x81,
+    "IND JNC":0x82,
+    "REG JNC":0x83,
+    "IMM JOS":0x84,
+    "ABS JOS":0x85,
+    "IND JOS":0x86,
+    "REG JOS":0x87,
+    "IMM JNO":0x88,
+    "ABS JNO":0x89,
+    "IND JNO":0x8A,
+    "REG JNO":0x8B,
+    "IMM JNS":0x8C,
+    "ABS JNS":0x8D,
+    "IND JNS":0x8E,
+    "REG JNS":0x8F,
+    "IMM JNN":0x90,
+    "ABS JNN":0x91,
+    "IND JNN":0x92,
+    "REG JNN":0x93,
+    "IMM JLS":0x94,
+    "ABS JLS":0x95,
+    "IND JLS":0x96,
+    "REG JLS":0x97,
+    "IMM JNL":0x98,
+    "ABS JNL":0x99,
+    "IND JNL":0x9A,
+    "REG JNL":0x9B,
+    "IMP CSF":0xA0,
+    "IMP CZF":0xA1,
+    "IMP SZF":0xA2,
+    "IMP CNF":0xA3,
+    "IMP SNF":0xA4,
+    "IMP COF":0xA5,
+    "IMP SOF":0xA6,
+    "IMP CCF":0xA7,
+    "IMP SCF":0xA8,
+    "IMP CLF":0xA9,
+    "IMP SLF":0xAA,
+    "IMP CIF":0xAB,
+    "IMP SIF":0xAC,
+    "IMP CEF":0xAD,
+    "IMM JES":0x9C,
+    "ABS JES":0x9D,
+    "IND JES":0x9E,
+    "REG JES":0x9F
+}
+
+opcodePattern = re.compile("[A-Z,a-z]{3,4}( [#,@,R]?[0-9,A-F]{1,}([ ][#,@,R]?[0-9,A-F]{1,})?)?$")
+
+
+#variableTable = {
+#   "varName" = [pos,len]
+#   "counter" = [5,5]
+#}
+variableTable = {} #Where all variables are stored
+labelTable = {} #Where all labels are stored
+output = bytearray() #The amount of usable bytes for program data size 32768
+variables = bytearray() #The mount of usable bytes for variables size 5120
+currentLine = 0 #Current line of assembly
+
+
+types = { #Valid variable types
+    "word","byte"
 }
 
 
-MovSet = {
-    'MOVA':[0x30,0x31,0x32,0x33], #Moving to an Absolute Location
-    'MOVI':[0x34,0x35,0x36,0x37], #Moving to an Indirect Location
-    'MOVR':[0x38,0x39,0x3A,0x3B], #Moving to a Register
-    'MOVXA':[0x40,0x41,0x42,0x43], #Moving 16 bits to an Absolute Location
-    'MOVXI':[0x44,0x45,0x46,0x47], #Moving 16 bits to an Indirect Location
-    'MOVXR':[0x48,0x49,0x4A,0x4B]  #Moving 16 bits to a register
-}
+#Gets the addressing mode of the function by looking at a single operand
+#Cannot find Implied
+def getAddrMode(token):
+    if(token[0] == "#"):
+        return "IMM"
+    if(token[0] == "@"):
+        return "IND"
+    if(token[0] == "R"):
+        return "REG"
+    else:
+        return "ABS"
 
+#Helper function for adding large variables to the variable table
+def addToVariables(value, size=0):
+    val = int(str(value),16)
+    if(size == 0):
+        size = int(math.ceil((val.bit_length())/8))
+    byteArr = val.to_bytes(size,byteorder="big")
+    variables.extend(byteArr)
     
-#Returns the addressing mode
-def getAddrMode(instruction):
-    if(immmediatePattern.match(instruction) or impliedPattern.match(instruction)):
-        return 0
-    elif(absolutePattern.match(instruction)):
-        return 1
-    elif(indirectPattern.match(instruction)):
-        return 2
-    elif(registerPattern.match(instruction)):
-        return 3
-    else:
-        return -1
-
-
-def getVariables(tokens):
-    if(constantPattern.match(" ".join(tokens))):
-        handleConstant(tokens)
-    elif(variablePattern.match(" ".join(tokens))):
-        handleVariable(tokens)
-    else:
+    
+#Variable Creation: <type> <name> = <value>
+#All new types of variables can be put here
+def createVar(tokens):
+    #If it doesn't fit that setup, return.
+    if(not tokens[2] == "="):
         return
 
-# Handles a constant, loads it into memory and assigns it a location
-def handleConstant(tokens):
-    if(tokens[0] == "word"):
-        constantTable[tokens[1]] = len(output)
-        output.append(int(tokens[3][2:4],16))
-        output.append(int(tokens[3][4:6],16))
-        print("Created constant of size word pointing to {}".format(len(output)-2))
-    elif(tokens[0] == "byte"):
-        constantTable[tokens[1]] = len(output)
-        output.append(int(tokens[3][2:4],16))
-        print("Created variable of size byte pointing to {}".format(len(output)-1))   
+    #byte counter = 5
+    if(tokens[0] == "byte"):
+        identifier = tokens[1]
+        value = int(tokens[3],16)
+        variableTable[identifier] = [len(variables),1]
+        addToVariables(value,1)
+        return
+    #word points = 50
+    if (tokens[0] == "word"):
+        identifier = tokens[1]
+        value = tokens[3]
+        variableTable[identifier] = [len(variables),2]
+        addToVariables(value,2)
     else:
-        error("Invalid size given: {}".format(tokens[0]))    
-    return 0
+        error("Unknown type {}".format(tokens[0]))
 
-def handleVariable(tokens):
-    if(tokens[1] == "word"):
-        output.append(int(tokens[4][2:4],16))
-        output.append(int(tokens[4][4:6],16))
+#Returns tokens with variables resolved
+def resolveVariables(tokens):
+    #Go through the length of the opcode starting with the first operand and find variables
+    for i in range(1,len(tokens)):
+        addrMode = getAddrMode(tokens[i])
 
-        if(tokens[2] not in variableTable):
-            variableTable[tokens[2]] = len(output)-2
+        operator = ""
+        operand = ""
+        newoperand = ""
 
-        print("Created variable of size word pointing to {}".format(len(output)-2))
-
-    elif(tokens[1] == "byte"):
-        output.append(int(tokens[4][2:4],16))   
-
-        if(tokens[2] not in variableTable):
-            variableTable[tokens[2]] = len(output)-1
-
-        print("Created variable of size byte pointing to {}".format(len(output)-1))
-
-    else:
-        error("Invalid size given: {}".format(tokens[0]))
-    return 0
-
-
-def handleOpcode(tokens):
-    print("OPCODE HANDLING {}".format(tokens))
-    if(hasVarConstPattern.match(" ".join(tokens))):
-        if(not absolutePattern.match(" ".join(tokens))):
-            if(tokens[1][1:] in constantTable):
-                tokens[1] = tokens[1][0] + constantTable[tokens[1][1:]]
-            if(tokens[1][1:] in variableTable):
-                tokens[1] = tokens[1][0] + variableTable[tokens[1][1:]]
+        if(addrMode == "ABS"):
+            operand = tokens[i]
         else:
-            if(tokens[1] in constantTable):
-                tokens[1] = constantTable[tokens[1]]
-            if(tokens[1][1:] in variableTable):
-                tokens[1] = variableTable[tokens[1]]
+            operand = tokens[i][1:]
+            operator = tokens[i][0]
 
-    addressingMode = getAddrMode(" ".join(tokens))
-    print("Addressing Mode: {}".format(addressingMode))
-    instruction = InstructionSet[tokens[0]][addressingMode]
-    output.append(instruction)
-    if(impliedPattern.match(" ".join(tokens))):
-        return 0 
-    elif(absolutePattern.match(" ".join(tokens))):
-        if((int(tokens[1],16])) < 256):
-            output.append(int(tokens[1],16))
-        else:
-            
-            
-    else:
-        
+        if(operand in variableTable):
+
+            #print(variables[variableTable[operand][0]])
 
 
-    return 0
+            if(variableTable[operand][1] > 2):
+                warning("Variable {} is larger than opcode can handle".format(operand))
+            for j in range(variableTable[operand][1]): #Add all of the operand
+                newoperand += str(variables[variableTable[operand][0] + j])
+            tokens[i] = operator + str(int(newoperand) + 0xC800)
 
-def handleMovOpcode(tokens):
-    return 0
+        if(operand in labelTable):
+            operand = labelTable[operand]
+            tokens[i] = str(operator) + str(operand)
 
-#Handle a label being encountered
+    return tokens
+
 def handleLabel(tokens):
     label = tokens[0][:-1]
-    #check if the label is already in the label
-    if(label in labelTable):
-        error("Label \"{}\" already exists".format(label))
-    #if its not already in the label table then we need to add it
-    currentByte = len(output)
-    print("Label {} correlates to position {}".format(label,currentByte))
-    labelTable[label] = currentByte
-    return
+    labelTable[label] = len(output)
+    
 
+def updateVar(tokens):
+    print("Updating variable")
 
+#maybe replace with regex if we're feeling brave
 def assemble(tokens):
-    #Check if it's in the opcode table
-    if(tokens[0] in InstructionSet):
-        print("Handling Opcode")
-        handleOpcode(tokens)
-        return
-    #Check if it's a MOV
+    #print(tokens)
+    #If its variable creation:
+    if(tokens[0] in types and tokens[2] == "="):
+        createVar(tokens)
 
-    if(tokens[0] == "MOV"):
-        print("Handling Move Opcode")
-        handleMovOpcode(tokens)
-        return
+    #If its variable assigning:
+    elif(tokens[0] in variableTable and tokens[1] == "="):
+        updateVar(tokens)
 
-    #Check if it's a label
-    if(labelPattern.match(" ".join(tokens))):
+    #If its a label
+    elif(tokens[0][-1] == ":"):
         handleLabel(tokens)
-        return
-    #Check if it's a constant or variable
-    if(constantPattern.match(" ".join(tokens)) or variablePattern.match(" ".join(tokens))):
-        print("Skipping: Variable or constant") #It should have already been handled in the first pass
-        return
-    #Check if it's a comment
-    if(tokens[0][0] == ';'):
-        print("Skipping: Comment")
-        return
 
-    error("{} did not match any proper input".format(" ".join(tokens)))
-    return 0
+    #If its a comment
+    elif(tokens[0][0] == ";"):
+        pass
+
+    #Else its an opcode
+    else: 
+        tokens = resolveVariables(tokens)
+        try:
+            eval(tokens[0])(tokens)
+        except NameError:
+            error("Unknown Input {}".format(tokens))
+
+def getOperand(token):
+    addrMode = getAddrMode(token)
+    operand = ""
+    operator = ""
+    if(addrMode == "IMP" or addrMode == "ABS"):
+            operand = token
+    else:
+        operator = token[0]
+        operand = token[1:]
+    return addrMode,operator,int(operand,16) 
 
 
+'''
+Handle a Standard 8 Bit opcode
+
+General function for opcodes with the format [opcode] [operand] where
+the operand is 8 bits.
+'''
+def handleStd8bitOpcode(tokens):
+    addrMode,_,operand = getOperand(tokens[1])
+    if(addrMode == "IMM" or addrMode == "REG"):
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append(operand)
+    else:
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand >> 8) & 0xFF)
+        output.append((operand & 0xFF))
+
+'''
+Handle a Standard 16 Bit opcode
+
+General function for opcodes with the format [opcode] [operand] where
+the operand is 16 bits.
+'''
+def handleStd16bitOpcode(tokens):
+    addrMode,_,operand = getOperand(tokens[1])
+    if(addrMode == "REG"):
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand & 0xFF))
+    else:       
+        output.append(InstructionSet[addrMode + " " + tokens[0]])
+        output.append((operand >> 8) & 0xFF)
+        output.append((operand & 0xFF))
+
+
+        
+
+# -= INSTRUCTION FUNCTIONS =- #
+
+def NOP(tokens):
+    output.append(InstructionSet["IMP NOP"])
+
+def HCF(tokens):
+    output.append(InstructionSet["IMP HCF"])
+
+def PUSH(tokens):
+    output.append(InstructionSet["IMP PUSH"])
+
+def POP(tokens):
+    output.append(InstructionSet["IMP POP"])
+
+def SWP(tokens):
+    output.append(InstructionSet["REG SWP"])
+    _,_,operand = getOperand(tokens[1])
+    output.append(operand)
+    _,_,operand = getOperand(tokens[2])
+    output.append(operand)
+
+def CALL(tokens):
+    handleStd16bitOpcode(tokens)
+    
+def RET(tokens):
+    output.append(InstructionSet["IMP RET"])
+
+def ADD(tokens):
+    handleStd8bitOpcode(tokens)
+    
+def ADDX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def SUB(tokens):
+    handleStd8bitOpcode(tokens)
+
+def SUBX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def MUL(tokens):
+    handleStd8bitOpcode(tokens)
+
+def MULX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def DIV(tokens):
+    handleStd8bitOpcode(tokens)
+
+def DIVX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def MOV(tokens):
+    addrMode1,_,operand1 = getOperand(tokens[1])
+    addrMode2,_,operand2 = getOperand(tokens[2])
+    output.append(InstructionSet[addrMode1 + " " + addrMode2 + " " + tokens[0]])
+    if(addrMode1 == "IMM" or addrMode1 == "REG"):
+        output.append(operand1)
+    else:
+        output.append((operand1 >> 8) & 0xFF)
+        output.append((operand1 & 0xFF))
+    if(addrMode2 == "IMM" or addrMode2 == "REG"):
+        output.append(operand2)
+    else:
+        output.append((operand2 >> 8) & 0xFF)
+        output.append((operand2 & 0xFF))
+
+def MOVX(tokens):
+    addrMode1,_,operand1 = getOperand(tokens[1])
+    addrMode2,_,operand2 = getOperand(tokens[2])
+    output.append(InstructionSet[addrMode1 + " " + addrMode2 + " " + tokens[0]])
+    if(addrMode1 == "REG"):
+        output.append((operand1 & 0xFF))
+    else:
+        output.append((operand1 >> 8) & 0xFF)
+        output.append((operand1 & 0xFF))
+    if(addrMode2 == "REG"):
+        output.append((operand2 & 0xFF))
+    else:
+        output.append((operand2 >> 8) & 0xFF)
+        output.append((operand2 & 0xFF))
+
+def SHL(tokens):
+    handleStd16bitOpcode(tokens)
+
+def SHLX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def AND(tokens):
+    handleStd8bitOpcode(tokens)
+
+def OR(tokens):
+    handleStd8bitOpcode(tokens)
+
+def XOR(tokens):
+    handleStd8bitOpcode(tokens)
+
+def SHR(tokens):
+    handleStd8bitOpcode(tokens)
+
+def CMP(tokens):
+    handleStd8bitOpcode(tokens)
+
+def CMPX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def INC(tokens):
+    output.append(InstructionSet["IMP INC"])
+
+def INCX(tokens):
+    output.append(InstructionSet["IMP INCX"])
+
+def DEC(tokens):
+    output.append(InstructionSet["IMP DEC"])
+
+def DECX(tokens):
+    output.append(InstructionSet["IMP DECX"])
+
+def SHRX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JMP(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JZS(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNZ(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JCS(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNC(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JOS(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNO(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNS(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNN(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JLS(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JNL(tokens):
+    handleStd16bitOpcode(tokens)
+
+def JES (tokens):
+    handleStd16bitOpcode(tokens)
+
+def CSF(tokens):
+    output.append(InstructionSet["IMP CSF"])
+
+def CZF(tokens):
+    output.append(InstructionSet["IMP CZF"])
+
+def SZF(tokens):
+    output.append(InstructionSet["IMP SZF"])
+
+def CNF(tokens):
+    output.append(InstructionSet["IMP CNF"])
+
+def SNF(tokens):
+    output.append(InstructionSet["IMP SNF"])
+
+def COF(tokens):
+    output.append(InstructionSet["IMP COF"])
+
+def SOF(tokens):
+    output.append(InstructionSet["IMP SOF"])
+
+def CCF(tokens):
+    output.append(InstructionSet["IMP CCF"])
+
+def SCF(tokens):
+    output.append(InstructionSet["IMP SCF"])
+
+def CLF(tokens):
+    output.append(InstructionSet["IMP CLF"])
+
+def SLF(tokens):
+    output.append(InstructionSet["IMP SLF"])
+
+def CIF(tokens):
+    output.append(InstructionSet["IMP CIF"])
+
+def SIF(tokens):
+    output.append(InstructionSet["IMP SIF"])
+
+def CEF(tokens):
+    output.append(InstructionSet["IMP CEF"])
 
 #Writes an error to the console. Stops exectuion
 def error(msg):
-    print("Error on line {} : {} ".format(currentLine,msg))
+    print("[Error] line {} : {} ".format(currentLine,msg))
     sys.exit()
 
+#Writes a warning to the console
+def warning(msg):
+    print("[Warning] line {} : {}".format(currentLine,msg))
+
 def main():
+    global currentLine
+
     if(len(sys.argv) < 2):
-        print("Please supply a file")
+        print("Usage: cosasm <input file> <output file>")
         return -1
 
-    # The original jump instruction to go to start of program
-    output.append(0x70)
-    output.append(0xFF)
-    output.append(0xFF)
 
-
-    #Put's all read instructions into a list by line
     inputFile = open(sys.argv[1],'r')
     instructions = list(inputFile)
     inputFile.close()
 
-    print("Read " + str(len(instructions)) + " lines\n")
+    print("Read " + str(len(instructions)) + " lines")
+    
 
-    #Go through the instructions    
-
-    print("-= First Pass: Finding Variables and Constants =-")
-    #Gather Variables and Constants and put them in
-    for i in range(0, len(instructions)):
-        tokens = instructions[i].split()
-        getVariables(tokens)
-
-    output[1] = (len(output) >> 8) & 0xff
-    output[2] = len(output) & 0xff
-    print("Starting program at position {}".format(len(output)))
-
-
-    print("\n\n-= Second Pass: Assembly =-")    
-    #Go through line by line
-    #Everything else, give Assemble one line at a time
-    #Set current line
+    #-= Go through the file =-#
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
         assemble(tokens)
+        currentLine += 1
 
-       
-    
-    print("\n\n-= Output: =-")
+
+
+    print("\n-= Output: =-")
     for i in range(0, len(output)):
-        print(hex(output[i]))
-    outputFile = open('output.bin','w+b')
-    outputFile.write(output)
-    outputFile.close()
-
+        print(hex(output[i]),end=" ")
+    print("")
+    print('\n-= Var Table: =-')
+    for i in range(0 , len(variables)):
+        print(hex(variables[i]),end=" ")
+    print("")
+    #outputFile = open('output.bin','w+b')
+    #outputFile.write(output)
+    #outputFile.close()
 
 if __name__ == "__main__":
     main()
