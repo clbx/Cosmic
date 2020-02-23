@@ -15,7 +15,7 @@ matrix:
       before_install:
         - sudo apt update
         - sudo apt -y install libsdl2-dev libncurses-dev
-     - os: windows
+    - os: windows
       arch: amd64
       before_install:
         - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
