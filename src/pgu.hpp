@@ -12,8 +12,8 @@ public:
   void show();
   void userCallBack();
 protected:
-  float width; 
-  float heigth; 
+  float width=128;
+  float heigth=128;
   GLuint vramTexture=0;
   GLuint g_ShaderHandle = 0;
   GLuint g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;
