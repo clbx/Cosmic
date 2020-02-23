@@ -14,11 +14,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
-#include <curses.h>
-
+/*
 #include "imtui.h"
 #include "imtui-impl-ncurses.h"
 #include "imtui-impl-text.h"
+*/
 
 /**
  * A Command Line Interface for ImGUI
