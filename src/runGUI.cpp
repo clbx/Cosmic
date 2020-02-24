@@ -266,6 +266,7 @@ int runGUI::run(){
         if (menu_action == "loadbin"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
             ImGui::OpenPopup("Load Binary");
+            
         }
         if (menu_action == "dumpmem"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
@@ -273,10 +274,18 @@ int runGUI::run(){
         }
 
         if (ImGui::BeginPopupModal("Load Binary", NULL)){
-            ImGui::Text("Insert Filepath Here: ");
+            ImGui::Text("Choose File: ");
             static char filepath[128] = "";
-            ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-            if (ImGui::Button("Open")){
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", filepath, IM_ARRAYSIZE(filepath));
+            ImGui::SameLine();
+            const bool browseButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog fsInstance;
+            const char* file = fsInstance.chooseFileDialog(browseButtonPressed,"./");
+            strcpy(filepath,fsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(filepath)>0) {
+            }
+           if (ImGui::Button("Open")){
                 LoadIntoMemory(filepath);
                 ImGui::CloseCurrentPopup();
             }
@@ -288,11 +297,19 @@ int runGUI::run(){
         }
 
         if (ImGui::BeginPopupModal("Dump Memory", NULL)){
-            ImGui::Text("Insert Filepath Here: ");
-            static char filepath[128] = "";
-            ImGui::InputText("input text", filepath, IM_ARRAYSIZE(filepath));
-            if (ImGui::Button("Save")){
-                DumpMemory(filepath);
+            ImGui::Text("Save File: ");
+            static char saveFilepath[128] = "";
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", saveFilepath, IM_ARRAYSIZE(saveFilepath));
+            ImGui::SameLine();
+            const bool saveButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog fsInstance1;
+            const char* file = fsInstance1.saveFileDialog(saveButtonPressed,"myROM.bin");
+            strcpy(saveFilepath,fsInstance1.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(saveFilepath)>0) {
+            }
+           if (ImGui::Button("Save")){
+                DumpMemory(saveFilepath);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
