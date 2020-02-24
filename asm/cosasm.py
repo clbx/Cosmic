@@ -590,9 +590,12 @@ def main():
     for i in range(0 , len(variables)):
         print(hex(variables[i]),end=" ")
     print("")
-    #outputFile = open('output.bin','w+b')
-    #outputFile.write(output)
-    #outputFile.close()
+    if(len(sys.argv) == 2):
+        outputFile = open('output.bin','w+b')
+    else:
+        outputFile = open(sys.argv[2],'w+b')
+    outputFile.write(output)
+    outputFile.close()
 
 if __name__ == "__main__":
     main()

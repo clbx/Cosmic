@@ -63,23 +63,46 @@ void runGUI::Assemble(){
     std::string result = "";
     char buffer[128];
 
-    FILE* pipe = popen("python3 asm/cosasm.py rom/counter.asm","r");
+    std::ofstream file("tmp.asm");
+    file << editorText;
+    file.close();
+
+    FILE* pipe = popen("python3 asm/cosasm.py tmp.asm tmp.bin","r");
 
     while(!feof(pipe)){
         if(fgets(buffer,128,pipe) != NULL)
             result += buffer;
-
     }
 
     pclose(pipe);
+    LoadIntoMemory("tmp.bin");
+
+    remove("tmp.bin");
+    remove("tmp.asm");
+
     debugLog.AddLog(result.c_str());
-
-
 
 }
 
 
 void runGUI::MemoryEditor(cosproc proc){
+    /*
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)){
+        if (ImGui::BeginTabItem("Avocado")){
+            ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Broccoli")){
+            ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Cucumber")){
+            ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }*/
     ImGui::SetNextWindowSize(ImVec2(530, 280), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(305, 120), ImGuiCond_Once);
     ramEdit.DrawWindow("Memory Editor", memory, sizeof(uint8_t) * 65536);
@@ -96,9 +119,6 @@ void runGUI::Assembler(cosproc proc){
         debugLog.AddLog("Assembling...\n");
         Assemble();
     }
-    ImGui::SameLine();
-    ImGui::PushItemWidth(100);
-    ImGui::InputText("Filename",filepath,IM_ARRAYSIZE(filepath));
 
     static ImGuiInputTextFlags editorFlags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::InputTextMultiline("##source", editorText, IM_ARRAYSIZE(editorText), ImVec2(400, 625), editorFlags);
