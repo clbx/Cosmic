@@ -25,6 +25,7 @@ class runGUI{
         void Assemble();
         void MemoryEditor(cosproc proc);
         void Assembler(cosproc proc);
+        void ShowTopMenu();
 
 
 

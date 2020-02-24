@@ -1,4 +1,5 @@
 #include "runGUI.hpp"
+#include <fstream>
 
 
 uint8_t memory[65536] = {};
@@ -6,6 +7,10 @@ uint8_t memory[65536] = {};
 
 static MemoryEditor ramEdit;
 static Logger debugLog;
+
+
+bool showGraphics = false;
+static char editorText[256 * 1000] = "";
 
 void MemoryWrite(uint16_t address, uint8_t value)
 {
@@ -95,18 +100,171 @@ void runGUI::Assembler(cosproc proc){
     ImGui::PushItemWidth(100);
     ImGui::InputText("Filename",filepath,IM_ARRAYSIZE(filepath));
 
-
-
-    
-    
-
     static ImGuiInputTextFlags editorFlags = ImGuiInputTextFlags_AllowTabInput;
-    static char editorText[256 * 1000] = "";
     ImGui::InputTextMultiline("##source", editorText, IM_ARRAYSIZE(editorText), ImVec2(400, 625), editorFlags);
 
     ImGui::End();
 }
 
+
+void runGUI::ShowTopMenu(){
+    std::string menu_action = "";
+        if (ImGui::BeginMainMenuBar()){
+            if (ImGui::BeginMenu("File")){
+                //Load File Into Memory
+                if (ImGui::MenuItem("Load Binary")){
+                    menu_action = "loadbin";
+                }
+                //Dump Memory to a File
+                if (ImGui::MenuItem("Save Binary")){
+                    menu_action = "savebin";
+                }
+                ImGui::Separator();
+                if (ImGui::MenuItem("Load Assembly")){
+                    menu_action = "loadasm";
+                }
+                //Dump Memory to a File
+                if (ImGui::MenuItem("Save Assembly")){
+                    menu_action = "saveasm";
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Edit")){
+                if (ImGui::MenuItem("Undo", "CTRL+Z")){}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)){} // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cut", "CTRL+X")){}
+                if (ImGui::MenuItem("Copy", "CTRL+C")){}
+                if (ImGui::MenuItem("Paste", "CTRL+V")){}
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Window")){
+                if (ImGui::MenuItem("Toggle Graphics")){
+                    showGraphics = !showGraphics;
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        if (menu_action == "loadbin"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Load Binary");
+            
+        }
+        if (menu_action == "savebin"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Dump Memory");
+        }
+        if (menu_action == "loadasm"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Load Assembly");
+        }
+        if (menu_action == "saveasm"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Save Assembly");
+        }
+
+        if (ImGui::BeginPopupModal("Load Binary", NULL)){
+            ImGui::Text("Choose File: ");
+            static char loadBinFilepath[128] = "";
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", loadBinFilepath, IM_ARRAYSIZE(loadBinFilepath));
+            ImGui::SameLine();
+            const bool browseBinButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog loadbinFsInstance;
+            loadbinFsInstance.chooseFileDialog(browseBinButtonPressed,"./");
+            strcpy(loadBinFilepath,loadbinFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(loadBinFilepath)>0) {
+            }
+           if (ImGui::Button("Open")){
+                LoadIntoMemory(loadBinFilepath);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopupModal("Dump Memory", NULL)){
+            ImGui::Text("Save File: ");
+            static char saveBinFilepath[128] = "";
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", saveBinFilepath, IM_ARRAYSIZE(saveBinFilepath));
+            ImGui::SameLine();
+            const bool saveBinButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog savebinFsInstance;
+            savebinFsInstance.saveFileDialog(saveBinButtonPressed,"myROM.bin");
+            strcpy(saveBinFilepath,savebinFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(saveBinFilepath)>0) {
+            }
+           if (ImGui::Button("Save")){
+                DumpMemory(saveBinFilepath);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+        if (ImGui::BeginPopupModal("Load Assembly", NULL)){
+            ImGui::Text("Choose File: ");
+            static char loadAsmFilepath[128] = "";
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", loadAsmFilepath, IM_ARRAYSIZE(loadAsmFilepath));
+            ImGui::SameLine();
+            const bool browseAsmButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog loadAsmFsInstance;
+            loadAsmFsInstance.chooseFileDialog(browseAsmButtonPressed,"./");
+            strcpy(loadAsmFilepath,loadAsmFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(loadAsmFilepath)>0) {
+            }
+           if (ImGui::Button("Open")){
+                memset(editorText,0,256 * 1000);
+                std::ifstream file(loadAsmFilepath);
+                int i = 0;
+                while(!file.eof()){
+                    file.get(editorText[i]); 
+                    i++;
+                }
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopupModal("Save Assembly", NULL)){
+            ImGui::Text("Save File: ");
+            static char saveAsmFilepath[128] = "";
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", saveAsmFilepath, IM_ARRAYSIZE(saveAsmFilepath));
+            ImGui::SameLine();
+            const bool saveAsmButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog saveAsmFsInstance;
+            saveAsmFsInstance.saveFileDialog(saveAsmButtonPressed,"assembler.asm");
+            strcpy(saveAsmFilepath,saveAsmFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(saveAsmFilepath)>0) {
+            }
+           if (ImGui::Button("Save")){
+                std::ofstream file;
+                file.open(saveAsmFilepath);
+                file << editorText;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+}
 
 int runGUI::run(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
@@ -157,8 +315,6 @@ int runGUI::run(){
     bool done = false;
 
     bool ctrlState = false;
-
-    bool showGraphics = false;
     while (!done){
         SDL_Event event;
         while (SDL_PollEvent(&event)){
@@ -231,93 +387,7 @@ int runGUI::run(){
         /**  -= Menu Bar =-
         *     Top Menu bar.
         */
-        std::string menu_action = "";
-        if (ImGui::BeginMainMenuBar()){
-            if (ImGui::BeginMenu("File")){
-                //Load File Into Memory
-                if (ImGui::MenuItem("Load into Memory")){
-                    menu_action = "loadbin";
-                }
-                //Dump Memory to a File
-                if (ImGui::MenuItem("Dump Memory")){
-                    menu_action = "dumpmem";
-                }
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Edit")){
-                if (ImGui::MenuItem("Undo", "CTRL+Z")){}
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)){} // Disabled item
-                ImGui::Separator();
-                if (ImGui::MenuItem("Cut", "CTRL+X")){}
-                if (ImGui::MenuItem("Copy", "CTRL+C")){}
-                if (ImGui::MenuItem("Paste", "CTRL+V")){}
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Window")){
-                if (ImGui::MenuItem("Toggle Graphics")){
-                    showGraphics = !showGraphics;
-                }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMainMenuBar();
-        }
-
-        if (menu_action == "loadbin"){
-            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
-            ImGui::OpenPopup("Load Binary");
-            
-        }
-        if (menu_action == "dumpmem"){
-            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
-            ImGui::OpenPopup("Dump Memory");
-        }
-
-        if (ImGui::BeginPopupModal("Load Binary", NULL)){
-            ImGui::Text("Choose File: ");
-            static char filepath[128] = "";
-            ImGui::PushItemWidth(400);
-            ImGui::InputText("", filepath, IM_ARRAYSIZE(filepath));
-            ImGui::SameLine();
-            const bool browseButtonPressed = ImGui::Button("...");
-            static ImGuiFs::Dialog fsInstance;
-            const char* file = fsInstance.chooseFileDialog(browseButtonPressed,"./");
-            strcpy(filepath,fsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
-            if (strlen(filepath)>0) {
-            }
-           if (ImGui::Button("Open")){
-                LoadIntoMemory(filepath);
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel")){
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-
-        if (ImGui::BeginPopupModal("Dump Memory", NULL)){
-            ImGui::Text("Save File: ");
-            static char saveFilepath[128] = "";
-            ImGui::PushItemWidth(400);
-            ImGui::InputText("", saveFilepath, IM_ARRAYSIZE(saveFilepath));
-            ImGui::SameLine();
-            const bool saveButtonPressed = ImGui::Button("...");
-            static ImGuiFs::Dialog fsInstance1;
-            const char* file = fsInstance1.saveFileDialog(saveButtonPressed,"myROM.bin");
-            strcpy(saveFilepath,fsInstance1.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
-            if (strlen(saveFilepath)>0) {
-            }
-           if (ImGui::Button("Save")){
-                DumpMemory(saveFilepath);
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel")){
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
+        ShowTopMenu();
 
         /**  -= GUI Debug Window =-
         *  This window holds debug info
@@ -340,6 +410,7 @@ int runGUI::run(){
         ImGui::Text("Registers");
         ImGui::SameLine();
         HelpMarker("Registers are the most basic unit of storage in a processor.\n The amount, size, and configuration of registers depends on the architecture of the processor. \n\n General Registers: Cosmic contains 8 8-bit general registers that can also be referenced as 4 16-bit registers. These registers are used for temporarily storing data for operations \n\n Program Counter: A 16-bit register that holds the current position where code is being executed.\n\n Stack Pointer: The location of the top of the stack.\n\n Status Register: Holds current execution data about the system.");
+        //"
         ImGui::Separator();
         ImGui::Columns(2, "8bitreg");
         //Left Side
