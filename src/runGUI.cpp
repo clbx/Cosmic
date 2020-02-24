@@ -54,6 +54,59 @@ void runGUI::HelpMarker(const char *desc){
 }
 
 
+void runGUI::Assemble(){
+    std::string result = "";
+    char buffer[128];
+
+    FILE* pipe = popen("python3 asm/cosasm.py rom/counter.asm","r");
+
+    while(!feof(pipe)){
+        if(fgets(buffer,128,pipe) != NULL)
+            result += buffer;
+
+    }
+
+    pclose(pipe);
+    debugLog.AddLog(result.c_str());
+
+
+
+}
+
+
+void runGUI::MemoryEditor(cosproc proc){
+    ImGui::SetNextWindowSize(ImVec2(530, 280), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(305, 120), ImGuiCond_Once);
+    ramEdit.DrawWindow("Memory Editor", memory, sizeof(uint8_t) * 65536);
+    ramEdit.Highlight(proc.pc, proc.pc + 1, ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f, 0.75f, 0.25f, 1.0f)));
+
+}
+
+void runGUI::Assembler(cosproc proc){
+    ImGui::SetNextWindowPos(ImVec2(845, 30), ImGuiCond_Once);
+    ImGui::Begin("Editor");
+    static char filepath[128] = "";
+
+    if (ImGui::Button("Assemble")){
+        debugLog.AddLog("Assembling...\n");
+        Assemble();
+    }
+    ImGui::SameLine();
+    ImGui::PushItemWidth(100);
+    ImGui::InputText("Filename",filepath,IM_ARRAYSIZE(filepath));
+
+
+
+    
+    
+
+    static ImGuiInputTextFlags editorFlags = ImGuiInputTextFlags_AllowTabInput;
+    static char editorText[256 * 1000] = "";
+    ImGui::InputTextMultiline("##source", editorText, IM_ARRAYSIZE(editorText), ImVec2(400, 625), editorFlags);
+
+    ImGui::End();
+}
+
 
 int runGUI::run(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
@@ -94,8 +147,6 @@ int runGUI::run(){
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    bool editorAssembled = false;
 
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
@@ -175,7 +226,7 @@ int runGUI::run(){
         *   Useful for figuring out how
         *   To do new things
         */
-        //ImGui::ShowTestWindow();
+        ImGui::ShowDemoWindow();
 
         /**  -= Menu Bar =-
         *     Top Menu bar.
@@ -320,10 +371,7 @@ int runGUI::run(){
         *  Shows and allows the editing of
         *  Memory
         */
-        ImGui::SetNextWindowSize(ImVec2(530, 280), ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(305, 120), ImGuiCond_Once);
-        ramEdit.DrawWindow("Memory Editor", memory, sizeof(uint8_t) * 65536);
-        ramEdit.Highlight(proc.pc, proc.pc + 1, ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f, 0.75f, 0.25f, 1.0f)));
+        MemoryEditor(proc);
 
         /**  -= Control Window =-
         *   Control the Processor.
@@ -377,23 +425,7 @@ int runGUI::run(){
         *   Allows the writing of Assembly Code
         *   And assembles it in the enviroment
         */
-        ImGui::SetNextWindowPos(ImVec2(845, 30), ImGuiCond_Once);
-        ImGui::Begin("Editor");
-
-        if (ImGui::Button("Assemble")){
-            debugLog.AddLog("Assembling...\n");
-            editorAssembled = true;
-        }
-        if (editorAssembled){
-            ImGui::SameLine();
-            ImGui::Text(" File saved to /filepath/file.bin\n");
-        }
-
-        static ImGuiInputTextFlags editorFlags = ImGuiInputTextFlags_AllowTabInput;
-        static char editorText[256 * 1000] = "";
-        ImGui::InputTextMultiline("##source", editorText, IM_ARRAYSIZE(editorText), ImVec2(400, 625), editorFlags);
-
-        ImGui::End();
+       Assembler(proc);
 
         //Run if the run button it pushed
         if (running){

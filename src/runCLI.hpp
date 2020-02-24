@@ -28,7 +28,6 @@ class runCLI{
         void LoadIntoMemory(char *filepath);
         void DumpMemory(char *filepath);
 
-
     public:
         int run();
 };
