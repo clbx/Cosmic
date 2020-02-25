@@ -86,23 +86,6 @@ void runGUI::Assemble(){
 
 
 void runGUI::MemoryEditor(cosproc proc){
-    /*
-    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)){
-        if (ImGui::BeginTabItem("Avocado")){
-            ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
-            ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Broccoli")){
-            ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-            ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Cucumber")){
-            ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
-            ImGui::EndTabItem();
-        }
-        ImGui::EndTabBar();
-    }*/
     ImGui::SetNextWindowSize(ImVec2(530, 280), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(305, 120), ImGuiCond_Once);
     ramEdit.DrawWindow("Memory Editor", memory, sizeof(uint8_t) * 65536);

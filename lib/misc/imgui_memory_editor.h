@@ -1,3 +1,9 @@
+/**
+ * 
+ *   To anyone finding this and wanting to use it, this has been modified in such a way
+ *   That it won't work on any application except for this project. Please see the original code
+ * 
+ */
 // Mini memory editor for Dear ImGui (to embed in your game/tools)
 // Animated GIF: https://twitter.com/ocornut/status/894242704317530112
 // Get latest version at http://www.github.com/ocornut/imgui_club
@@ -143,6 +149,19 @@ struct MemoryEditor
         PreviewDataType = DataType_S32;
     }
 
+
+    void HelpMarker(const char *desc){
+        ImGui::TextDisabled("(?)");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+            ImGui::TextUnformatted(desc);
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+    }
+
     void GotoAddrAndHighlight(size_t addr_min, size_t addr_max)
     {
         GotoAddr = addr_min;
@@ -205,14 +224,59 @@ struct MemoryEditor
         Open = true;
         if (ImGui::Begin(title, &Open, ImGuiWindowFlags_NoScrollbar))
         {
+
+            //HelpMarker("Shows what's currently in Memory.\n General: General Memory Space, usually where your program goes\n Video: The memory mapped video output\n Stack: The memory space the stack uses\n I/O The memory space where I/O operations happen\n Variable: Where variables go when you use the Cosmic Assembler\n Empty: Currently unmapped\n Vector: The 8-byte section reserved for vectors \nThe \"All Memory\" will show all memory, each tab shows it's relevant section.");
+
             if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1))
                 ImGui::OpenPopup("context");
-            DrawContents(mem_data, mem_size, base_display_addr);
+
+            ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+            if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)){
+                if (ImGui::BeginTabItem("All Memory")){
+                    DrawContents(mem_data, mem_size, base_display_addr);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("General")){
+                    //DrawContents(mem_data, mem_size, base_display_addr);
+                    DrawContents(mem_data, 0x8000 - 0x0000, 0x0000);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Video")){
+                    DrawContents(mem_data, 0xC000 - 0x8000, 0x8000);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Stack")){
+                    DrawContents(mem_data, 0xC400 - 0xC000, 0xC000);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("I/O")){
+                    DrawContents(mem_data, 0xC800 - 0xC400, 0xC400);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Variable")){
+                    DrawContents(mem_data, 0xCD00 - 0xC800, 0xC800);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Empty")){
+                    DrawContents(mem_data, 0xFFF0 - 0xCD00, 0xCD00);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Vector")){
+                    DrawContents(mem_data, 0xFFFF - 0xFFF0, 0xFFF0);
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
+            }
+            
+
+
             if (ContentsWidthChanged)
             {
                 CalcSizes(s, mem_size, base_display_addr);
                 ImGui::SetWindowSize(ImVec2(s.WindowWidth, ImGui::GetWindowSize().y));
             }
+
+
         }
         ImGui::End();
     }
