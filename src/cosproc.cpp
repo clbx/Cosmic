@@ -209,10 +209,10 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0xA2] = (Instruction){&cosproc::IMP,&cosproc::SZF,"SZF",1};
 	InstructionSet[0xA3] = (Instruction){&cosproc::IMP,&cosproc::CNF,"CNF",1};
 	InstructionSet[0xA4] = (Instruction){&cosproc::IMP,&cosproc::SNF,"SNF",1};
-	InstructionSet[0xA5] = (Instruction){&cosproc::IMP,&cosproc::COF,"COF",1};
-	InstructionSet[0xA6] = (Instruction){&cosproc::IMP,&cosproc::SOF,"SOF",1};
-	InstructionSet[0xA7] = (Instruction){&cosproc::IMP,&cosproc::CCF,"CCF",1};
-	InstructionSet[0xA8] = (Instruction){&cosproc::IMP,&cosproc::SCF,"SCF",1};
+	InstructionSet[0xA5] = (Instruction){&cosproc::IMP,&cosproc::CCF,"CCF",1};
+	InstructionSet[0xA6] = (Instruction){&cosproc::IMP,&cosproc::SCF,"SCF",1};
+	InstructionSet[0xA7] = (Instruction){&cosproc::IMP,&cosproc::COF,"COF",1};
+	InstructionSet[0xA8] = (Instruction){&cosproc::IMP,&cosproc::SOF,"SOF",1};
 	InstructionSet[0xA9] = (Instruction){&cosproc::IMP,&cosproc::CLF,"CLF",1};
 	InstructionSet[0xAA] = (Instruction){&cosproc::IMP,&cosproc::SLF,"SLF",1};
 	InstructionSet[0xAB] = (Instruction){&cosproc::IMP,&cosproc::CIF,"CIF",1};
