@@ -45,7 +45,7 @@ class cosproc{
         uint16_t REG(); //Register Addressing
 
         // -= OPCODES =-  R = Register mode, X = 16-bit Mode
-        /* 0x00-0x0F */
+        /* 0x00-0x08 */
         void UND(uint16_t src);  //Undefined
         void NOP(uint16_t src);  //No Operation
         void HCF(uint16_t src);  //Halt and Catch Fire
@@ -118,21 +118,17 @@ class cosproc{
         void SHR(uint16_t src);   //Shift the Accumulator right
         void SHRR(uint16_t src);  //Shift the Accumulator right from register
 
-        /* 0x60-0x6F */
+        /* 0x60-0x67 */
         void CMP(uint16_t src);   //Compare with Accumulator
         void CMPR(uint16_t src);  //Compare with Accumulator from register
         void CMPX(uint16_t src);  //Compare with 16-bit Accumulator
         void CMPXR(uint16_t src); //Compare with 16-bit Accumulator from register
 
-        void INC(uint16_t src);  //Increment the Accumulator
-        void INCX(uint16_t src); //Increment the 16-bit Accumulator
-        void DEC(uint16_t src);  //Decrement the Accumulator
-        void DECX(uint16_t src); //Decrement the 16-bit Accumulator
-
+        /* 0x6C-0x6F */
         void SHRX(uint16_t src);  //Shift the 16-bit Accumulator right
         void SHRXR(uint16_t src); //Shift the 16-bit Accumulator right from register
 
-        /* 0x70-0x9B Jumps */
+        /* 0x70-0x9F Jumps */
         void JMP(uint16_t src);  //Jump to a location in memory
         void JMPR(uint16_t src); //Jump to a location in memory from register
         void JZS(uint16_t src);  //Jump if zero flag is set
@@ -158,21 +154,32 @@ class cosproc{
         void JES(uint16_t src);  //Jump if error is set
         void JESR(uint16_t src); //Jump if error is set register
 
-        /* 0xA0-0xAC Status Flags */
+        /* 0xA0-0xAD Status Flags */
         void CSF(uint16_t src); //Clear all flags
         void CZF(uint16_t src); //Clear zero flag 
         void SZF(uint16_t src); //Set zero flag
         void CNF(uint16_t src); //Clear negative flag
         void SNF(uint16_t src); //Set negative flag
-        void COF(uint16_t src); //Clear overflow flag
-        void SOF(uint16_t src); //Set overflow flag
-        void CCF(uint16_t src); //Clear carry flag
-        void SCF(uint16_t src); //Set carry flag
+        void CCF(uint16_t src); //Clear overflow flag
+        void SCF(uint16_t src); //Set overflow flag
+        void COF(uint16_t src); //Clear carry flag
+        void SOF(uint16_t src); //Set carry flag
         void CLF(uint16_t src); //Clear less flag
         void SLF(uint16_t src); //Set less flag
         void CIF(uint16_t src); //Set interrupt flag
         void SIF(uint16_t src); //Clear interrupt flag
         void CEF(uint16_t src); //Clear error flag
+
+        /* 0xB0-0xBB */
+        void INC(uint16_t src);   //Increment the data
+        void INCR(uint16_t src);  //Increment the register
+        void INCX(uint16_t src);  //Increment the 16-bit data
+        void INCXR(uint16_t src); //Increment the 16-bit register
+
+        void DEC(uint16_t src);   //Decrement the data
+        void DECR(uint16_t src);  //Decrement the register
+        void DECX(uint16_t src);  //Decrement the 16-bit data
+        void DECXR(uint16_t src); //Decrement the 16-bit register
 
     public:
         //Public for Debugger Only (Package this up eventually)

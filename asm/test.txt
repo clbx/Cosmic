@@ -1,0 +1,2 @@
+start:
+    DECX @F66

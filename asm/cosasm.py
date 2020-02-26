@@ -102,10 +102,6 @@ InstructionSet = {
     "ABS CMPX":0x65,
     "IND CMPX":0x66,
     "REG CMPX":0x67,
-    "IMP INC":0x68,
-    "IMP INCX":0x69,
-    "IMP DEC":0x6A,
-    "IMP DECX":0x6B,
     "IMM SHRX":0x6C,
     "ABS SHRX":0x6D,
     "IND SHRX":0x6E,
@@ -154,24 +150,36 @@ InstructionSet = {
     "ABS JNL":0x99,
     "IND JNL":0x9A,
     "REG JNL":0x9B,
+    "IMM JES":0x9C,
+    "ABS JES":0x9D,
+    "IND JES":0x9E,
+    "REG JES":0x9F,
     "IMP CSF":0xA0,
     "IMP CZF":0xA1,
     "IMP SZF":0xA2,
     "IMP CNF":0xA3,
     "IMP SNF":0xA4,
-    "IMP COF":0xA5,
-    "IMP SOF":0xA6,
-    "IMP CCF":0xA7,
-    "IMP SCF":0xA8,
+    "IMP CCF":0xA5,
+    "IMP SCF":0xA6,
+    "IMP COF":0xA7,
+    "IMP SOF":0xA8,
     "IMP CLF":0xA9,
     "IMP SLF":0xAA,
     "IMP CIF":0xAB,
     "IMP SIF":0xAC,
     "IMP CEF":0xAD,
-    "IMM JES":0x9C,
-    "ABS JES":0x9D,
-    "IND JES":0x9E,
-    "REG JES":0x9F
+    "ABS INC":0xB0,
+    "IND INC":0xB1,
+    "REG INC":0xB2,
+    "ABS INCX":0xB3,
+    "IND INCX":0xB4,
+    "REG INCX":0xB5,
+    "ABS DEC":0xB6,
+    "IND DEC":0xB7,
+    "REG DEC":0xB8,
+    "ABS DECX":0xB9,
+    "IND DECX":0xBA,
+    "REG DECX":0xBB
 }
 
 opcodePattern = re.compile("[A-Z,a-z]{3,4}( [#,@,R]?[0-9,A-F]{1,}([ ][#,@,R]?[0-9,A-F]{1,})?)?$")
@@ -457,18 +465,6 @@ def CMP(tokens):
 def CMPX(tokens):
     handleStd16bitOpcode(tokens)
 
-def INC(tokens):
-    output.append(InstructionSet["IMP INC"])
-
-def INCX(tokens):
-    output.append(InstructionSet["IMP INCX"])
-
-def DEC(tokens):
-    output.append(InstructionSet["IMP DEC"])
-
-def DECX(tokens):
-    output.append(InstructionSet["IMP DECX"])
-
 def SHRX(tokens):
     handleStd16bitOpcode(tokens)
 
@@ -523,17 +519,17 @@ def CNF(tokens):
 def SNF(tokens):
     output.append(InstructionSet["IMP SNF"])
 
-def COF(tokens):
-    output.append(InstructionSet["IMP COF"])
-
-def SOF(tokens):
-    output.append(InstructionSet["IMP SOF"])
-
 def CCF(tokens):
     output.append(InstructionSet["IMP CCF"])
 
 def SCF(tokens):
     output.append(InstructionSet["IMP SCF"])
+
+def COF(tokens):
+    output.append(InstructionSet["IMP COF"])
+
+def SOF(tokens):
+    output.append(InstructionSet["IMP SOF"])
 
 def CLF(tokens):
     output.append(InstructionSet["IMP CLF"])
@@ -549,6 +545,18 @@ def SIF(tokens):
 
 def CEF(tokens):
     output.append(InstructionSet["IMP CEF"])
+
+def INC(tokens):
+    handleStd8bitOpcode(tokens)
+
+def INCX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def DEC(tokens):
+    handleStd8bitOpcode(tokens)
+
+def DECX(tokens):
+    handleStd16bitOpcode(tokens)
 
 #Writes an error to the console. Stops exectuion
 def error(msg):

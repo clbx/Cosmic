@@ -122,7 +122,7 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 | **0x80** | [JNC](#JNC)  | [JNC](#JNC)  | [JNC](#JNC)   | [JNC](#JNC)  | [JOS](#JOS)  | [JOS](#JOS)   | [JOS](#JOS)   | [JOS](#JOS)   | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  |
 | **0x90** | [JNN](#JNN)  | [JNN](#JNN)  | [JNN](#JNN)   | [JNN](#JNN)  | [JLS](#JLS)  | [JLS](#JLS)   | [JLS](#JLS)   | [JLS](#JLS)   | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  |
 | **0xA0** | [CSF](#CSF)  | [CZF](#CZF)  | [SZF](#SZF)   | [CNF](#CNF)  | [SNF](#SNF)  | [CCF](#CCF)   | [SCF](#SCF)   | [COF](#COF)   | [SOF](#SOF)  | [CLF](#CLF)  | [SLF](#SLF)  | [CIF](#CIF)  | [SIF](#SIF)  | [CEF](#CEF)  |              |              |
-| **0xB0** | [INC](#INC)  | [INC](#INC)  | [INC](#INC)   | [INC](#INC)  | [INCX](#INC) | [INCX](#INC)  | [INCX](#INC)  | [INCX](#INC)  | [DEC](#DEC)  | [DEC](#DEC)  | [DEC](#DEC)  | [DEC](#DEC)  | [DECX](#DEC) | [DECX](#DEC) | [DECX](#DEC) | [DECX](#DEC) |
+| **0xB0** | [INC](#INC)  | [INC](#INC)  | [INC](#INC)   | [INCX](#INC) | [INCX](#INC) | [INCX](#INC)  | [DEC](#DEC)   | [DEC](#DEC)   | [DEC](#DEC)  | [DECX](#DEC) | [DECX](#DEC) | [DECX](#DEC) |
 | **0xC0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xD0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xE0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
@@ -294,7 +294,7 @@ A = A + Data										x E I L  O C N Z
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
 | --------------- | ---------- | ------ | ------------------------------------- |
-| Immediate       | ADD #oper  | 0x10   | 2 `` opcode value ``                  |
+| Immediate       | ADD #oper  | 0x10   | 2 ``opcode value``                  |
 | Absolute        | ADD oper   | 0x11   | 3 ``opcode locationHigh locationLow`` |
 | Indirect        | ADD @oper  | 0x12   | 3 ``opcode locationHigh locationLow`` |
 | Register        | ADD RX     | 0x13   | 2 ``opcode register``                 |
@@ -1051,14 +1051,12 @@ data++               x E I P  O C N Z
 
 | Addressing        | Assembler  | Opcode | Bytes                                         |
 | ----------------- | ---------- | ------ | --------------------------------------------- |
-| Immediate         | INC #oper  | 0xB0   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute          | INC oper   | 0xB1   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect          | INC @oper  | 0xB2   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Register          | INC RX     | 0xB3   | 2 ``opcode register``                         |
-| 16-bit Immediate  | INCX #oper | 0xB4   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Absolute   | INCX oper  | 0xB5   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Indirect   | INCX @oper | 0xB6   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Register   | INCX RX    | 0xB7   | 2 ``opcode register``                         |
+| Absolute          | INC oper   | 0xB0   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect          | INC @oper  | 0xB1   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register          | INC RX     | 0xB2   | 2 ``opcode register``                         |
+| 16-bit Absolute   | INCX oper  | 0xB3   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Indirect   | INCX @oper | 0xB4   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Register   | INCX RX    | 0xB5   | 2 ``opcode register``                         |
 
 
 <a name="DEC"></a>
@@ -1074,14 +1072,12 @@ data--               x E I P  O C N Z
 
 | Addressing        | Assembler  | Opcode | Bytes                                         |
 | ----------------- | ---------- | ------ | --------------------------------------------- |
-| Immediate         | DEC #oper  | 0xB8   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute          | DEC oper   | 0xB9   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect          | DEC @oper  | 0xBA   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Register          | DEC RX     | 0xBB   | 2 ``opcode register``                         |
-| 16-bit Immediate  | DECX #oper | 0xBC   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Absolute   | DECX oper  | 0xBD   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Indirect   | DECX @oper | 0xBE   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| 16-bit Register   | DECX RX    | 0xBF   | 2 ``opcode register``                         |
+| Absolute          | DEC oper   | 0xB6   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect          | DEC @oper  | 0xB7   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register          | DEC RX     | 0xB8   | 2 ``opcode register``                         |
+| 16-bit Absolute   | DECX oper  | 0xB9   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Indirect   | DECX @oper | 0xBA   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Register   | DECX RX    | 0xBB   | 2 ``opcode register``                         |
 
 
 
