@@ -8,9 +8,13 @@ uint8_t memory[65536] = {};
 static MemoryEditor ramEdit;
 static Logger debugLog;
 
-
-bool showGraphics = false;
 static char editorText[256 * 1000] = "";
+
+/** Globals to show and hide windows **/
+bool showGraphics = false;
+bool showDemo = false;
+
+
 
 void MemoryWrite(uint16_t address, uint8_t value)
 {
@@ -93,6 +97,33 @@ void runGUI::MemoryEditor(cosproc proc){
 
 }
 
+void runGUI::VideoOut(){
+    ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
+            if(!ImGui::Begin("Video Out",&showGraphics)){
+                ImGui::End();
+            }
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            const ImU32 col = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
+            ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
+            static ImVector<ImVec2> pixels;
+            float x = canvas_pos.x;
+            float y = canvas_pos.y;
+            static float size = 1.0f;
+
+            draw_list->AddRectFilled(ImVec2(x + 5, y + 5), ImVec2(x + size, y + size), col);
+
+            /* Change this to only draw on change instead of every frame
+                for(int i = 0; i < 640; i++){
+                    for(int j = 0; j < 400; j++){
+                        draw_list->AddRectFilled(ImVec2(x+i, y+j), ImVec2(x + size, y + size), col);
+                    }
+                }
+                */
+
+            ImGui::End();
+}
+
 void runGUI::Assembler(cosproc proc){
     ImGui::SetNextWindowPos(ImVec2(845, 30), ImGuiCond_Once);
     ImGui::Begin("Editor");
@@ -143,9 +174,8 @@ void runGUI::ShowTopMenu(){
             }
 
             if (ImGui::BeginMenu("Window")){
-                if (ImGui::MenuItem("Toggle Graphics")){
-                    showGraphics = !showGraphics;
-                }
+                ImGui::Checkbox("Show Video Out", &showGraphics);
+                ImGui::Checkbox("Show Demo Window", &showDemo);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -269,6 +299,7 @@ void runGUI::ShowTopMenu(){
         }
 }
 
+
 int runGUI::run(){
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
@@ -385,7 +416,9 @@ int runGUI::run(){
         *   Useful for figuring out how
         *   To do new things
         */
-        ImGui::ShowDemoWindow();
+        if(showDemo){
+            ImGui::ShowDemoWindow();
+        }
 
         /**  -= Menu Bar =-
         *     Top Menu bar.
@@ -541,28 +574,7 @@ int runGUI::run(){
         *   Cosmic, VRAM is memory mapped
         */
         if (showGraphics){
-            ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
-            ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
-            ImGui::Begin("Video Out");
-            ImDrawList *draw_list = ImGui::GetWindowDrawList();
-            const ImU32 col = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
-            ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
-            static ImVector<ImVec2> pixels;
-            float x = canvas_pos.x;
-            float y = canvas_pos.y;
-            static float size = 1.0f;
-
-            draw_list->AddRectFilled(ImVec2(x + 5, y + 5), ImVec2(x + size, y + size), col);
-
-            /* Change this to only draw on change instead of every frame
-                for(int i = 0; i < 640; i++){
-                    for(int j = 0; j < 400; j++){
-                        draw_list->AddRectFilled(ImVec2(x+i, y+j), ImVec2(x + size, y + size), col);
-                    }
-                }
-                */
-
-            ImGui::End();
+            VideoOut();
         }
 
         // Rendering
