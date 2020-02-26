@@ -1617,105 +1617,6 @@ TEST_CASE("cmpx", "[opcodes]"){
     REQUIRE(proc.st[4] == 0); //Less
 }
 
-/* 0x68-0x69 */
-TEST_CASE("inc", "[opcodes]"){
-    cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    /*
-    0000: 68 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0x68;
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0x01);
-    REQUIRE(proc.st[0] == 0); //Zero
-    REQUIRE(proc.st[1] == 0); //Negative
-    REQUIRE(proc.st[2] == 0); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-    /*
-    0000: 68 ... ZNC
-    */
-    reset(&proc);
-    memory[0x00] = 0x68;
-    proc.r[0] = 0xFF;
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0x00);
-    REQUIRE(proc.st[0] == 1); //Zero
-    REQUIRE(proc.st[1] == 1); //Negative
-    REQUIRE(proc.st[2] == 1); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-    /*
-    0000: 69 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0x69;
-    proc.cycle();
-    REQUIRE(proc.r[1] == 0x01);
-    REQUIRE(proc.st[0] == 0); //Zero
-    REQUIRE(proc.st[1] == 0); //Negative
-    REQUIRE(proc.st[2] == 0); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-    /*
-    0000: 69 ... ZNC
-    */
-    reset(&proc);
-    memory[0x00] = 0x69;
-    proc.r[0] = 0xFF;
-    proc.r[1] = 0xFF;
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0x00);
-    REQUIRE(proc.r[1] == 0x00);
-    REQUIRE(proc.st[0] == 1); //Zero
-    REQUIRE(proc.st[1] == 1); //Negative
-    REQUIRE(proc.st[2] == 1); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-}
-
-/* 0x6A-0x6B */
-TEST_CASE("dec", "[opcodes]"){
-    cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    /*
-    0000: 6A 6A ...
-    */
-    reset(&proc);
-    memory[0x00] = 0x6A;
-    memory[0x01] = 0x6A;
-    proc.r[0] = 0x01;
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0x00);
-    REQUIRE(proc.st[0] == 1); //Zero
-    REQUIRE(proc.st[1] == 0); //Negative
-    REQUIRE(proc.st[2] == 0); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0xFF);
-    REQUIRE(proc.st[0] == 0); //Zero
-    REQUIRE(proc.st[1] == 1); //Negative
-    REQUIRE(proc.st[2] == 1); //Carry
-    REQUIRE(proc.st[3] == 1); //Overflow
-    /*
-    0000: 6B 6B ...
-    */
-    reset(&proc);
-    memory[0x00] = 0x6B;
-    memory[0x01] = 0x6B;
-    proc.r[1] = 0x01;
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0x00);
-    REQUIRE(proc.r[1] == 0x00);
-    REQUIRE(proc.st[0] == 1); //Zero
-    REQUIRE(proc.st[1] == 0); //Negative
-    REQUIRE(proc.st[2] == 0); //Carry
-    REQUIRE(proc.st[3] == 0); //Overflow
-    proc.cycle();
-    REQUIRE(proc.r[0] == 0xFF);
-    REQUIRE(proc.r[1] == 0xFF);
-    REQUIRE(proc.st[0] == 0); //Zero
-    REQUIRE(proc.st[1] == 1); //Negative
-    REQUIRE(proc.st[2] == 1); //Carry
-    REQUIRE(proc.st[3] == 1); //Overflow
-}
-
-
 /* 0x6C-0x6F */
 TEST_CASE("shrx", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
@@ -2968,73 +2869,73 @@ TEST_CASE("snf", "[opcodes]"){
 }
 
 /* 0xA5 */
-TEST_CASE("cof", "[opcodes]"){
-    cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    //No flag set
-    /*
-    0000: A5 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0xA5;
-    proc.cycle();
-    REQUIRE(proc.st[3] == 0);
-    //Flag set
-    /*
-    0000: A5 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0xA5;
-    proc.st[3] = 1;
-    proc.cycle();
-    REQUIRE(proc.st[3] == 0);
-}
-
-/* 0xA6 */
-TEST_CASE("sof", "[opcodes]"){
-    cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    //No flag set
-    /*
-    0000: A6 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0xA6;
-    proc.cycle();
-    REQUIRE(proc.st[3] == 1);
-    //Flag set
-    /*
-    0000: A6 ...
-    */
-    reset(&proc);
-    memory[0x00] = 0xA6;
-    proc.st[3] = 1;
-    proc.cycle();
-    REQUIRE(proc.st[3] == 1);
-}
-
-/* 0xA7 */
 TEST_CASE("ccf", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
     //No flag set
     /*
+    0000: A5 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA5;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 0);
+    //Flag set
+    /*
+    0000: A5 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA5;
+    proc.st[2] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 0);
+}
+
+/* 0xA6 */
+TEST_CASE("scf", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
+    0000: A6 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA6;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 1);
+    //Flag set
+    /*
+    0000: A6 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0xA6;
+    proc.st[2] = 1;
+    proc.cycle();
+    REQUIRE(proc.st[2] == 1);
+}
+
+/* 0xA7 */
+TEST_CASE("cof", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //No flag set
+    /*
     0000: A7 ...
     */
     reset(&proc);
     memory[0x00] = 0xA7;
     proc.cycle();
-    REQUIRE(proc.st[2] == 0);
+    REQUIRE(proc.st[3] == 0);
     //Flag set
     /*
     0000: A7 ...
     */
     reset(&proc);
     memory[0x00] = 0xA7;
-    proc.st[2] = 1;
+    proc.st[3] = 1;
     proc.cycle();
-    REQUIRE(proc.st[2] == 0);
+    REQUIRE(proc.st[3] == 0);
 }
 
 /* 0xA8 */
-TEST_CASE("scf", "[opcodes]"){
+TEST_CASE("sof", "[opcodes]"){
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
     //No flag set
     /*
@@ -3043,16 +2944,16 @@ TEST_CASE("scf", "[opcodes]"){
     reset(&proc);
     memory[0x00] = 0xA8;
     proc.cycle();
-    REQUIRE(proc.st[2] == 1);
+    REQUIRE(proc.st[3] == 1);
     //Flag set
     /*
     0000: A8 ...
     */
     reset(&proc);
     memory[0x00] = 0xA8;
-    proc.st[2] = 1;
+    proc.st[3] = 1;
     proc.cycle();
-    REQUIRE(proc.st[2] == 1);
+    REQUIRE(proc.st[3] == 1);
 }
 
 /* 0xA9 */

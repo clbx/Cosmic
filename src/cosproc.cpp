@@ -1424,22 +1424,22 @@ void cosproc::SNF(uint16_t src){
 
 /* 0xA5 CCF */
 void cosproc::CCF(uint16_t src){
-	st[3] = 0;
+	st[2] = 0;
 }
 
 /* 0xA6 SCF */
 void cosproc::SCF(uint16_t src){
-	st[3] = 1; 
+	st[2] = 1; 
 }
 
 /* 0xA7 COF */
 void cosproc::COF(uint16_t src){
-	st[2] = 0;
+	st[3] = 0;
 }
 
 /* 0xA8 SOF */
 void cosproc::SOF(uint16_t src){
-	st[2] = 1;
+	st[3] = 1;
 }
 
 /* 0xA9 CLF */
