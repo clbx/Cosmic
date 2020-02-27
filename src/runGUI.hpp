@@ -25,8 +25,8 @@
 class runGUI{
     private:
 
-        void LoadIntoMemory(char *filepath);
-        void DumpMemory(char *filepath);
+        void LoadIntoMemory(const char *filepath);
+        void DumpMemory(const char *filepath);
         static void HelpMarker(const char *desc);
         void Assemble();
         void MemoryEditor(cosproc proc);

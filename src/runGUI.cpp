@@ -29,7 +29,7 @@ uint8_t MemoryRead(uint16_t address)
 }
 
 //TODO: Fix this once proper memory is added
-void runGUI::LoadIntoMemory(char *filepath)
+void runGUI::LoadIntoMemory(const char *filepath)
 {
     std::ifstream File;
     File.open(filepath);
@@ -38,7 +38,7 @@ void runGUI::LoadIntoMemory(char *filepath)
 }
 
 //TODO: Fix this once proper memory is added
-void runGUI::DumpMemory(char *filepath)
+void runGUI::DumpMemory(const char *filepath)
 {
     std::ofstream File;
     File.open(filepath);
@@ -66,8 +66,10 @@ void runGUI::HelpMarker(const char *desc){
 void runGUI::Assemble(){
     std::string result = "";
     char buffer[128];
+    const char* tmpAssmbly = "tmp.asm";
+    const char* tmpBin = "tmp.bin";
 
-    std::ofstream file("tmp.asm");
+    std::ofstream file(tmpAssmbly);
     file << editorText;
     file.close();
 
@@ -79,12 +81,12 @@ void runGUI::Assemble(){
     }
 
     pclose(pipe);
-    LoadIntoMemory("tmp.bin");
+    LoadIntoMemory(tmpBin);
 
-    remove("tmp.bin");
-    remove("tmp.asm");
+    remove(tmpBin);
+    remove(tmpAssmbly);
 
-    debugLog.AddLog(result.c_str());
+    debugLog.AddLog("%s",result.c_str());
 
 }
 
@@ -127,7 +129,6 @@ void runGUI::VideoOut(){
 void runGUI::Assembler(cosproc proc){
     ImGui::SetNextWindowPos(ImVec2(845, 30), ImGuiCond_Once);
     ImGui::Begin("Editor");
-    static char filepath[128] = "";
 
     if (ImGui::Button("Assemble")){
         debugLog.AddLog("Assembling...\n");
