@@ -1,6 +1,6 @@
 EXE = cosmic
 SOURCES = main.cpp cosproc.cpp runGUI.cpp runCLI.cpp
-SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp
+SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp lib/misc/imgui_impl_opengl2.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
 SOURCES += lib/misc/imguifilesystem.cpp
 #SOURCES += lib/imtui/imtui-impl-text.cpp lib/timtui/imtui-impl-ncurses.h
@@ -38,7 +38,6 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	CXXFLAGS += -I/usr/local/include -I/opt/local/include
 	CFLAGS = $(CXXFLAGS)
 endif
-
 
 ifeq ($(ARCH),x86_64-w64-mingw32)
 	ECHO_MESSAGE = "MinGW"
