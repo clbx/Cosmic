@@ -230,45 +230,7 @@ struct MemoryEditor
             if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1))
                 ImGui::OpenPopup("context");
 
-            ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-            if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)){
-                if (ImGui::BeginTabItem("All Memory")){
-                    DrawContents(mem_data, mem_size, base_display_addr);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("General")){
-                    //DrawContents(mem_data, mem_size, base_display_addr);
-                    DrawContents(mem_data, 0x8000 - 0x0000, 0x0000);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Video")){
-                    DrawContents(mem_data, 0xC000 - 0x8000, 0x8000);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Stack")){
-                    DrawContents(mem_data, 0xC400 - 0xC000, 0xC000);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("I/O")){
-                    DrawContents(mem_data, 0xC800 - 0xC400, 0xC400);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Variable")){
-                    DrawContents(mem_data, 0xCD00 - 0xC800, 0xC800);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Empty")){
-                    DrawContents(mem_data, 0xFFF0 - 0xCD00, 0xCD00);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Vector")){
-                    DrawContents(mem_data, 0xFFFF - 0xFFF0, 0xFFF0);
-                    ImGui::EndTabItem();
-                }
-                ImGui::EndTabBar();
-            }
-            
-
+            DrawContents(mem_data, mem_size, base_display_addr);
 
             if (ContentsWidthChanged)
             {
@@ -346,7 +308,7 @@ struct MemoryEditor
 
         const char* format_address = OptUpperCaseHex ? "%0*" _PRISizeT "X: " : "%0*" _PRISizeT "x: ";
         const char* format_data = OptUpperCaseHex ? "%0*" _PRISizeT "X" : "%0*" _PRISizeT "x";
-        const char* format_range = OptUpperCaseHex ? "Range %0*" _PRISizeT "X..%0*" _PRISizeT "X" : "Range %0*" _PRISizeT "x..%0*" _PRISizeT "x";
+        //const char* format_range = OptUpperCaseHex ? "Range %0*" _PRISizeT "X..%0*" _PRISizeT "X" : "Range %0*" _PRISizeT "x..%0*" _PRISizeT "x";
         const char* format_byte = OptUpperCaseHex ? "%02X" : "%02x";
         const char* format_byte_space = OptUpperCaseHex ? "%02X " : "%02x ";
 
@@ -421,6 +383,7 @@ struct MemoryEditor
                     ImGuiInputTextFlags flags = ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll | ImGuiInputTextFlags_AlwaysInsertMode | ImGuiInputTextFlags_CallbackAlways;
                     if (ImGui::InputText("##data", DataInputBuf, 32, flags, UserData::Callback, &user_data))
                         data_write = data_next = true;
+    
                     else if (!DataEditingTakeFocus && !ImGui::IsItemActive())
                         DataEditingAddr = data_editing_addr_next = (size_t)-1;
                     DataEditingTakeFocus = false;
@@ -533,9 +496,33 @@ struct MemoryEditor
 
                 ImGui::EndPopup();
             }
-
+            ImGui::SameLine();
+            ImGui::Text("Jump To:");
+            ImGui::SameLine();
+            if(ImGui::Button("General")){
+                GotoAddr = 0x0000;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Video")){
+                GotoAddr = 0x8000;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Stack")){
+                GotoAddr = 0xC000;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("I/O")){
+                GotoAddr = 0xC400;
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Variable")){
+                GotoAddr = 0xC800;
+            }
+            
+            /*
             ImGui::SameLine();
             ImGui::Text(format_range, s.AddrDigitsCount, base_display_addr, s.AddrDigitsCount, base_display_addr + mem_size - 1);
+            */
             ImGui::SameLine();
             ImGui::PushItemWidth((s.AddrDigitsCount + 1) * s.GlyphWidth + style.FramePadding.x * 2.0f);
             if (ImGui::InputText("##addr", AddrInputBuf, 32, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue))
