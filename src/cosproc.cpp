@@ -1553,13 +1553,16 @@ void cosproc::INCXR(uint16_t src){
 	if(src % 2 == 0){
 		r[src] = (temp & 0xFF00) >> 8;
 		r[src+1] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src] << 8 | r[src+1]) == 0;
 	}else{
 		r[src-1] = (temp & 0xFF00) >> 8;
 		r[src] = temp & 0x00FF;
-	}
 
-	//Set Zero
-	st[0] = (r[src] << 8 | r[src+1]) == 0;
+		//Set Zero
+		st[0] = (r[src-1] << 8 | r[src]) == 0;
+	}	
 }
 
 /* 0xB6-0xB7 DEC from Abs/Ind */
@@ -1648,13 +1651,16 @@ void cosproc::DECXR(uint16_t src){
 	if(src % 2 == 0){
 		r[src] = (temp & 0xFF00) >> 8;
 		r[src+1] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src] << 8 | r[src+1]) == 0;
 	}else{
 		r[src-1] = (temp & 0xFF00) >> 8;
 		r[src] = temp & 0x00FF;
-	}
 
-	//Set Zero
-	st[0] = (r[src] << 8 | r[src+1]) == 0;
+		//Set Zero
+		st[0] = (r[src-1] << 8 | r[src]) == 0;
+	}
 }
 
 /* Low Priority Interrupt */
