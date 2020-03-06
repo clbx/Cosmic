@@ -28,7 +28,6 @@ uint8_t MemoryRead(uint16_t address)
     return memory[address];
 }
 
-//TODO: Fix this once proper memory is added
 void runGUI::LoadIntoMemory(const char *filepath)
 {
     std::ifstream File;
@@ -37,7 +36,6 @@ void runGUI::LoadIntoMemory(const char *filepath)
     File.close();
 }
 
-//TODO: Fix this once proper memory is added
 void runGUI::DumpMemory(const char *filepath)
 {
     std::ofstream File;
@@ -61,7 +59,6 @@ void runGUI::HelpMarker(const char *desc){
         ImGui::EndTooltip();
     }
 }
-
 
 void runGUI::Assemble(){
     std::string result = "";
@@ -90,7 +87,6 @@ void runGUI::Assemble(){
 
 }
 
-
 void runGUI::MemoryEditor(cosproc proc){
     ImGui::SetNextWindowSize(ImVec2(530, 280), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(305, 120), ImGuiCond_Once);
@@ -100,6 +96,12 @@ void runGUI::MemoryEditor(cosproc proc){
 }
 
 void runGUI::VideoOut(PGU pgu){
+    SDL_Event event;
+    while (SDL_PollEvent(&event)){
+        ImGui_ImplSDL2_ProcessEvent(&event);
+        printf("%d\n",event.key.keysym.scancode);
+    }
+
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
     ImGui::Begin("Video Out");
@@ -121,7 +123,6 @@ void runGUI::Assembler(cosproc proc){
 
     ImGui::End();
 }
-
 
 void runGUI::ShowTopMenu(){
     std::string menu_action = "";
@@ -281,9 +282,7 @@ void runGUI::ShowTopMenu(){
         }
 }
 
-
 int runGUI::run(){
-
     #ifdef __arm__ 
 
         // Setup SDL
@@ -563,10 +562,11 @@ int runGUI::run(){
             running = false;
         }
         ImGui::SameLine();
+        ImGui::PushItemWidth(75);
         const char *speeds[] = {"3000", "1500", "600", "300", "60"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
-        if (ImGui::BeginCombo("Speed", current_speed, flags)){
+        if (ImGui::BeginCombo("Mhz", current_speed, flags)){
             for (int n = 0; n < IM_ARRAYSIZE(speeds); n++){
                 bool is_selected = (current_speed == speeds[n]);
                 if (ImGui::Selectable(speeds[n], is_selected)){
