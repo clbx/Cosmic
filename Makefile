@@ -1,5 +1,5 @@
 EXE = cosmic
-SOURCES = main.cpp cosproc.cpp runGUI.cpp runCLI.cpp
+SOURCES = main.cpp cosproc.cpp pgu.cpp runGUI.cpp runCLI.cpp 
 SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp lib/misc/imgui_impl_opengl2.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
 SOURCES += lib/misc/imguifilesystem.cpp
