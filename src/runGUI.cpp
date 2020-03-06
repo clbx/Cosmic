@@ -99,31 +99,12 @@ void runGUI::MemoryEditor(cosproc proc){
 
 }
 
-void runGUI::VideoOut(){
+void runGUI::VideoOut(PGU pgu){
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
-            ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
-            if(!ImGui::Begin("Video Out",&showGraphics)){
-                ImGui::End();
-            }
-            ImDrawList *draw_list = ImGui::GetWindowDrawList();
-            const ImU32 col = ImColor(ImVec4(1.0f, 1.0f, 0.4f, 1.0f));
-            ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
-            static ImVector<ImVec2> pixels;
-            float x = canvas_pos.x;
-            float y = canvas_pos.y;
-            static float size = 1.0f;
-
-            draw_list->AddRectFilled(ImVec2(x + 5, y + 5), ImVec2(x + size, y + size), col);
-
-            /* Change this to only draw on change instead of every frame
-                for(int i = 0; i < 640; i++){
-                    for(int j = 0; j < 400; j++){
-                        draw_list->AddRectFilled(ImVec2(x+i, y+j), ImVec2(x + size, y + size), col);
-                    }
-                }
-                */
-
-            ImGui::End();
+    ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
+    ImGui::Begin("Video Out");
+    pgu.show();
+    ImGui::End();
 }
 
 void runGUI::Assembler(cosproc proc){
@@ -383,8 +364,12 @@ int runGUI::run(){
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    glEnable(GL_DEBUG_OUTPUT);
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    PGU pgu;
+    pgu.init();
+
     cosproc::Debug debugPackage;
     bool running = false;
     int procFrequency = 3000;
@@ -450,6 +435,9 @@ int runGUI::run(){
                 }
             }
         }
+
+
+        pgu.copy(memory+0x8000);
         #ifdef __arm__
             ImGui_ImplOpenGL2_NewFrame();
         #else
@@ -621,7 +609,7 @@ int runGUI::run(){
         *   Cosmic, VRAM is memory mapped
         */
         if (showGraphics){
-            VideoOut();
+            VideoOut(pgu);
         }
 
         // Rendering
@@ -636,6 +624,9 @@ int runGUI::run(){
         #endif
         SDL_GL_SwapWindow(window);
     }
+
+    pgu.kill();
+
     #ifdef __arm__
         ImGui_ImplOpenGL2_Shutdown();
     #else

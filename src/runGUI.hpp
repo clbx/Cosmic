@@ -20,6 +20,7 @@
 #endif
 
 #include "cosproc.hpp"
+#include "pgu.hpp"
 
 
 class runGUI{
@@ -32,7 +33,7 @@ class runGUI{
         void MemoryEditor(cosproc proc);
         void Assembler(cosproc proc);
         void ShowTopMenu();
-        void VideoOut();
+        void VideoOut(PGU pgu);
 
 
 
