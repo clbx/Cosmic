@@ -249,9 +249,7 @@ def createVar(tokens):
 def resolveVariables(tokens):
     #Go through the length of the opcode starting with the first operand and find variables
     for i in range(1,len(tokens)):
-        print(variableTable)
 
-        print("Before: " + tokens[i])
         addrMode = getAddrMode(tokens[i])
 
         operator = ""
@@ -264,7 +262,6 @@ def resolveVariables(tokens):
             operand = tokens[i][1:]
             operator = tokens[i][0]
 
-        print("op:" + operand)
 
         if(operand in variableTable):
 
@@ -280,7 +277,7 @@ def resolveVariables(tokens):
             operand = labelTable[operand]
             tokens[i] = str(operator) + str(operand)
         
-        print("After: " + tokens[i])
+
 
     return tokens
 
@@ -319,8 +316,8 @@ def assemble(tokens):
         except NameError:
             error("Unknown Input {}".format(tokens))
 
+
 def getOperand(token):
-    print("getOperand token before:" + token)
     addrMode = getAddrMode(token)
     operand = ""
     operator = ""
@@ -329,8 +326,8 @@ def getOperand(token):
     else:
         operator = token[0]
         operand = token[1:]
-    print("getOperand after: {}".format(operand))
-    return addrMode,operator,operand
+    print(operand)
+    return addrMode,operator,int(operand,16)
 
 
 '''
@@ -342,14 +339,15 @@ the operand is 8 bits.
 def handleStd8bitOpcode(tokens):
     print("Tokens in 8bit std: {}".format(tokens))
     addrMode,_,operand = getOperand(tokens[1])
+    print(type(operand))
     print("Operand in 8bit: {}".format(operand))
     if(addrMode == "IMM" or addrMode == "REG"):
         output.append(InstructionSet[addrMode + " " + tokens[0]])
         output.append(operand)
     else:
         output.append(InstructionSet[addrMode + " " + tokens[0]])
-        output.append((int(operand) >> 8) & 0xFF)
-        output.append((int(operand) & 0xFF))
+        output.append((operand >> 8) & 0xFF)
+        output.append(operand & 0xFF)
 
 '''
 Handle a Standard 16 Bit opcode
