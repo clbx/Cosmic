@@ -232,7 +232,7 @@ def createVar(tokens):
     #byte counter = 5
     if(tokens[0] == "byte"):
         identifier = tokens[1]
-        value = int(tokens[3],16)
+        value = tokens[3]
         variableTable[identifier] = [len(variables),1]
         addToVariables(value,1)
         return
@@ -249,6 +249,9 @@ def createVar(tokens):
 def resolveVariables(tokens):
     #Go through the length of the opcode starting with the first operand and find variables
     for i in range(1,len(tokens)):
+        print(variableTable)
+
+        print("Before: " + tokens[i])
         addrMode = getAddrMode(tokens[i])
 
         operator = ""
@@ -261,6 +264,8 @@ def resolveVariables(tokens):
             operand = tokens[i][1:]
             operator = tokens[i][0]
 
+        print("op:" + operand)
+
         if(operand in variableTable):
 
             #print(variables[variableTable[operand][0]])
@@ -268,13 +273,14 @@ def resolveVariables(tokens):
 
             if(variableTable[operand][1] > 2):
                 warning("Variable {} is larger than opcode can handle".format(operand))
-            for j in range(variableTable[operand][1]): #Add all of the operand
-                newoperand += str(variables[variableTable[operand][0] + j])
-            tokens[i] = operator + str(int(newoperand) + 0xC800)
+            
+            tokens[i] = operator + str(variableTable[operand][0] + 0xC800)
 
         if(operand in labelTable):
             operand = labelTable[operand]
             tokens[i] = str(operator) + str(operand)
+        
+        print("After: " + tokens[i])
 
     return tokens
 
@@ -314,6 +320,7 @@ def assemble(tokens):
             error("Unknown Input {}".format(tokens))
 
 def getOperand(token):
+    print("getOperand token before:" + token)
     addrMode = getAddrMode(token)
     operand = ""
     operator = ""
@@ -322,7 +329,8 @@ def getOperand(token):
     else:
         operator = token[0]
         operand = token[1:]
-    return addrMode,operator,int(operand,16) 
+    print("getOperand after: {}".format(operand))
+    return addrMode,operator,operand
 
 
 '''
@@ -332,14 +340,16 @@ General function for opcodes with the format [opcode] [operand] where
 the operand is 8 bits.
 '''
 def handleStd8bitOpcode(tokens):
+    print("Tokens in 8bit std: {}".format(tokens))
     addrMode,_,operand = getOperand(tokens[1])
+    print("Operand in 8bit: {}".format(operand))
     if(addrMode == "IMM" or addrMode == "REG"):
         output.append(InstructionSet[addrMode + " " + tokens[0]])
         output.append(operand)
     else:
         output.append(InstructionSet[addrMode + " " + tokens[0]])
-        output.append((operand >> 8) & 0xFF)
-        output.append((operand & 0xFF))
+        output.append((int(operand) >> 8) & 0xFF)
+        output.append((int(operand) & 0xFF))
 
 '''
 Handle a Standard 16 Bit opcode
@@ -585,6 +595,7 @@ def main():
     #-= Go through the file =-#
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
+        print(tokens)
         assemble(tokens)
         currentLine += 1
 
