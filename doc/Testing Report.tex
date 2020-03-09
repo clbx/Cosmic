@@ -66,11 +66,11 @@ carmank@etown.edu}
 \maketitle
 
 \section{Introduction}
-As described in our Design Report, Cosmic was designed to be modular for developers to be able to create their own parts of the system. A byproduct of this also made Cosmic incredibly easy to test. We have also made a significant effort to automate as much of the testing as possible, to verify that the builds we produce are stable on any platform. 
+As described in our Design Report, Cosmic was designed to be modular for developers to be able to create their own parts of the system. A byproduct of this also made Cosmic incredibly easy to test. We made a significant effort to automate as much of the testing as possible, to verify that the builds we produce are stable on any platform. 
 \section{Testing Methodologies}
 While testing Cosmic we use 3 primary ways of testing the system, assembler, and any other correlated code.
 \subsection{Unit Testing}
-Unit testing is a great way to make sure that parts are working exactly as we expect them to. Currently the only portion of the project that is unit tested is the Cosmic Processor itself. As of the writing of this document we have 565 assertions over 54 different test cases. This checks each instruction in a variety of different ways to make sure that they are working as intended. Not only does this provide a great way to make sure the processor is working correctly, while writing these tests we found numerous bugs throughout the processor. Listing 1 shows an example of one of the test cases for the SHLX Instruction. 
+Unit testing is a great way to make sure that parts are working exactly as we expect them to as things get updated and features get added. Currently, the only portion of the project that is unit tested is the Cosmic Processor itself. As of writing this document, we have 565 assertions over 54 different test cases that are all passing. These tests check each instruction in a variety of different ways to make sure that they are working as intended. Not only does this provide a great way to make sure the processor is working correctly, while writing these tests we found numerous bugs throughout the processor. Listing 1 shows an example of one of the many test cases for the SHLX Instruction. 
 \begin{lstlisting}[language=C++, caption=A Unit Test for the SHLX Instruction]
 /* 0x4C-0x4F */
 TEST_CASE("shlx", "[opcodes]"){
@@ -89,15 +89,18 @@ TEST_CASE("shlx", "[opcodes]"){
     REQUIRE(proc.r[1] == 0x44);
 }
 \end{lstlisting}
-We set up the processor and memory to properly execute the test case we are trying to replicate. The processor then executes the instructions and the memory, registers, or flags are checked depending on the purpose of the test.
+We set up the processor and memory to properly execute the test case we are trying to replicate. The processor then executes the instructions and the memory, registers, or flags are checked depending on the purpose of the test. For the processor, we used Catch2 to write our unit testing, a multi-paradigm test framework for C++. We are currently working on writing unit tests for the now finished assembler and plan to use the pytest framework.
 
 \subsection{Manual Testing}
-Since a majority of the system is not fully tested, or is difficult to test (ex. GUI). Manual testing is done to ensure that everything is working well. This constitutes us going in and trying things manually. \\\\Put some more stuff here, idk really what to say
+Since a majority of the system is not fully tested, or is difficult to test (ex. GUI), manual testing is done to ensure that everything is working well and doesn't break. This constitutes us going in and trying to do everything from using the project normally, to breaking the GUI, to running edge cases. While this greatly helps us discover bugs, it also encourages us to think of ways to improve the GUI and the overall usability of our project. While our unit tests focus on individual instructions or functions, our manual tests ensure that the entire system as a whole is working accordingly.
+
 \subsection{Automated Testing}
-Talk about travis, and how it's tested on each supported platform.
+Using Travis CI, every time we push an update or change to our GitHub repository it kicks off several separate builds of the Cosmic system. Each build is for a specific supported platform (Linux, macOS, Windows, ARM, and x86\_64). These builds compile in a clean environment to ensure that the system can compile and run correctly across each platform, not just the systems we are using to design it. The builds start by cloning the repository, then download the necessary packages, then finally they compile and run our unit tests. After the builds are complete, we get notified if something causes them to fail so that we know what to fix.
 
 \section{Testing Results}
-How we track bugs, etc. I guess idk
+github project for tracking bugs
+mention 565 assertions over 54 test cases again
+mention that all of our builds are passing again
 
 
 \end{document}
