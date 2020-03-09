@@ -1,0 +1,103 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\graphicspath{{img/}}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{verbatim}
+\usepackage{tabularx}
+
+\usepackage{listings}
+\usepackage{xcolor}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+
+
+
+\title{
+ Cosmic\\Testing Report}
+
+\author{\IEEEauthorblockN{Clay Buxton}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+buxtonc@etown.edu}
+\and
+\IEEEauthorblockN{Kevin Carman}
+\IEEEauthorblockA{\textit{Computer Engineering, Computer Science} \\
+\textit{Elizabethtown College}\\
+Elizabethtown, PA \\
+carmank@etown.edu}
+
+}
+
+\maketitle
+
+\section{Introduction}
+As described in our Design Report, Cosmic was designed to be modular for developers to be able to create their own parts of the system. A byproduct of this also made Cosmic incredibly easy to test. We have also made a significant effort to automate as much of the testing as possible, to verify that the builds we produce are stable on any platform. 
+\section{Testing Methodologies}
+While testing Cosmic we use 3 primary ways of testing the system, assembler, and any other correlated code.
+\subsection{Unit Testing}
+Unit testing is a great way to make sure that parts are working exactly as we expect them to. Currently the only portion of the project that is unit tested is the Cosmic Processor itself. As of the writing of this document we have 565 assertions over 54 different test cases. This checks each instruction in a variety of different ways to make sure that they are working as intended. Not only does this provide a great way to make sure the processor is working correctly, while writing these tests we found numerous bugs throughout the processor. Listing 1 shows an example of one of the test cases for the SHLX Instruction. 
+\begin{lstlisting}[language=C++, caption=A Unit Test for the SHLX Instruction]
+/* 0x4C-0x4F */
+TEST_CASE("shlx", "[opcodes]"){
+    cosproc proc = cosproc(MemoryRead, MemoryWrite);
+    //Imm
+    /*
+    0000: 4C 00 01 ...
+    */
+    reset(&proc);
+    memory[0x00] = 0x4C;
+    memory[0x02] = 0x01;
+    proc.r[0] = 0x44;
+    proc.r[1] = 0x22;
+    proc.cycle();
+    REQUIRE(proc.r[0] == 0x88);
+    REQUIRE(proc.r[1] == 0x44);
+}
+\end{lstlisting}
+We set up the processor and memory to properly execute the test case we are trying to replicate. The processor then executes the instructions and the memory, registers, or flags are checked depending on the purpose of the test.
+
+\subsection{Manual Testing}
+Since a majority of the system is not fully tested, or is difficult to test (ex. GUI). Manual testing is done to ensure that everything is working well. This constitutes us going in and trying things manually. \\\\Put some more stuff here, idk really what to say
+\subsection{Automated Testing}
+Talk about travis, and how it's tested on each supported platform.
+
+\section{Testing Results}
+How we track bugs, etc. I guess idk
+
+
+\end{document}
