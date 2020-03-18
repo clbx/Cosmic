@@ -40,6 +40,8 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 
 Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank) at Elizabethtown College. All academically required reports and documentation is in the ``/doc`` folder.
 
+Special thanks to @Gwarks, who did a lot of base work on the graphics.
+
 ----
 
 ## Documentation
