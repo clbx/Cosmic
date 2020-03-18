@@ -271,7 +271,12 @@ def resolveVariables(tokens):
             if(variableTable[operand][1] > 2):
                 warning("Variable {} is larger than opcode can handle".format(operand))
             
-            tokens[i] = operator + str(variableTable[operand][0] + 0xC800)
+            print("LOCATION: {}".format((variableTable[operand][0] + 0xC800)))
+
+            print("TEST {}".format(0x09+0x02,'x'))
+            tokens[i] = operator + format((variableTable[operand][0] + 0xC800),'x')
+            #Needs to return 51200
+            print("AFTER LOC: {}".format(tokens[i]))
 
         if(operand in labelTable):
             operand = labelTable[operand]
