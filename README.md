@@ -48,6 +48,15 @@ Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank)
 * [Cosmic System Specifications](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20System%20Specifications.md) This has information about other parts of the Cosmic system work (Video, Audio, etc.)
 
 ## Installation Instructions
+**Be sure to clone recursively, Cosmic uses git submodules**
+``git clone --recursive https://github.com/clbx/Cosmic``
+
+If you have already cloned:
+```
+git submodule init
+git submodule update
+```
+
 
 ### Linux
 Install ``SDL2`` using your distributions package manager
