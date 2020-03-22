@@ -28,7 +28,7 @@
 
   ```
   7  bit  0
-  xxIP OCNZ
+  xEIP OCNZ
   |||| ||||
   |||| |||+-- (Z) Zero
   |||| ||+--- (N) Negative, high if result is negative
