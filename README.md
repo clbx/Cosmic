@@ -51,6 +51,7 @@ Special thanks to [@Gwarks](https://github.com/Gwarks), who did a lot of base wo
 
 ## Installation Instructions
 **Be sure to clone recursively, Cosmic uses git submodules**
+
 ``git clone --recursive https://github.com/clbx/Cosmic``
 
 If you have already cloned:
