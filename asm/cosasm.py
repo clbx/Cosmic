@@ -612,11 +612,31 @@ def main():
     for i in range(0 , len(variables)):
         print(hex(variables[i]),end=" ")
     print("")
+
+    currentSize = len(output)
+    #From where output ends, to 0xC800
+    for i in range (0, 0xC800-currentSize):
+        output.append(0x00)
+
+    #Put variables in
+    for i in range (0, len(variables)):
+        output.append(variables[i])
+        print("Loc: {}  Value:{} ".format(len(output),variables[i]))
+    
+    #Finish the rest of the file
+    currentSize = len(output)
+    for i in range (0, 0xFFFF-currentSize):
+        output.append(0x00)
+
+    currentSize = len(output)
+    print("Current Size {} ".format(currentSize))
+
     if(len(sys.argv) == 2):
         outputFile = open('output.bin','w+b')
     else:
         outputFile = open(sys.argv[2],'w+b')
     outputFile.write(output)
+
     outputFile.close()
 
 if __name__ == "__main__":
