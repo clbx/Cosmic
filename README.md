@@ -76,8 +76,6 @@ make
 ```
 
 ### Windows 
-_Windows is not offically supported. The tests run, the binary builds, we've tested it to make sure it executes, but thats about it_
-
 A pre-compiled binary can be downloaded from the release page. You will still need to install MinGW and SDL2
 Be sure to add both MinGW and SDL2.dll to your path
 
