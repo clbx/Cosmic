@@ -621,12 +621,19 @@ def main():
     #Put variables in
     for i in range (0, len(variables)):
         output.append(variables[i])
-        print("Loc: {}  Value:{} ".format(len(output),variables[i]))
-    
+        print("Loc: {}  Value:{} ".format(hex(len(output)),hex(variables[i])))
+
+    '''
+    for x in range(0,len(output)):
+        print("{}".format(output[i]))
+    '''
+
     #Finish the rest of the file
     currentSize = len(output)
     for i in range (0, 0xFFFF-currentSize):
         output.append(0x00)
+    
+
 
     currentSize = len(output)
     print("Current Size {} ".format(currentSize))
@@ -635,6 +642,7 @@ def main():
         outputFile = open('output.bin','w+b')
     else:
         outputFile = open(sys.argv[2],'w+b')
+
     outputFile.write(output)
 
     outputFile.close()

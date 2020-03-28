@@ -1,12 +1,12 @@
 byte bright = 0
 word loc = 8000
 loop:
-	MOV bright loc
+	MOV bright @loc
 	INC bright
 	INC loc
 	MOV bright R0
 	CMP #FF
-	JNZ loop
+	JNZ #loop
 ; nothing in variable space
 ; 31 1200 2480
 ; b0 1200 
