@@ -210,8 +210,7 @@ def getAddrMode(token):
         return "IND"
     if(token[0] == "R"):
         return "REG"
-    else:
-        return "ABS"
+    return "ABS"
 
 #Helper function for adding large variables to the variable table
 def addToVariables(value, size=0):
@@ -335,12 +334,11 @@ def getOperand(token):
     return addrMode,operator,int(operand,16)
 
 
-'''
-Handle a Standard 8 Bit opcode
 
-General function for opcodes with the format [opcode] [operand] where
-the operand is 8 bits.
-'''
+#Handle a Standard 8 Bit opcode
+
+#General function for opcodes with the format [opcode] [operand] where
+#the operand is 8 bits.
 def handleStd8bitOpcode(tokens):
     print("Tokens in 8bit std: {}".format(tokens))
     addrMode,_,operand = getOperand(tokens[1])
@@ -354,12 +352,11 @@ def handleStd8bitOpcode(tokens):
         output.append((operand >> 8) & 0xFF)
         output.append(operand & 0xFF)
 
-'''
-Handle a Standard 16 Bit opcode
 
-General function for opcodes with the format [opcode] [operand] where
-the operand is 16 bits.
-'''
+#Handle a Standard 16 Bit opcode
+
+#General function for opcodes with the format [opcode] [operand] where
+#the operand is 16 bits.
 def handleStd16bitOpcode(tokens):
     addrMode,_,operand = getOperand(tokens[1])
     if(addrMode == "REG"):
@@ -623,17 +620,10 @@ def main():
         output.append(variables[i])
         print("Loc: {}  Value:{} ".format(hex(len(output)),hex(variables[i])))
 
-    '''
-    for x in range(0,len(output)):
-        print("{}".format(output[i]))
-    '''
-
     #Finish the rest of the file
     currentSize = len(output)
     for i in range (0, 0xFFFF-currentSize):
         output.append(0x00)
-    
-
 
     currentSize = len(output)
     print("Current Size {} ".format(currentSize))
@@ -649,3 +639,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
