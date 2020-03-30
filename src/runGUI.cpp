@@ -95,17 +95,17 @@ void runGUI::MemoryEditor(cosproc proc){
 
 }
 
-void runGUI::VideoOut(PGU pgu){
-    SDL_Event event;
-    while (SDL_PollEvent(&event)){
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        printf("%d\n",event.key.keysym.scancode);
-    }
+void runGUI::VideoOut(PGU* pgu){
+    // SDL_Event event;
+    // while (SDL_PollEvent(&event)){
+    //     ImGui_ImplSDL2_ProcessEvent(&event);
+    //     printf("%d\n",event.key.keysym.scancode);
+    // }
 
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
     ImGui::Begin("Video Out");
-    pgu.show();
+    pgu->show();
     ImGui::End();
 }
 
@@ -609,7 +609,7 @@ int runGUI::run(){
         *   Cosmic, VRAM is memory mapped
         */
         if (showGraphics){
-            VideoOut(pgu);
+            VideoOut(&pgu);
         }
 
         // Rendering
