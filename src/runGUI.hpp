@@ -10,6 +10,7 @@
 #include "imgui_memory_editor.h"
 #include "imgui_logger.h"
 #include "imguifilesystem.h"
+#include "imgui_internal.h"
 
 #ifdef __arm__ //If on the Raspberry Pi 
     #include "imgui_impl_opengl2.h"

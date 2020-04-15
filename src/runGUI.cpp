@@ -96,12 +96,6 @@ void runGUI::MemoryEditor(cosproc proc){
 }
 
 void runGUI::VideoOut(PGU* pgu){
-    // SDL_Event event;
-    // while (SDL_PollEvent(&event)){
-    //     ImGui_ImplSDL2_ProcessEvent(&event);
-    //     printf("%d\n",event.key.keysym.scancode);
-    // }
-
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
     ImGui::Begin("Video Out");
@@ -376,7 +370,21 @@ int runGUI::run(){
     bool done = false;
 
     bool ctrlState = false;
+
+    ImGuiContext* context = ImGui::GetCurrentContext();
+    const char* focused = "";
+    int result;
+
     while (!done){
+        result = strcmp(focused, "Video Out");
+        if(result == 0){
+            for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++){
+                if (ImGui::IsKeyPressed(i)){
+                    MemoryWrite(0xC400, 0xFF);
+                    MemoryWrite(0xC401, i);
+                }
+            }
+        }
         SDL_Event event;
         while (SDL_PollEvent(&event)){
             ImGui_ImplSDL2_ProcessEvent(&event);
@@ -386,6 +394,7 @@ int runGUI::run(){
                 done = true;
             if (event.type == SDL_KEYDOWN){
                 //TODO: Add scope to this with only affecting the active window
+                // debugLog.AddLog("Keys mods: %s%s%s%s\n", io.KeyCtrl ? "CTRL " : "", io.KeyShift ? "SHIFT " : "", io.KeyAlt ? "ALT " : "", io.KeySuper ? "SUPER " : "");
                 switch (event.key.keysym.sym){
                     case SDLK_SPACE:
                         if (ctrlState)
@@ -430,6 +439,7 @@ int runGUI::run(){
                         break;
                     case SDLK_LCTRL:
                         ctrlState = false;
+                        // debugLog.AddLog(ImGui::IsWindowFocused());
                         break;
                 }
             }
@@ -623,6 +633,8 @@ int runGUI::run(){
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         #endif
         SDL_GL_SwapWindow(window);
+
+        focused = context->WindowsFocusOrder.back()->Name; //Set at end to guarentee size > 0 on init
     }
 
     pgu.kill();

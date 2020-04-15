@@ -79,6 +79,13 @@ Current Memory Map (highly subject to change)
 0xFFFF	└───────────────────────┘
 ```
 
+### Keyboard input
+
+0xC400: 0xFF if new a new key has been pressed.
+
+0xC401: The specific key press.
+
+### Interupts
 
 The row of 0xFFF0 is used for handling specific cases
 ```
@@ -92,11 +99,6 @@ The row of 0xFFF0 is used for handling specific cases
 ...   │
 0xFFFF┘
 ```
-
-
-
-
-
 
 ## Interrupt Handling
 
