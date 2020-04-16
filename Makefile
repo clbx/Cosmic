@@ -21,6 +21,9 @@ LIBS =
 ## Using OpenGL loader: gl3w [default]
 # SOURCES += lib/gl3w/GL/gl3w.c
 CXXFLAGS += -Ilib/gl3w
+ifeq ($(PLAT), Pi)
+	CXXFLAGS += -lwiringPi
+endif
 
 ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
@@ -71,7 +74,6 @@ endif
 %.o:lib/gl3w/GL/%.c
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
-
 
 all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)

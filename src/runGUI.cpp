@@ -13,20 +13,46 @@ static char editorText[256 * 1000] = "";
 /** Globals to show and hide windows **/
 bool showGraphics = false;
 bool showDemo = false;
+bool verbose = true;
 
-
-
-void MemoryWrite(uint16_t address, uint8_t value)
-{
-    debugLog.AddLog("Wrote %X to %X\n", value, address);
+void MemoryWrite(uint16_t address, uint8_t value){
+    if(verbose){
+        debugLog.AddLog("Wrote %X to %X\n", value, address);
+    }
     memory[address] = value;
 }
 
-uint8_t MemoryRead(uint16_t address)
-{
-    debugLog.AddLog("READ: %X from %X\n", memory[address], address);
+uint8_t MemoryRead(uint16_t address){
+    if(verbose){
+        debugLog.AddLog("READ: %X from %X\n", memory[address], address);
+    }
     return memory[address];
 }
+
+#ifdef __arm__
+void runGUI::handlePins(){
+    verbose = false;
+    int base = 0xC402;
+    for(int i = 0; i <= 28; i++){
+        int byte = MemoryRead(base+i);
+        if(byte & 0x80){ //Write
+            pinMode(i,OUTPUT);
+            if(byte & 0x7F){
+                digitalWrite(1,i);
+            }
+            else{
+                digitalWrite(0,i);
+            }
+        }
+        else{ //Read
+            pinMode(i,INPUT);
+            int tmp = digitalRead(i);
+            MemoryWrite(base+i,tmp&0x7F);
+        }
+    }
+    verbose = true;
+}
+#endif
 
 void runGUI::LoadIntoMemory(const char *filepath)
 {
@@ -355,6 +381,12 @@ int runGUI::run(){
         ImGui_ImplOpenGL3_Init(glsl_version);
     #endif
 
+    //Setup Raspberry Pi Pins
+    #ifdef __arm__ //RPi
+        wiringPiSetup();
+    #endif
+
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     glEnable(GL_DEBUG_OUTPUT);
@@ -444,7 +476,10 @@ int runGUI::run(){
                 }
             }
         }
-
+        
+        #ifdef __arm__
+        handlePins();
+        #endif
 
         pgu.copy(memory+0x8000);
         #ifdef __arm__

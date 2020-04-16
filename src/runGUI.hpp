@@ -12,7 +12,8 @@
 #include "imguifilesystem.h"
 #include "imgui_internal.h"
 
-#ifdef __arm__ //If on the Raspberry Pi 
+#ifdef __arm__ //If on the Raspberry Pi
+    #include <wiringPi.h>
     #include "imgui_impl_opengl2.h"
     #include <SDL_opengl.h>
 #else
@@ -35,6 +36,7 @@ class runGUI{
         void Assembler(cosproc proc);
         void ShowTopMenu();
         void VideoOut(PGU* pgu);
+        void handlePins();
 
 
 
