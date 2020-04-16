@@ -103,7 +103,7 @@ The most signifigant bit in the GPIO Bytes signifies if the pin is an input or o
 ---------------------------------
   |   |   |   |   |   |   |   |
   |   +---+---+---+---+---+---+----> Data
-  +-------------------------------->Write = 1, Read = 0
+  +--------------------------------> Write = 1, Read = 0
 ```
 On all other platforms this memory is currently unused.
 
