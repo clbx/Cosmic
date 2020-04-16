@@ -31,11 +31,10 @@ const GLchar* fragment_shader =
     "}\n";
 
 
-void PGU::init()
-{
+void PGU::init(){
   #ifdef __arm__ //If on the Raspberry Pi 
     glewInit();
-#else
+  #endif
   
   GLuint g_VertHandle = 0, g_FragHandle = 0;
 
