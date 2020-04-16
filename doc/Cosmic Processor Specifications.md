@@ -85,6 +85,35 @@ Current Memory Map (highly subject to change)
 
 0xC401: The specific key press.
 
+### Raspberry Pi Pins
+On the Raspberry Pi the 28 GPIO pins correlate to 28 bytes in memory. Cosmic uses the WiringPi method of numbering pins [You can check it here](pinout.xyz)
+
+0xC402: GPIO 0
+
+
+0xC403: GPIO 1
+
+0xC404: GPIO 2
+
+...
+
+0xC41C: GPIO 26
+
+0xC41D: GPIO 27
+
+0xC41E: GPIO 28
+
+The most signifigant bit in the GPIO Bytes signifies if the pin is an input or output. The remaining 7 bits set it on or off. If the 7 bits equal zero the pin is off, if it is greater than 0 it is on.
+```
+---------------------------------
+| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+---------------------------------
+  |   |   |   |   |   |   |   |
+  |   +---+---+---+---+---+---+----> Data
+  +--------------------------------> Write = 1, Read = 0
+```
+On all other platforms this memory is currently unused.
+
 ### Interupts
 
 The row of 0xFFF0 is used for handling specific cases
