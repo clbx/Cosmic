@@ -338,7 +338,7 @@ int runGUI::run(){
         SDL_GL_MakeCurrent(window, gl_context);
         SDL_GL_SetSwapInterval(1); // Enable vsync
 
-        bool err = gl3wInit() != 0;
+        bool err = glewInit() != 0;
         if (err){
             fprintf(stderr, "Failed to initialize OpenGL loader!\n");
             return 1;

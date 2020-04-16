@@ -33,7 +33,10 @@ const GLchar* fragment_shader =
 
 void PGU::init()
 {
-  glewInit();
+  #ifdef __arm__ //If on the Raspberry Pi 
+    glewInit();
+#else
+  
   GLuint g_VertHandle = 0, g_FragHandle = 0;
 
 	glGenTextures(1,&vramTexture);
