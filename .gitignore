@@ -37,11 +37,7 @@ cosmic
 *.synctex.gz(busy)
 *.pdfsync
 
-# Class files
-fphw.cls
-
 # Generated documents
-*.pdf
 
 # Prerequisites
 *.d
