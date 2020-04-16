@@ -33,6 +33,7 @@ const GLchar* fragment_shader =
 
 void PGU::init()
 {
+  glewInit();
   GLuint g_VertHandle = 0, g_FragHandle = 0;
 
 	glGenTextures(1,&vramTexture);

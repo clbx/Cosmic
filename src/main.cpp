@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include <GL/gl3w.h>
+//#include <GL/gl3w.h>
+#include <GL/glew.h>
 #include <iostream>
 #include <fstream>
 #include <string>
