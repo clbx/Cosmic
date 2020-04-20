@@ -611,7 +611,7 @@ int runGUI::run(){
         const char *speeds[] = {"3000", "1500", "600", "300", "60"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
-        if (ImGui::BeginCombo("Mhz", current_speed, flags)){
+        if (ImGui::BeginCombo("Hz", current_speed, flags)){
             for (int n = 0; n < IM_ARRAYSIZE(speeds); n++){
                 bool is_selected = (current_speed == speeds[n]);
                 if (ImGui::Selectable(speeds[n], is_selected)){
