@@ -78,7 +78,11 @@ intro and problem definition
 
 
 \section{Background}
-background
+The largest source of background information is in the machines that Cosmic is designed to resemble. The two primary reference devices are the Apple II and the TRS-80 containing the MOS 6502 and the Zilog Z80, respectively.
+
+There are a few other projects out there that are similar to what we did. Emulators of similar devices were helpful for design inspiration. Unlike emulators, we do not have the same design constraints, which added a sense of freedom when creating the system. Outside of emulators, there are a few projects where developers have created self-defined simulated platforms. One such project is an 8-bit Assembler and Simulator written by Marco "Schweigi" Schweighauser\cite{b1}. Another project that influenced the creation of Cosmic is David Murray's Commander X16 project\cite{b2}. Unlike the Assembler-Simulator, this is a "home-brew" physical computer made using off-the-shelf parts. This project uses the 6502 and other components to create a retro-feeling machine with more modern parts. 
+
+Luckily, devices of the time have been very well documented in the past 40 years. This documentation made reverse-engineering the systems and processors simple and allowed us to figure out how engineers of yesterday solved problems that we encountered while designing our system. 
 
 
 \section{Design Constraints}
@@ -86,7 +90,15 @@ design constraints
 
 
 \section{Timeline}
-timeline fall/spring semester
+
+\subsection{Fall Semester}
+Fall semester was the beginning of Cosmic, so much of the semester involved planning and design. Everything from picking the instructions we wanted to implement, to designing the GUI, to planning the underlying system (memory, graphics, etc.) was done during this phase.
+
+By the end of the fall semester, we had the Cosmic processor mostly developed and tested, which was the most important task during this time. Alongside that, the GUI was was developed to a significant working extent and we just scratched the surface in regards to writing the assembler.
+
+
+\subsection{Spring Semester}
+Spring semester kicked off with a heavy focus on finishing development of the assembler and then transitioned to implementing a video output screen and a plethora of GUI improvements. As the semester progressed, focus on developing Cosmic shifted to begin preparing for SCAD. This included tasks such as recording a video presentation, designing a poster, and writing three labs to showcase our project and its educational value. Luckily, among the chaos, we still had time to implement interfacing hardware with Cosmic such as keyboard inputs and GPIO pins on a Raspberry Pi. In the end, all of our deliverables were met.
 
 
 \section{Budget}
@@ -258,7 +270,7 @@ people who helped on the project + dr Li?
 \bibitem{b1} Schweighauser, M. (2019). Schweigi/assembler-simulator. [online] GitHub. Available at: https://github.com/Schweigi/assembler-simulator [Accessed 7 Sep. 2019].
 \bibitem{b2}GitHub. (2019). Commander X16. [online] Available at: https://github.com/commanderx16 [Accessed 13 Sep. 2019].
 \end{thebibliography}
-%the cosmic repo
+%the cosmic repo idk wehere you want to ref this
 %catch2 in testing
 %pytest in testing
 %travis ci in testing
