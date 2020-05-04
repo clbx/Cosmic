@@ -74,7 +74,7 @@ retro-computing, simulation, emulation, microprocessor, 8-bit architecture.
 
 
 \section{Introduction}
-intro and problem definition
+One of the biggest problems Computer Science students face today is low level programming. Between archaic languages, expensive hardware, and incomplete or scattered documentation low level programming is not only intimidating, but difficult to learn. Cosmic seeks to remedy all of this with a modern, well documented, and simple language, an easy to use interface, and support for hardware that you already own. Along with 3 labs we developed Cosmic, is a easy, free, and open source way to either learn low level programming, or create your own virtual computer. 
 
 
 \section{Background}
@@ -82,11 +82,13 @@ The largest source of background information is in the machines that Cosmic is d
 
 There are a few other projects out there that are similar to what we did. Emulators of similar devices were helpful for design inspiration. Unlike emulators, we do not have the same design constraints, which added a sense of freedom when creating the system. Outside of emulators, there are a few projects where developers have created self-defined simulated platforms. One such project is an 8-bit Assembler and Simulator written by Marco "Schweigi" Schweighauser\cite{b1}. Another project that influenced the creation of Cosmic is David Murray's Commander X16 project\cite{b2}. Unlike the Assembler-Simulator, this is a "home-brew" physical computer made using off-the-shelf parts. This project uses the 6502 and other components to create a retro-feeling machine with more modern parts. 
 
+Our project is a little big different. We've greatly expanded on the simple processor that was in the "Assembler and Simulator" to a full blown instruction set, support for I/O and a much more fleshed out interface. Our processor is also completeley new, and runs all in software so it's a bit more flexible and a lot cheaper than the still in development Commander X16. 
+
 Luckily, devices of the time have been very well documented in the past 40 years. This documentation made reverse-engineering the systems and processors simple and allowed us to figure out how engineers of yesterday solved problems that we encountered while designing our system. 
 
 
 \section{Design Constraints}
-design constraints
+At the core of the system, we wanted to follow 3 rules. First, keep it simple. Cosmic uses a RISC-like instruction set, each instruction has one simple task to do. All of the instructions are an opcode and operand excluding MOV which takes 2 operands for ease of use. Cosmic is 100\% memory mapped so nothing is hidden from the user and everything is adjustable. Changes in I/O, Graphics, and the like are always view-able and editable. The second rule was to follow proper software engineering methodologies. We wanted Cosmic to be an example of how to write clean code, use resources available to us, and test everything. We followed this very well with our testing, automated builds, and project structure. The final rule was that it was open source and modular so anyone could see how Cosmic works under the hood and even add their own instructions, peripherals, and additions to the GUI. We made it very easy to anyone to add anything they want to the processor.
 
 
 \section{Timeline}
@@ -108,7 +110,7 @@ At first, we thought since our entire project is in software, that nothing would
 \section{Social, Ethical, and Environmental Impacts}
 
 \subsection{Social Impacts}
-Our project doesn't have any direct social impacts. It's a project that many people will find interesting and that could be useful in an educational environment.n.
+Our project doesn't have any direct social impacts. It's a project that many people will find interesting and that could be useful in an educational environments.
 
 \subsection{Ethical Impacts}
 The biggest ethical factor of our project is about the code itself. We decided to keep the project 100\% open source. We think this is important for a project like this to allow others to learn from our design. All of the libraries included are also all open source.
@@ -118,12 +120,174 @@ Our project will have no impact on the environment, as it will be written entire
 
 
 \section{Design}
-design tables and stuff copy pasta from design choices + system level design
+\subsection{Bitness}
+The "bitness" of a chip is traditionally the size of the data bus. An 8-bit chip can address 8 bits of data at one time, a 16-bit chip can address 16 bits of data etc.
+
+Our design choice was between an 8-bit design and a 16-bit design. 32-bit and 64-bit designs were not considered as they did not exist during the time that the chips that Cosmic is similar to were made.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ 8-bit & 5 &  8&  9 & \cellcolor{blue!25}49\\
+ \hline
+ 16-bit  &  8 & 5 &  5 & \cellcolor{blue!25}44\\
+ \hline
+\end{tabular}
+}\\
+
+An 8-bit chip was chosen mainly due to it being more relevant to the class of chips Cosmic is made to fit in with, those of the early 80's and late 70's. A 16-bit chip would have been slightly more work to implement, but would have been much more useful to write for.
+
+\subsection{Registers vs. Zero Page vs In-Memory Registers}
+
+Chips of the time generally had registers in 3 formats. There were many registers separated from memory like in the Z80. Few registers and then an easily accessible portion of memory like in the 6502. Or on chips with on-board memory, the registers would take up the first few bytes of memory.
+
+Each of these has it's pros and cons, but all configurations were designed with two things in mind, speed and utility. On a physical chip, retrieving data from a register is significantly faster than a location in memory, but you only had 8 bytes. Getting something from zero page memory on the 6502 was faster than getting something from another place in memory, but slower than a register, but you had 256 bytes.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Many Registers & 9 &  8&  10 & \cellcolor{blue!25}63\\
+ \hline
+ Zero Page  &  5 & 5 &  10 & \cellcolor{blue!25}45\\
+ \hline
+ Onboard Memory &  6 & 10 &  7& \cellcolor{blue!25}52\\
+
+ \hline 
+\end{tabular}
+}\\
+
+Registers, similar to the Z80 made the most sense in our case. Since there is no speed difference between accessing zero page and accessing any other position in memory in our design, zero page addressing would be a waste of time to implement. On-board memory would have been very easy to develop, but was generally found on microcontrollers rather than microprocessors, and would have held no real speed boost either.
+
+\subsection{16-Bit Register Mode}
+16-bit register mode is when two of the 8-bit registers can be used together to act as a 16-bit register. This can also be done for certain instructions as well.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ No 16 Bit mode & 4 &  8&  10 & \cellcolor{blue!25}48\\
+ \hline
+ 16 Bit mode &  10 & 6 &  10 & \cellcolor{blue!25}62\\
+ \hline
+\end{tabular}
+}\\
+
+Overall, a 16-bit mode was a good decision. This allows for a lot more usability, and still fits in with chips of the time since the Z80 also had 16-bit mode instructions. This did add a bit of work, significantly increasing our instruction count,  but was worth it overall.
+
+\subsection{Signed vs. Unsigned Data}
+
+During the design we were unsure how to use signed and unsigned numbers. In the Z80 and 6502 there is no distinction between the two in position of memory since the arithmetic functions do binary math. The programmer must keep track of if the number is signed or unsigned and flags are used in math to signify certain cases.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Specifically Signed Data & 8 &  4 &  3 & \cellcolor{blue!25}38\\
+ \hline
+ Overflow and Carry flags &  5 & 8 &  7 & \cellcolor{blue!25}45\\
+ \hline
+\end{tabular}
+}\\
+
+While having specifically signed functions and locations would have been helpful, it would have been a lot to implement and not really consistent with how processors work. Instead we focused on having flags when using arithmetic functions show if things would be negative and when it would overflow.
+
+\subsection{Op-code Selection}
+
+The op-code selection is the control logic of a simulated chip. It takes an op-code in from memory and has to resolve it to a instruction to execute. This can be done in a few ways. One way is using a large switch statement to branch to the proper instruction function. This can be large and cumbersome, but is also very simple. Another way is to use function pointers and then store them in a way in which they can be easily called. We could also create a struct to hold the function pointer and then other things relevant to the instruction like size, mnemonic, and addressing mode.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Switch Statement & 3 & 10& n/a& \cellcolor{blue!25}29\\
+ \hline
+ Function Pointers &  7& 7&  n/a& \cellcolor{blue!25}35\\
+ \hline
+ Function Pointers w/ Data &  9 & 7 &  n/a & \cellcolor{blue!25}41\\
+ \hline
+\end{tabular}
+}\\
+
+A switch statement is very large and cumbersome and also is a very crude way to select op-codes. We decided using an array of structs containing the function pointers, and additional data about the function way the best way to go. While it was tricky to implement, it works very well, is much faster than a switch statement, and also contains a lot of data about each of the functions. The instructions are put into an array at the position that their op-code is. For instance the NOP instruction is op-code 0x00, so it was put into the first element of the array so when InstructionSet[0] is called, it will return the struct which contains the function pointer for the NOP instruction
+
+\subsection{Addressing functions}
+
+When writing the functions for the op-codes, we were unsure on how to implement the addressing modes. They could either be done as separate functions or each instruction could be implemented separately with its addressing mode.\\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Individual Functions & 3 &  7&  n/a & \cellcolor{blue!25}23\\
+ \hline
+ Addressing Functions &  7 & 6 &  n/a & \cellcolor{blue!25}33\\
+ \hline
+\end{tabular}
+}\\
+
+Implementing each function with each addressing mode was very cumbersome as it increased the number of instruction functions significantly. Although 2 different functions have to be written for each function due to the way our addressing works, it reduced the total number of functions and made writing the remaining functions very easy. 
+
+\subsection{GUI back-end}
+
+The GUI back-end for the simulation environment was the smallest design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI and ImGUI, a immediate mode GUI were both libraries we were familiar with and could easily implement. \\
+The GUI back-end for the simulation environment was the least significant design decision to make. The main decision had to be made between immediate or a retained mode GUI. Qt4 ,a retained mode GUI, and ImGui, an immediate mode GUI, were both libraries we were familiar with and could easily implement. \\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ ImGui & 8 &  5&  n/a & \cellcolor{blue!25}34\\
+ \hline
+ Qt4 &  6 & 5 &  n/a & \cellcolor{blue!25}23\\
+ \hline
+\end{tabular}
+}\\
+
+We chose immediate mode due to how much would be changing on screen at a time, and since the elements in the GUI would not be super intensive, and ImGui is much easier to implement and works cross platform with few external dependencies.
 
 
-\section{Implementation}
-design philosophy + design implementation
 
+
+\subsection{Supported Systems}
+
+Targeting all operating systems can be difficult since they all require different dependencies and have different ways to build the software. macOS and Linux work similarly enough for our purposes and very few changes have to be made to the build process between macOS and Linux. Windows however requires a different process and generally requires tools installed that most people will not unless they are writing in C/C++ without Microsoft tools. \\
+
+\resizebox{\columnwidth}{!}{%
+ \begin{tabular}{||c|c|c|c|c||}
+ \hline
+ Factors & Practical Use & Implementation & Appropriate Design & \cellcolor{blue!40}Total\\ [0.5ex] 
+ \hline\hline
+ Weights & 3 & 2 & 2& \\ 
+ \hline
+ Windows, macOS, \& Linux & 8 &  5 &  n/a & \cellcolor{blue!25}34\\
+ \hline
+ macOS \& Linux &  6 & 7 &  n/a & \cellcolor{blue!25}32\\
+ \hline
+\end{tabular}
+}\\
 
 \section{Testing Methodologies}
 Cosmic was designed to be modular for developers to be able to create their own parts of the system. A byproduct of this also made Cosmic incredibly easy to test. We made a significant effort to automate as much of the testing as possible to verify that the builds we produce are stable on any platform.
@@ -263,8 +427,13 @@ In the end, we could not be happier with the product we delivered. We committed 
 
 
 \section{Acknowledgments}
-people who helped on the project + dr Li?
+Over the course of this project we posted on multiple relevant forums to get suggestions on how we could improve the system. Through this many people found our repository and 3 decided to contribute to the project.
 
+Carsten Eggers (Gwarks) contributed most of the work that went into our graphics system. He holds a lot of knowledge about OpenGL that neither of us did and really helped make that an efficient and useable system.
+
+Akilesh Kannan (aklsh) and Kartik Agaram (akkartik) contributed to making our documentation more accurate.
+
+We'd also like to thank Dr. Li for being our advisor and guiding us through this project. 
 
 \begin{thebibliography}{00}
 \bibitem{b1} Schweighauser, M. (2019). Schweigi/assembler-simulator. [online] GitHub. Available at: https://github.com/Schweigi/assembler-simulator [Accessed 7 Sep. 2019].
