@@ -74,7 +74,7 @@ retro-computing, simulation, emulation, microprocessor, 8-bit architecture.
 
 
 \section{Introduction}
-One of the biggest problems Computer Science students face today is low level programming. Between archaic languages, expensive hardware, and incomplete or scattered documentation low level programming is not only intimidating, but difficult to learn. Cosmic seeks to remedy all of this with a modern, well documented, and simple language, an easy to use interface, and support for hardware that you already own. Along with 3 labs we developed Cosmic, is a easy, free, and open source way to either learn low level programming, or create your own virtual computer. 
+One of the biggest problems Computer Science students face today is low-level programming. Between archaic languages, expensive hardware, and incomplete or scattered documentation, low-level programming is not only intimidating, but also difficult to learn. Cosmic seeks to remedy all of this with a modern, well documented, and simple language alongside an easy to use interface, and support for hardware that you already own. Along with three labs we developed Cosmic, is a easy, free, and open source way to either learn low level programming, or create your own virtual computer. 
 
 
 \section{Background}
@@ -88,7 +88,7 @@ Luckily, devices of the time have been very well documented in the past 40 years
 
 
 \section{Design Constraints}
-At the core of the system, we wanted to follow 3 rules. First, keep it simple. Cosmic uses a RISC-like instruction set, each instruction has one simple task to do. All of the instructions are an opcode and operand excluding MOV which takes 2 operands for ease of use. Cosmic is 100\% memory mapped so nothing is hidden from the user and everything is adjustable. Changes in I/O, Graphics, and the like are always view-able and editable. The second rule was to follow proper software engineering methodologies. We wanted Cosmic to be an example of how to write clean code, use resources available to us, and test everything. We followed this very well with our testing, automated builds, and project structure. The final rule was that it was open source and modular so anyone could see how Cosmic works under the hood and even add their own instructions, peripherals, and additions to the GUI. We made it very easy to anyone to add anything they want to the processor.
+At the core of the system, we wanted to follow three rules. First, keep it simple. Cosmic uses a RISC-like instruction set, each instruction has one simple task to do. All of the instructions are an opcode and operand excluding MOV which takes 2 operands for ease of use. Cosmic is 100\% memory mapped so nothing is hidden from the user and everything is adjustable. Changes in I/O, Graphics, and the like are always view-able and editable. The second rule was to follow proper software engineering methodologies. We wanted Cosmic to be an example of how to write clean code, use resources available to us, and test everything. We followed this very well with our testing, automated builds, and project structure. The final rule was that it was open source and modular, so anyone could see how Cosmic works under the hood and even add their own instructions, peripherals, and additions to the GUI. We made it very easy for anyone to add anything they want to the processor.
 
 
 \section{Timeline}
@@ -315,13 +315,13 @@ TEST_CASE("shlx", "[opcodes]"){
 }
 \end{lstlisting}
 
-We set up the processor and memory to properly execute the test case we are trying to replicate. The processor then executes the instructions and the memory, registers, or flags are checked depending on the purpose of the test. For the processor, we used Catch2 to write our unit testing, a multi-paradigm test framework for C++. In the future, the unit tests will be written for the assembler using the pytest framework.
+We set up the processor and memory to properly execute the test case we are trying to replicate. The processor then executes the instructions and the memory, registers, or flags are checked depending on the purpose of the test. For the processor, we used Catch2\cite{b3} to write our unit testing, a multi-paradigm test framework for C++. In the future, the unit tests will be written for the assembler using the pytest\cite{b4} framework.
 
 \subsection{Manual Testing}
 Since the majority of the system is not thoroughly tested or is difficult to test (ex. GUI), manual testing is done to ensure that everything is working well and doesn't break. This constitutes us going in and trying to do everything from using the project normally, to breaking the GUI, to running edge cases. While this helps us discover bugs, it also encourages us to think of ways to improve the GUI and the overall usability of our project. While our unit tests focus on individual instructions or functions, our manual tests ensure that the entire system as a whole is working accordingly.
 
 \subsection{Automated Testing}
-Using Travis CI, every time we push an update or change to our GitHub repository, it kicks off several separate builds of the Cosmic system. Cosmic gets compiled and tested on five different environments; x86, ARM, Linux, Windows, and macOS. These builds compile in a clean environment to ensure that the system can compile and run correctly across each platform, not just the systems we are using to design it. The builds start by cloning the repository, then downloading the necessary packages, then finally compiling and running our unit tests. After the builds are complete, we get notified if something causes them to fail so that we know what to fix.
+Using Travis CI\cite{b5}, every time we push an update or change to our GitHub repository, it kicks off several separate builds of the Cosmic system. Cosmic gets compiled and tested on five different environments; x86, ARM, Linux, Windows, and macOS. These builds compile in a clean environment to ensure that the system can compile and run correctly across each platform, not just the systems we are using to design it. The builds start by cloning the repository, then downloading the necessary packages, then finally compiling and running our unit tests. After the builds are complete, we get notified if something causes them to fail so that we know what to fix.
 
 \subsection{Testing Results}
 Using the results of our manual and automated testing, we track bugs and other issues using GitHub. Whenever a bug, undesired behavior, or improvement needs to be made, an issue is opened on GitHub and tracked in our Project tracker. The bug is then cataloged, assigned, and worked on. Once it's verified that the bug is squashed, the issue is then closed.
@@ -427,7 +427,7 @@ In the end, we could not be happier with the product we delivered. We committed 
 
 
 \section{Acknowledgments}
-Over the course of this project we posted on multiple relevant forums to get suggestions on how we could improve the system. Through this many people found our repository and 3 decided to contribute to the project.
+Over the course of this project we posted on multiple relevant forums to get suggestions on how we could improve the system. Through this, many people found our repository and three decided to contribute to the project.
 
 Carsten Eggers (Gwarks) contributed most of the work that went into our graphics system. He holds a lot of knowledge about OpenGL that neither of us did and really helped make that an efficient and useable system.
 
@@ -436,12 +436,12 @@ Akilesh Kannan (aklsh) and Kartik Agaram (akkartik) contributed to making our do
 We'd also like to thank Dr. Li for being our advisor and guiding us through this project. 
 
 \begin{thebibliography}{00}
+\bibitem{b0} C. Buxton, K. Carman, "Cosmic". [online] GitHub. Available at: https://github.com/clbx/Cosmic [Accessed 4 May 2020].
 \bibitem{b1} Schweighauser, M. (2019). Schweigi/assembler-simulator. [online] GitHub. Available at: https://github.com/Schweigi/assembler-simulator [Accessed 7 Sep. 2019].
-\bibitem{b2}GitHub. (2019). Commander X16. [online] Available at: https://github.com/commanderx16 [Accessed 13 Sep. 2019].
+\bibitem{b2} GitHub. (2019). Commander X16. [online] Available at: https://github.com/commanderx16 [Accessed 13 Sep. 2019].
+\bibitem{b3} "Catch2". [online] GitHub. Available at: https://github.com/catchorg/Catch2 [Accessed 4 May 2020].
+\bibitem{b4} "pytest". [online] GitHub. Available at: https://github.com/pytest-dev/pytest [Accessed 4 May 2020].
+\bibitem{b5} "Travis CI". [online] Travis CI. Available at: https://travis-ci.org/ [Accessed 4 May 2020].
 \end{thebibliography}
-%the cosmic repo idk wehere you want to ref this
-%catch2 in testing
-%pytest in testing
-%travis ci in testing
 
 \end{document}
