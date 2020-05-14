@@ -1,0 +1,126 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fphw Assignment
+% LaTeX Template
+% Version 1.0 (27/04/2019)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Authors:
+% Class by Felipe Portales-Oliva (f.portales.oliva@gmail.com) with template 
+% content and modifications by Vel (vel@LaTeXTemplates.com)
+%
+% Template (this file) License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+	12pt, % Default font size, values between 10pt-12pt are allowed
+	%letterpaper, % Uncomment for US letter paper size
+	%spanish, % Uncomment for Spanish
+]{fphw}
+
+% Template-specific packages
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{mathpazo} % Use the Palatino font
+
+\usepackage{graphicx} % Required for including images
+
+\usepackage{booktabs} % Required for better horizontal rules in tables
+
+\usepackage{listings} % Required for insertion of code
+
+\usepackage{enumerate} % To modify the enumerate environment
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Assembly Lab \#1: Basic Operations} % Assignment title
+
+
+\date{March 28th, 2025} % Due date
+
+\institute{Elizabethtown College \\ Department of Computer Science} % Institute or school name
+
+\class{Digital Design II} % Course or class name
+
+\professor{Professor X} % Professor or teacher in charge of the assignment
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Output the assignment title, created automatically using the information in the custom commands above
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT CONTENT
+%----------------------------------------------------------------------------------------
+
+\section*{Lab Objective}
+
+\begin{problem}
+	To obtain the basics of assembly such as moving data around, doing basic arithmetic, and jumps. 
+\end{problem}
+
+%------------------------------------------------
+
+\subsection*{Prelab}
+
+\begin{itemize}
+  \item Set up the Cosmic environment and assembler. (Make sure you have Python 3.x installed)
+  \item Familiarize yourself with the documentation of the opcodes, labels, and variables.
+  \item In particular, pay attention to the following opcodes: MOV, ADD, INC, JMP, CMP.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\section*{During Lab}
+
+\begin{problem}
+	You will write a simple program that will take a number from a position in memory, calculate the correlating Fibonacci number, and put it in another position of memory. 
+\end{problem}
+
+%------------------------------------------------
+
+\begin{itemize}
+  \item Store a number, 1 $\leq$ n $\leq$ 13, in an arbitrary position of general memory (you may use a variable for this).
+  \item Based on that number, calculate the correlating nth Fibonacci number.
+  \item You will do this with a loop, you must use labels and the JMP instruction for this.
+  \item Once the number is calculated, store it elsewhere in memory (you may use a variable for this)
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\section*{Grading}
+
+30\% - Program assembles\\
+40\% - Program calculates Fibonacci number\\
+10\% - Proper memory space is used\\
+10\% - Comments added\\
+10\%  - Loop runs in less than 30 cycles\\
+
+
+%------------------------------------------------
+
+\section*{Helpful Links}
+\href{https://www.mathsisfun.com/numbers/fibonacci-sequence.html}{Fibonacci Numbers}\\
+\href{https://github.com/clbx/Cosmic/tree/master/doc}{Cosmic Documentation}\\
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

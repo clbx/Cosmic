@@ -102,10 +102,6 @@ InstructionSet = {
     "ABS CMPX":0x65,
     "IND CMPX":0x66,
     "REG CMPX":0x67,
-    "IMP INC":0x68,
-    "IMP INCX":0x69,
-    "IMP DEC":0x6A,
-    "IMP DECX":0x6B,
     "IMM SHRX":0x6C,
     "ABS SHRX":0x6D,
     "IND SHRX":0x6E,
@@ -154,24 +150,36 @@ InstructionSet = {
     "ABS JNL":0x99,
     "IND JNL":0x9A,
     "REG JNL":0x9B,
+    "IMM JES":0x9C,
+    "ABS JES":0x9D,
+    "IND JES":0x9E,
+    "REG JES":0x9F,
     "IMP CSF":0xA0,
     "IMP CZF":0xA1,
     "IMP SZF":0xA2,
     "IMP CNF":0xA3,
     "IMP SNF":0xA4,
-    "IMP COF":0xA5,
-    "IMP SOF":0xA6,
-    "IMP CCF":0xA7,
-    "IMP SCF":0xA8,
+    "IMP CCF":0xA5,
+    "IMP SCF":0xA6,
+    "IMP COF":0xA7,
+    "IMP SOF":0xA8,
     "IMP CLF":0xA9,
     "IMP SLF":0xAA,
     "IMP CIF":0xAB,
     "IMP SIF":0xAC,
     "IMP CEF":0xAD,
-    "IMM JES":0x9C,
-    "ABS JES":0x9D,
-    "IND JES":0x9E,
-    "REG JES":0x9F
+    "ABS INC":0xB0,
+    "IND INC":0xB1,
+    "REG INC":0xB2,
+    "ABS INCX":0xB3,
+    "IND INCX":0xB4,
+    "REG INCX":0xB5,
+    "ABS DEC":0xB6,
+    "IND DEC":0xB7,
+    "REG DEC":0xB8,
+    "ABS DECX":0xB9,
+    "IND DECX":0xBA,
+    "REG DECX":0xBB
 }
 
 opcodePattern = re.compile("[A-Z,a-z]{3,4}( [#,@,R]?[0-9,A-F]{1,}([ ][#,@,R]?[0-9,A-F]{1,})?)?$")
@@ -202,8 +210,7 @@ def getAddrMode(token):
         return "IND"
     if(token[0] == "R"):
         return "REG"
-    else:
-        return "ABS"
+    return "ABS"
 
 #Helper function for adding large variables to the variable table
 def addToVariables(value, size=0):
@@ -224,7 +231,7 @@ def createVar(tokens):
     #byte counter = 5
     if(tokens[0] == "byte"):
         identifier = tokens[1]
-        value = int(tokens[3],16)
+        value = tokens[3]
         variableTable[identifier] = [len(variables),1]
         addToVariables(value,1)
         return
@@ -241,6 +248,7 @@ def createVar(tokens):
 def resolveVariables(tokens):
     #Go through the length of the opcode starting with the first operand and find variables
     for i in range(1,len(tokens)):
+
         addrMode = getAddrMode(tokens[i])
 
         operator = ""
@@ -253,6 +261,7 @@ def resolveVariables(tokens):
             operand = tokens[i][1:]
             operator = tokens[i][0]
 
+
         if(operand in variableTable):
 
             #print(variables[variableTable[operand][0]])
@@ -260,13 +269,19 @@ def resolveVariables(tokens):
 
             if(variableTable[operand][1] > 2):
                 warning("Variable {} is larger than opcode can handle".format(operand))
-            for j in range(variableTable[operand][1]): #Add all of the operand
-                newoperand += str(variables[variableTable[operand][0] + j])
-            tokens[i] = operator + str(int(newoperand) + 0xC800)
+            
+            print("LOCATION: {}".format((variableTable[operand][0] + 0xC800)))
+
+            print("TEST {}".format(0x09+0x02,'x'))
+            tokens[i] = operator + format((variableTable[operand][0] + 0xC800),'x')
+            #Needs to return 51200
+            print("AFTER LOC: {}".format(tokens[i]))
 
         if(operand in labelTable):
             operand = labelTable[operand]
             tokens[i] = str(operator) + str(operand)
+        
+
 
     return tokens
 
@@ -305,6 +320,7 @@ def assemble(tokens):
         except NameError:
             error("Unknown Input {}".format(tokens))
 
+
 def getOperand(token):
     addrMode = getAddrMode(token)
     operand = ""
@@ -314,31 +330,33 @@ def getOperand(token):
     else:
         operator = token[0]
         operand = token[1:]
-    return addrMode,operator,int(operand,16) 
+    print(operand)
+    return addrMode,operator,int(operand,16)
 
 
-'''
-Handle a Standard 8 Bit opcode
 
-General function for opcodes with the format [opcode] [operand] where
-the operand is 8 bits.
-'''
+#Handle a Standard 8 Bit opcode
+
+#General function for opcodes with the format [opcode] [operand] where
+#the operand is 8 bits.
 def handleStd8bitOpcode(tokens):
+    print("Tokens in 8bit std: {}".format(tokens))
     addrMode,_,operand = getOperand(tokens[1])
+    print(type(operand))
+    print("Operand in 8bit: {}".format(operand))
     if(addrMode == "IMM" or addrMode == "REG"):
         output.append(InstructionSet[addrMode + " " + tokens[0]])
         output.append(operand)
     else:
         output.append(InstructionSet[addrMode + " " + tokens[0]])
         output.append((operand >> 8) & 0xFF)
-        output.append((operand & 0xFF))
+        output.append(operand & 0xFF)
 
-'''
-Handle a Standard 16 Bit opcode
 
-General function for opcodes with the format [opcode] [operand] where
-the operand is 16 bits.
-'''
+#Handle a Standard 16 Bit opcode
+
+#General function for opcodes with the format [opcode] [operand] where
+#the operand is 16 bits.
 def handleStd16bitOpcode(tokens):
     addrMode,_,operand = getOperand(tokens[1])
     if(addrMode == "REG"):
@@ -457,18 +475,6 @@ def CMP(tokens):
 def CMPX(tokens):
     handleStd16bitOpcode(tokens)
 
-def INC(tokens):
-    output.append(InstructionSet["IMP INC"])
-
-def INCX(tokens):
-    output.append(InstructionSet["IMP INCX"])
-
-def DEC(tokens):
-    output.append(InstructionSet["IMP DEC"])
-
-def DECX(tokens):
-    output.append(InstructionSet["IMP DECX"])
-
 def SHRX(tokens):
     handleStd16bitOpcode(tokens)
 
@@ -523,17 +529,17 @@ def CNF(tokens):
 def SNF(tokens):
     output.append(InstructionSet["IMP SNF"])
 
-def COF(tokens):
-    output.append(InstructionSet["IMP COF"])
-
-def SOF(tokens):
-    output.append(InstructionSet["IMP SOF"])
-
 def CCF(tokens):
     output.append(InstructionSet["IMP CCF"])
 
 def SCF(tokens):
     output.append(InstructionSet["IMP SCF"])
+
+def COF(tokens):
+    output.append(InstructionSet["IMP COF"])
+
+def SOF(tokens):
+    output.append(InstructionSet["IMP SOF"])
 
 def CLF(tokens):
     output.append(InstructionSet["IMP CLF"])
@@ -549,6 +555,18 @@ def SIF(tokens):
 
 def CEF(tokens):
     output.append(InstructionSet["IMP CEF"])
+
+def INC(tokens):
+    handleStd8bitOpcode(tokens)
+
+def INCX(tokens):
+    handleStd16bitOpcode(tokens)
+
+def DEC(tokens):
+    handleStd8bitOpcode(tokens)
+
+def DECX(tokens):
+    handleStd16bitOpcode(tokens)
 
 #Writes an error to the console. Stops exectuion
 def error(msg):
@@ -577,6 +595,7 @@ def main():
     #-= Go through the file =-#
     for i in range(0, len(instructions)):
         tokens = instructions[i].split()
+        print(tokens)
         assemble(tokens)
         currentLine += 1
 
@@ -590,9 +609,34 @@ def main():
     for i in range(0 , len(variables)):
         print(hex(variables[i]),end=" ")
     print("")
-    #outputFile = open('output.bin','w+b')
-    #outputFile.write(output)
-    #outputFile.close()
+
+    currentSize = len(output)
+    #From where output ends, to 0xC800
+    for i in range (0, 0xC800-currentSize):
+        output.append(0x00)
+
+    #Put variables in
+    for i in range (0, len(variables)):
+        output.append(variables[i])
+        print("Loc: {}  Value:{} ".format(hex(len(output)),hex(variables[i])))
+
+    #Finish the rest of the file
+    currentSize = len(output)
+    for i in range (0, 0xFFFF-currentSize):
+        output.append(0x00)
+
+    currentSize = len(output)
+    print("Current Size {} ".format(currentSize))
+
+    if(len(sys.argv) == 2):
+        outputFile = open('output.bin','w+b')
+    else:
+        outputFile = open(sys.argv[2],'w+b')
+
+    outputFile.write(output)
+
+    outputFile.close()
 
 if __name__ == "__main__":
     main()
+    

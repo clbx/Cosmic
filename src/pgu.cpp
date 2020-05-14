@@ -26,13 +26,16 @@ const GLchar* fragment_shader =
     "out vec4 Out_Color;\n"
     "void main()\n"
     "{\n"
-"if(any(lessThan(Frag_UV,vec2(0,0)))||any(greaterThanEqual(Frag_UV,vec2(128,128))))Out_Color=vec4(0.2,0.1,0.0,1.0);\n"
+    "if(any(lessThan(Frag_UV,vec2(0,0)))||any(greaterThanEqual(Frag_UV,vec2(128,128))))Out_Color=vec4(0.2,0.1,0.0,1.0);\n"
     "    else Out_Color = Frag_Color * vec4(0.0,float(texelFetch(Texture,ivec2(Frag_UV),0))/255.,0.0,10.);\n"
     "}\n";
 
 
-void PGU::init()
-{
+void PGU::init(){
+  #ifdef __arm__ //If on the Raspberry Pi 
+    glewInit();
+  #endif
+  
   GLuint g_VertHandle = 0, g_FragHandle = 0;
 
 	glGenTextures(1,&vramTexture);

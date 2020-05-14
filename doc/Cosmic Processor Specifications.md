@@ -28,7 +28,7 @@
 
   ```
   7  bit  0
-  xxIP OCNZ
+  xEIP OCNZ
   |||| ||||
   |||| |||+-- (Z) Zero
   |||| ||+--- (N) Negative, high if result is negative
@@ -79,6 +79,42 @@ Current Memory Map (highly subject to change)
 0xFFFF	└───────────────────────┘
 ```
 
+### Keyboard input
+
+0xC400: 0xFF if new a new key has been pressed.
+
+0xC401: The specific key press.
+
+### Raspberry Pi Pins
+On the Raspberry Pi the 28 GPIO pins correlate to 28 bytes in memory. Cosmic uses the WiringPi method of numbering pins [You can check it here](pinout.xyz)
+
+0xC402: GPIO 0
+
+
+0xC403: GPIO 1
+
+0xC404: GPIO 2
+
+...
+
+0xC41C: GPIO 26
+
+0xC41D: GPIO 27
+
+0xC41E: GPIO 28
+
+The most signifigant bit in the GPIO Bytes signifies if the pin is an input or output. The remaining 7 bits set it on or off. If the 7 bits equal zero the pin is off, if it is greater than 0 it is on.
+```
+---------------------------------
+| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+---------------------------------
+  |   |   |   |   |   |   |   |
+  |   +---+---+---+---+---+---+----> Data
+  +--------------------------------> Write = 1, Read = 0
+```
+On all other platforms this memory is currently unused.
+
+### Interupts
 
 The row of 0xFFF0 is used for handling specific cases
 ```
@@ -92,11 +128,6 @@ The row of 0xFFF0 is used for handling specific cases
 ...   │
 0xFFFF┘
 ```
-
-
-
-
-
 
 ## Interrupt Handling
 
@@ -117,12 +148,12 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 | **0x30** | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)   | [MOV](#MOV)   | [MOV](#MOV)   | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [MOV](#MOV)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  | [SHL](#SHL)  |
 | **0x40** | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV)  | [MOVX](#MOV)  | [MOVX](#MOV)  | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [MOVX](#MOV) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) | [SHLX](#SHL) |
 | **0x50** | [AND](#AND)  | [AND](#AND)  | [AND](#AND)   | [AND](#AND)  | [OR](#OR)    | [OR](#OR)     | [OR](#OR)     | [OR](#OR)     | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [XOR](#XOR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  | [SHR](#SHR)  |
-| **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMP) | [CMPX](#CMP)  | [CMPX](#CMP)  | [CMPX](#CMP)  | [INC](#INC)  | [INCX](#INC) | [DEC](#DEC)  | [DECX](#DEC) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) |
+| **0x60** | [CMP](#CMP)  | [CMP](#CMP)  | [CMP](#CMP)   | [CMP](#CMP)  | [CMPX](#CMP) | [CMPX](#CMP)  | [CMPX](#CMP)  | [CMPX](#CMP)  |              |              |              |              | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) | [SHRX](#SHR) |
 | **0x70** | [JMP](#JMP)  | [JMP](#JMP)  | [JMP](#JMP)   | [JMP](#JMP)  | [JZS](#JZS)  | [JZS](#JZS)   | [JZS](#JZS)   | [JZS](#JZS)   | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JNZ](#JNZ)  | [JCS](#JCS)  | [JCS](#JCS)  | [JCS](#JCS)  | [JCS](#JCS)  |
 | **0x80** | [JNC](#JNC)  | [JNC](#JNC)  | [JNC](#JNC)   | [JNC](#JNC)  | [JOS](#JOS)  | [JOS](#JOS)   | [JOS](#JOS)   | [JOS](#JOS)   | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNO](#JNO)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  | [JNS](#JNS)  |
 | **0x90** | [JNN](#JNN)  | [JNN](#JNN)  | [JNN](#JNN)   | [JNN](#JNN)  | [JLS](#JLS)  | [JLS](#JLS)   | [JLS](#JLS)   | [JLS](#JLS)   | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JNL](#JLS)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  | [JES](#JES)  |
-| **0xA0** | [CSF](#CSF)  | [CZF](#CZF)  | [SZF](#SZF)   | [CNF](#CNF)  | [SNF](#SNF)  | [COF](#COF)   | [SOF](#SOF)   | [CCF](#CCF)   | [SCF](#SCF)  | [CLF](#CLF)  | [SLF](#SLF)  | [CIF](#CIF)  | [SIF](#SIF)  | [CEF](#CEF)  |              |              |
-| **0xB0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
+| **0xA0** | [CSF](#CSF)  | [CZF](#CZF)  | [SZF](#SZF)   | [CNF](#CNF)  | [SNF](#SNF)  | [CCF](#CCF)   | [SCF](#SCF)   | [COF](#COF)   | [SOF](#SOF)  | [CLF](#CLF)  | [SLF](#SLF)  | [CIF](#CIF)  | [SIF](#SIF)  | [CEF](#CEF)  |              |              |
+| **0xB0** | [INC](#INC)  | [INC](#INC)  | [INC](#INC)   | [INCX](#INC) | [INCX](#INC) | [INCX](#INC)  | [DEC](#DEC)   | [DEC](#DEC)   | [DEC](#DEC)  | [DECX](#DEC) | [DECX](#DEC) | [DECX](#DEC) |
 | **0xC0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xD0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
 | **0xE0** |              |              |               |              |              |               |               |               |              |              |              |              |              |              |              |              |
@@ -152,7 +183,134 @@ Low priority interrupts will be ignored if the Interrupt flag is enabled. High p
 
 **Register Ext:** A register pair is provided that contains the data.
 
+## Data Handling and Memory Operations
+
+
+
+<a name="NOP"></a>
+
+### NOP
+
+No Operation
+
+```
+Nothing Happened!   					x E I L  O C N Z
+							- - - -  - - - - 
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | NOP       | 0x00   | 1 ``opcode`` |
+
+
+
+<a name="HCF"></a>
+
+### HCF
+
+Halt and Catch Fire, Stops execution of the machine entirely 
+
+```
+rip.              		x E I L  O C N Z
+				- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | HCF       | 0x01   | 3 ``opcode`` |
+
+
+
+<a name="PUSH"></a>
+
+### PUSH
+
+Pushes value in accumulator to the stack
+
+```
+sp[++i] = A 					x E I L  O C N Z
+						- - - -  - - + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | PUSH      | 0x02   | 1 ``opcode`` |
+
+
+
+<a name="POP"></a>
+
+### POP
+
+Pops value from stack into the accumulator
+
+```
+sp[i--] = A    					x E I L  O C N Z
+						- - - -  - - + +
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | POP       | 0x03   | 1 ``opcode`` |
+
+
+
+<a name="SWP"></a>
+
+### SWP
+
+Swap registers
+
+```
+R1 <-> R2   	        				x E I P  O C N Z
+							- - - -  - - - -
+```
+
+| Addressing | Assembler  | Opcode | Bytes                  |
+| ---------- | ---------- | ------ | ---------------------- |
+| Register   | SWP R1, R2 | 0x04   | 3 ``opcode reg1 reg2`` |
+
+
+
+<a name="CALL"></a>
+
+### CALL
+
+Call subroutine at location. Pushes current location onto stack, jumps to new location
+
+```
+push pc; pc = oper		x E I L  O C N Z
+				- - - -  - - - -
+```
+
+| Addressing | Assembler  | Opcode | Bytes                                         |
+| ---------- | ---------- | ------ | --------------------------------------------- |
+| Immediate  | CALL #oper | 0x05   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Absolute   | CALL oper  | 0x06   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect   | CALL @oper | 0x07   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+
+
+
+<a name="RET"></a>
+
+### RET
+
+Returns from subroutine, pops old location off of stack, jumps back
+
+```
+pc = pop.          		x E I L  O C N Z
+				- - - -  - - - -
+```
+
+| Addressing | Assembler | Opcode | Bytes        |
+| ---------- | --------- | ------ | ------------ |
+| Implied    | RET       | 0x08   | 3 ``opcode`` |
+
+
+
 ## Arithmetic and Logic Operations
+
+
 
 <a name="ADD"></a>
 
@@ -167,7 +325,7 @@ A = A + Data										x E I L  O C N Z
 
 | Addressing      | Assembler  | Opcode | Bytes                                 |
 | --------------- | ---------- | ------ | ------------------------------------- |
-| Immediate       | ADD #oper  | 0x10   | 2 `` opcode value ``                  |
+| Immediate       | ADD #oper  | 0x10   | 2 ``opcode value``                  |
 | Absolute        | ADD oper   | 0x11   | 3 ``opcode locationHigh locationLow`` |
 | Indirect        | ADD @oper  | 0x12   | 3 ``opcode locationHigh locationLow`` |
 | Register        | ADD RX     | 0x13   | 2 ``opcode register``                 |
@@ -250,6 +408,48 @@ A = A / D,B = R.    					x E I L  O C N Z
 
 
 
+<a name="MOV"></a>
+
+### MOV
+
+Copies memory from one location to another
+
+```
+Loc = Data.          					x E I L  O C N Z
+							- - - -  - - - -
+```
+
+| Addressing                       | Assembler         | Opcode | Bytes                                      |
+| -------------------------------- | ----------------- | ------ | ------------------------------------------ |
+| Immediate -> **Absolute**        | MOV #oper oper   | 0x30   | 4 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Absolute**         | MOV oper oper    | 0x31   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Absolute**         | MOV @oper oper   | 0x32   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Absolute**         | MOV RX oper      | 0x33   | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Indirect**        | MOV #oper @oper  | 0x34   | 4 ``opcode value dstHigh dstLow``          |
+| Absolute -> **Indirect**         | MOV oper @oper   | 0x35   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Indirect -> **Indirect**         | MOV @oper @oper  | 0x36   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| Register -> **Indirect**         | MOV RX @oper     | 0x37   | 4 ``opcode reg dstHigh dstLow``            |
+| Immediate -> **Register**        | MOV #oper RX     | 0x38   | 3 ``opcode val reg``                       |
+| Absolute -> **Register**         | MOV oper RX      | 0x39   | 4 ``opcode locHigh locLow reg``            |
+| Indirect -> **Register**         | MOV @oper RX     | 0x3A   | 4 ``opcode locHigh locLow reg``            |
+| Register -> **Register**         | MOV RX RX        | 0x3B   | 3 ``opcode reg reg``                       |
+| 16-bit Immediate -> **Absolute** | MOVX #oper oper  | 0x40   | 5 ``opcode valHigh valLow locHigh locLow`` |
+| 16-bit Absolute -> **Absolute**  | MOVX oper oper   | 0x41   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Indirect -> **Absolute**  | MOVX @oper oper  | 0x42   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Register -> **Absolute**  | MOVX RX oper     | 0x43   | 4 ``opcode reg dstHigh dstLow``            |
+| 16-bit Immediate -> **Indirect** | MOVX #oper @oper | 0x44   | 5 ``opcode valHigh valLow dstHigh dstLow`` |
+| 16-bit Absolute -> **Indirect**  | MOVX oper @oper  | 0x45   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Indirect -> **Indirect**  | MOVX @oper @oper | 0x46   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
+| 16-bit Register -> **Indirect**  | MOVX RX @oper    | 0x47   | 4 ``opcode reg srcHigh srcLow``            |
+| 16-bit Immediate -> **Register** | MOVX #oper RX    | 0x48   | 4 ``opcode valHigh valLow reg``            |
+| 16-bit Absolute -> **Register**  | MOVX oper RX     | 0x49   | 4 ``opcode srcHigh srcLow reg``            |
+| 16-bit Indirect -> **Register**  | MOVX @oper RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
+| 16-bit Register -> **Register**  | MOVX RX RX       | 0x4B   | 3 ``opcode reg reg``                       |
+
+_Note: This is where the principals of RISC start to break down in favor of a more fleshed out instruction set_. In a true RISC instruction set each target addressing mode would be it's own instruction, but that's annoying. 
+
+
+
 <a name="SHL"></a>
 
 ### SHL
@@ -271,67 +471,6 @@ A = A << Data        					  x E I L  O C N Z
 | 16-bit Absolute  | SHLX oper  | 0x4D   | 3 ``opcode locationHigh locationLow`` |
 | 16-bit Indirect  | SHLX @oper | 0x4E   | 3 ``opcode locationHigh locationLow`` |
 | 16-bit Register  | SHLX RX    | 0x4F   | 2 ``opcode register``                 |
-
-
-
-
-<a name="SHR"></a>
-
-### SHR
-
-Shift the accumulator right.
-
-```
-A = A >> Data        					  x E I L  O C N Z
-						          - - - -  - - - +
-```
-
-| Addressing       | Assembler  | Opcode | Bytes                                 |
-| ---------------- | ---------- | ------ | ------------------------------------- |
-| Immediate        | SHR #oper  | 0x5C   | 2 ``opcode value``                    |
-| Absolute         | SHR oper   | 0x5D   | 3 ``opcode locationHigh locationLow`` |
-| Indirect         | SHR @oper  | 0x5E   | 3 ``opcode locationHigh locationLow`` |
-| Register         | SHR RX     | 0x5F   | 2 ``opcode register``                 |
-| 16-bit Immediate | SHRX #oper | 0x6C   | 3 ``opcode valueHigh valueLow``       |
-| 16-bit Absolute  | SHRX oper  | 0x6D   | 3 ``opcode locationHigh locationLow`` |
-| 16-bit Indirect  | SHRX @oper | 0x6E   | 3 ``opcode locationHigh locationLow`` |
-| 16-bit Register  | SHRX RX    | 0x6F   | 2 ``opcode register``                 |
-
-
-
-<a name="INC"></a>
-
-### INC
-
-Increment the Accumulator **Do we need Increment/Decrement?**
-
-```
-x++          					x E I L  O C N Z
-						- - - -  + + + +
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | INC       | 0x68   | 1 ``opcode`` |
-| Implied    | INCX      | 0x69   | 1 ``opcode`` |
-
-
-
-<a name="DEC"></a>
-
-### DEC
-
-Decrement the Accumulator **Do we need Increment/Decrement?**
-
-```
-x--          					x E I L  O C N Z
-						- - - -  + + + +
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | DEC       | 0x6A   | 1 ``opcode`` |
-| Implied    | DECX      | 0x6B   | 1 ``opcode`` |
 
 
 
@@ -395,6 +534,30 @@ data ^ A = A 					x E I L  O C N Z
 
 
 
+<a name="SHR"></a>
+
+### SHR
+
+Shift the accumulator right.
+
+```
+A = A >> Data        					  x E I L  O C N Z
+						          - - - -  - - - +
+```
+
+| Addressing       | Assembler  | Opcode | Bytes                                 |
+| ---------------- | ---------- | ------ | ------------------------------------- |
+| Immediate        | SHR #oper  | 0x5C   | 2 ``opcode value``                    |
+| Absolute         | SHR oper   | 0x5D   | 3 ``opcode locationHigh locationLow`` |
+| Indirect         | SHR @oper  | 0x5E   | 3 ``opcode locationHigh locationLow`` |
+| Register         | SHR RX     | 0x5F   | 2 ``opcode register``                 |
+| 16-bit Immediate | SHRX #oper | 0x6C   | 3 ``opcode valueHigh valueLow``       |
+| 16-bit Absolute  | SHRX oper  | 0x6D   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Indirect  | SHRX @oper | 0x6E   | 3 ``opcode locationHigh locationLow`` |
+| 16-bit Register  | SHRX RX    | 0x6F   | 2 ``opcode register``                 |
+
+
+
 <a name="CMP"></a>
 
 ### CMP
@@ -425,6 +588,8 @@ Compare memory with the Accumulator
 
 
 ## Control Flow Operations
+
+
 
 <a name="JMP"></a>
 
@@ -544,6 +709,8 @@ if over; pc = data		x E I L  O C N Z
 | Indirect   | JOS @oper | 0x86   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JOS RX    | 0x87   | 2 ``opcode register``                         |
 
+
+
 <a name="JNO"></a>
 
 ### JNO
@@ -582,6 +749,8 @@ if negative; pc=data  x E I L  O C N Z
 | Indirect   | JNS @oper | 0x8E   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JNS RX    | 0x8F   | 2 ``opcode register``                         |
 
+
+
 <a name="JNN"></a>
 
 ### JNN
@@ -599,6 +768,8 @@ if !negative; pc=data  x E I L  O C N Z
 | Absolute   | JNN oper  | 0x91   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNN @oper | 0x92   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JNN RX    | 0x93   | 2 ``opcode register``                         |
+
+
 
 <a name="JLS"></a>
 
@@ -618,6 +789,8 @@ if less; pc=data      x E I L  O C N Z
 | Indirect   | JLS @oper | 0x96   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JLS RX    | 0x97   | 2 ``opcode register``                         |
 
+
+
 <a name="JNL"></a>
 
 ### JNL
@@ -635,6 +808,8 @@ if !less; pc=data      x E I L  O C N Z
 | Absolute   | JNL oper  | 0x99   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Indirect   | JNL @oper | 0x9A   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JNL RX    | 0x9B   | 2 ``opcode register``                         |
+
+
 
 <a name="JES"></a>
 
@@ -654,7 +829,9 @@ if error; pc=data      x E I L  O C N Z
 | Indirect   | JES @oper | 0x9E   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 | Register   | JES RX    | 0x9F   | 2 ``opcode register``
 
-<a name="CLS"></a>
+
+
+<a name="CSF"></a>
 
 ### CSF
 
@@ -667,11 +844,11 @@ Clears all status flags
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | CLS       | 0xA0   | 1 ``opcode`` |
+| Implied    | CSF       | 0xA0   | 1 ``opcode`` |
 
 
 
-<a name="CLZ"></a>
+<a name="CZF"></a>
 
 ### CZF
 
@@ -684,9 +861,11 @@ Clears zero flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | CLZ       | 0xA1   | 1 ``opcode`` |
+| Implied    | CZF       | 0xA1   | 1 ``opcode`` |
 
-<a name="STZ"></a>
+
+
+<a name="SZF"></a>
 
 ### SZF
 
@@ -699,9 +878,11 @@ Sets zero flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | STZ       | 0xA2   | 1 ``opcode`` |
+| Implied    | SZF       | 0xA2   | 1 ``opcode`` |
 
-<a name="CLN"></a>
+
+
+<a name="CNF"></a>
 
 ### CNF
 
@@ -714,9 +895,11 @@ Clears negative flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | CLN       | 0xA3   | 1 ``opcode`` |
+| Implied    | CNF       | 0xA3   | 1 ``opcode`` |
 
-<a name="STN"></a>
+
+
+<a name="SNF"></a>
 
 ### SNF
 
@@ -729,9 +912,11 @@ Sets negative flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | STZ       | 0xA4   | 1 ``opcode`` |
+| Implied    | SNF       | 0xA4   | 1 ``opcode`` |
 
-<a name="CLC"></a>
+
+
+<a name="CCF"></a>
 
 ### CCF
 
@@ -744,9 +929,11 @@ Clears carry flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | CLC       | 0xA5   | 1 ``opcode`` |
+| Implied    | CCF       | 0xA5   | 1 ``opcode`` |
 
-<a name="STC"></a>
+
+
+<a name="SCF"></a>
 
 ### SCF
 
@@ -759,7 +946,9 @@ Sets carry flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | STC       | 0xA6   | 1 ``opcode`` |
+| Implied    | SCF       | 0xA6   | 1 ``opcode`` |
+
+
 
 <a name="COF"></a>
 
@@ -776,6 +965,8 @@ Clears Overflow flag
 | ---------- | --------- | ------ | ------------ |
 | Implied    | COF       | 0xA7   | 1 ``opcode`` |
 
+
+
 <a name="SOF"></a>
 
 ### SOF
@@ -791,7 +982,9 @@ Sets Overflow flag
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SOF       | 0xA8   | 1 ``opcode`` |
 
-<a name="COF"></a>
+
+
+<a name="CLF"></a>
 
 ### CLF
 
@@ -806,7 +999,9 @@ Clears Less flag
 | ---------- | --------- | ------ | ------------ |
 | Implied    | CLF       | 0xA9   | 1 ``opcode`` |
 
-<a name="SOF"></a>
+
+
+<a name="SLF"></a>
 
 ### SLF
 
@@ -819,11 +1014,11 @@ Sets Less flag
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
-| Implied    | CLF       | 0xAA   | 1 ``opcode`` |
+| Implied    | SLF       | 0xAA   | 1 ``opcode`` |
 
 
 
-<a name="SIF"></a>
+<a name="CIF"></a>
 
 ### CIF
 
@@ -838,6 +1033,8 @@ interrupt = false 		x E I L  O C N Z
 | ---------- | --------- | ------ | ------------ |
 | Implied    | CIF       | 0xAB   | 1 ``opcode`` |
 
+
+
 <a name="SIF"></a>
 
 ### SIF
@@ -845,13 +1042,15 @@ interrupt = false 		x E I L  O C N Z
 Set interrupt disable.
 
 ```
-interrupt = false 		x E I L  O C N Z
+interrupt = true 		 x E I L  O C N Z
 				- - + -  - - - -
 ```
 
 | Addressing | Assembler | Opcode | Bytes        |
 | ---------- | --------- | ------ | ------------ |
 | Implied    | SIF       | 0xAC   | 1 ``opcode`` |
+
+
 
 <a name="CEF"></a>
 
@@ -868,168 +1067,48 @@ error = false     		x E I L  O C N Z
 | ---------- | --------- | ------ | ------------ |
 | Implied    | CEF       | 0xAD   | 1 ``opcode`` |
 
-<a name="CALL"></a>
-
-### CALL
-
-Call subroutine at location. Pushes current location onto stack, jumps to new location
-
-```
-push pc; pc = oper		x E I L  O C N Z
-				- - - -  - - - -
-```
-
-| Addressing | Assembler  | Opcode | Bytes                                         |
-| ---------- | ---------- | ------ | --------------------------------------------- |
-| Immediate  | CALL #oper | 0x05   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Absolute   | CALL oper  | 0x06   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
-| Indirect   | CALL @oper | 0x07   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
 
 
+<a name="INC"></a>
 
-<a name="RET"></a>
+### INC
 
-### RET
-
-Returns from subroutine, pops old location off of stack, jumps back
+Increment the data at the specified location
 
 ```
-pc = pop.          		x E I L  O C N Z
-				- - - -  - - - -
+data++               x E I P  O C N Z
+                     - - - -  + + + +
 ```
 
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | RET       | 0x08   | 3 ``opcode`` |
+| Addressing        | Assembler  | Opcode | Bytes                                         |
+| ----------------- | ---------- | ------ | --------------------------------------------- |
+| Absolute          | INC oper   | 0xB0   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect          | INC @oper  | 0xB1   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register          | INC RX     | 0xB2   | 2 ``opcode register``                         |
+| 16-bit Absolute   | INCX oper  | 0xB3   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Indirect   | INCX @oper | 0xB4   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Register   | INCX RX    | 0xB5   | 2 ``opcode register``                         |
 
 
+<a name="DEC"></a>
 
-<a name="HCF"></a>
+### DEC
 
-### HCF
-
-Halt and Catch Fire, Stops execution of the machine entirely 
-
-```
-rip.              		x E I L  O C N Z
-				- - - -  - - - -
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | HCF       | 0x01   | 3 ``opcode`` |
-
-
-
-## Data Handling and Memory Operations
-
-<a name="MOV"></a>
-
-### MOV
-
-Copies memory from one location to another
+Decrement the data at the specified location
 
 ```
-Loc = Data.          					x E I L  O C N Z
-							- - - -  - - - -
+data--               x E I P  O C N Z
+                     - - - -  + + + +
 ```
 
-| Addressing                       | Assembler         | Opcode | Bytes                                      |
-| -------------------------------- | ----------------- | ------ | ------------------------------------------ |
-| Immediate -> **Absolute**        | MOV #oper oper   | 0x30   | 4 ``opcode value dstHigh dstLow``          |
-| Absolute -> **Absolute**         | MOV oper oper    | 0x31   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Indirect -> **Absolute**         | MOV @oper oper   | 0x32   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Register -> **Absolute**         | MOV RX oper      | 0x33   | 4 ``opcode reg dstHigh dstLow``            |
-| Immediate -> **Indirect**        | MOV #oper @oper  | 0x34   | 4 ``opcode value dstHigh dstLow``          |
-| Absolute -> **Indirect**         | MOV oper @oper   | 0x35   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Indirect -> **Indirect**         | MOV @oper @oper  | 0x36   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| Register -> **Indirect**         | MOV RX @oper     | 0x37   | 4 ``opcode reg dstHigh dstLow``            |
-| Immediate -> **Register**        | MOV #oper RX     | 0x38   | 3 ``opcode val reg``                       |
-| Absolute -> **Register**         | MOV oper RX      | 0x39   | 4 ``opcode locHigh locLow reg``            |
-| Indirect -> **Register**         | MOV @oper RX     | 0x3A   | 4 ``opcode locHigh locLow reg``            |
-| Register -> **Register**         | MOV RX RX        | 0x3B   | 3 ``opcode reg reg``                       |
-| 16-bit Immediate -> **Absolute** | MOVX #oper oper  | 0x40   | 5 ``opcode valHigh valLow locHigh locLow`` |
-| 16-bit Absolute -> **Absolute**  | MOVX oper oper   | 0x41   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16-bit Indirect -> **Absolute**  | MOVX @oper oper  | 0x42   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16-bit Register -> **Absolute**  | MOVX RX oper     | 0x43   | 4 ``opcode reg dstHigh dstLow``            |
-| 16-bit Immediate -> **Indirect** | MOVX #oper @oper | 0x44   | 5 ``opcode valHigh valLow dstHigh dstLow`` |
-| 16-bit Absolute -> **Indirect**  | MOVX oper @oper  | 0x45   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16-bit Indirect -> **Indirect**  | MOVX @oper @oper | 0x46   | 5 ``opcode srcHigh srcLow dstHigh dstLow`` |
-| 16-bit Register -> **Indirect**  | MOVX RX @oper    | 0x47   | 4 ``opcode reg srcHigh srcLow``            |
-| 16-bit Immediate -> **Register** | MOVX #oper RX    | 0x48   | 4 ``opcode valHigh valLow reg``            |
-| 16-bit Absolute -> **Register**  | MOVX oper RX     | 0x49   | 4 ``opcode srcHigh srcLow reg``            |
-| 16-bit Indirect -> **Register**  | MOVX @oper RX    | 0x4A   | 4 ``opcode srcHigh srcLow reg``            |
-| 16-bit Register -> **Register**  | MOVX RX RX       | 0x4B   | 3 ``opcode reg reg``                       |
-
-_Note: This is where the principals of RISC start to break down in favor of a more fleshed out instruction set_. In a true RISC instruction set each target addressing mode would be it's own instruction, but that's annoying. 
-
-
-
-<a name="SWP"></a>
-
-### SWP
-
-Swap registers
-
-```
-R1 <-> R2   	        				x E I P  O C N Z
-							- - - -  - - - -
-```
-
-| Addressing | Assembler  | Opcode | Bytes                  |
-| ---------- | ---------- | ------ | ---------------------- |
-| Register   | SWP R1, R2 | 0x04   | 3 ``opcode reg1 reg2`` |
-
-
-
-<a name="PUSH"></a>
-
-### PUSH
-
-Pushes value in accumulator to the stack
-
-```
-sp[++i] = A 					x E I L  O C N Z
-						- - - -  - - + +
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | PUSH      | 0x02   | 1 ``opcode`` |
-
-
-
-<a name="POP"></a>
-
-### POP
-
-Pops value from stack into the accumulator
-
-```
-sp[i--] = A    					x E I L  O C N Z
-						- - - -  - - + +
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | POP       | 0x03   | 1 ``opcode`` |
-
-
-
-<a name="NOP"></a>
-
-### NOP
-
-No Operation
-
-```
-Nothing Happened!   					x E I L  O C N Z
-							- - - -  - - - - 
-```
-
-| Addressing | Assembler | Opcode | Bytes        |
-| ---------- | --------- | ------ | ------------ |
-| Implied    | NOP       | 0x00   | 1 ``opcode`` |
+| Addressing        | Assembler  | Opcode | Bytes                                         |
+| ----------------- | ---------- | ------ | --------------------------------------------- |
+| Absolute          | DEC oper   | 0xB6   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Indirect          | DEC @oper  | 0xB7   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| Register          | DEC RX     | 0xB8   | 2 ``opcode register``                         |
+| 16-bit Absolute   | DECX oper  | 0xB9   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Indirect   | DECX @oper | 0xBA   | 3 ``opcode`` ``locationHigh`` ``locationLow`` |
+| 16-bit Register   | DECX RX    | 0xBB   | 2 ``opcode register``                         |
 
 
 
@@ -1038,8 +1117,3 @@ Nothing Happened!   					x E I L  O C N Z
 -----
 
 https://en.wikipedia.org/wiki/Instruction_set_architecture
-
-
-
-
-

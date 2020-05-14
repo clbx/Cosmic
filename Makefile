@@ -1,7 +1,10 @@
 EXE = cosmic
-SOURCES = envmain.cpp cosproc.cpp pgu.cpp
-SOURCES += lib/imgui/imgui_impl_sdl.cpp lib/imgui/imgui_impl_opengl3.cpp
+SOURCES = main.cpp cosproc.cpp pgu.cpp runGUI.cpp runCLI.cpp 
+SOURCES += lib/gl3w/GL/glew.c
+SOURCES += lib/misc/imgui_impl_sdl.cpp lib/misc/imgui_impl_opengl3.cpp lib/misc/imgui_impl_opengl2.cpp
 SOURCES += lib/imgui/imgui.cpp lib/imgui/imgui_demo.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_widgets.cpp
+SOURCES += lib/misc/imguifilesystem.cpp
+#SOURCES += lib/imtui/imtui-impl-text.cpp lib/timtui/imtui-impl-ncurses.h
 
 VPATH = src:bin
 
@@ -10,20 +13,23 @@ BINS = $(addprefix bin/, $(OBJS))
 UNAME_S := $(shell uname -s)
 ARCH := $(shell gcc -dumpmachine)
 
-CXXFLAGS = -Ilib/imgui
-CXXFLAGS += -g -Wformat -Wno-unknown-pragmas
+CXXFLAGS = -Ilib/imgui -Ilib/misc -Ilib/imtui
+CXXFLAGS += -g -Wformat -Wno-unknown-pragmas #-lncurses -fno-omit-frame-pointer -fsanitize=thread
 LIBS =
 
 
 ## Using OpenGL loader: gl3w [default]
-SOURCES += lib/gl3w/GL/gl3w.c
+# SOURCES += lib/gl3w/GL/gl3w.c
 CXXFLAGS += -Ilib/gl3w
+ifeq ($(PLAT), Pi)
+	CXXFLAGS += -lwiringPi
+endif
 
 ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl `sdl2-config --libs`
 
-	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
+	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall -std=c++11
 	CFLAGS = $(CXXFLAGS)
 endif
 
@@ -36,7 +42,6 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	CXXFLAGS += -I/usr/local/include -I/opt/local/include
 	CFLAGS = $(CXXFLAGS)
 endif
-
 
 ifeq ($(ARCH),x86_64-w64-mingw32)
 	ECHO_MESSAGE = "MinGW"
@@ -58,10 +63,17 @@ endif
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
 
+%.o:lib/misc/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
+%.o:lib/imtui/%.cpp
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -c -o bin/$@ $<
+
 %.o:lib/gl3w/GL/%.c
 	mkdir -p bin
 	$(CC) $(CFLAGS) -c -o bin/$@ $<
-
 
 all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
@@ -71,5 +83,5 @@ $(EXE): $(OBJS)
 	rm -f imgui.ini
 
 clean:
-	@echo $(ECHO_MESSAGE)
-	rm -f $(EXE) $(OBJS)
+	rm -rf bin 
+	rm cosmic

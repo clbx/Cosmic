@@ -1,7 +1,14 @@
 #ifndef _PGU_HPP_
 #define _PGU_HPP_
+/*
+#ifdef __arm__ //If on the Raspberry Pi 
+    #include <GL/glew.h>
+#else
+  #include <GL/gl3w.h>
+#endif
+*/
 
-#include <GL/gl3w.h>
+#include <GL/glew.h>
 
 class PGU
 {
