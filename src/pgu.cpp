@@ -43,7 +43,6 @@ const GLchar* pixel_shader =
     "    else return vec4(0.0,float(readRAM(ivec2(pos)).x)/255.,0.0,1.0);\n"
     "}\n";
 
-
 void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 {
 	glGenTextures(1,&vramTexture);

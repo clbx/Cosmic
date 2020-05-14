@@ -1,0 +1,123 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fphw Assignment
+% LaTeX Template
+% Version 1.0 (27/04/2019)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Authors:
+% Class by Felipe Portales-Oliva (f.portales.oliva@gmail.com) with template 
+% content and modifications by Vel (vel@LaTeXTemplates.com)
+%
+% Template (this file) License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+	12pt, % Default font size, values between 10pt-12pt are allowed
+	%letterpaper, % Uncomment for US letter paper size
+	%spanish, % Uncomment for Spanish
+]{fphw}
+
+% Template-specific packages
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{mathpazo} % Use the Palatino font
+
+\usepackage{graphicx} % Required for including images
+
+\usepackage{booktabs} % Required for better horizontal rules in tables
+
+\usepackage{listings} % Required for insertion of code
+
+\usepackage{enumerate} % To modify the enumerate environment
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Assembly Lab \#2: Basic Graphics} % Assignment title
+
+
+\date{March 28th, 2025} % Due date
+
+\institute{Elizabethtown College \\ Department of Computer Science} % Institute or school name
+
+\class{Digital Design II} % Course or class name
+
+\professor{Professor X} % Professor or teacher in charge of the assignment
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Output the assignment title, created automatically using the information in the custom commands above
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT CONTENT
+%----------------------------------------------------------------------------------------
+
+\section*{Lab Objective}
+
+\begin{problem}
+	Create a line of decreasing brightness on the screen.  
+\end{problem}
+
+%------------------------------------------------
+
+\subsection*{Prelab}
+
+\begin{itemize}
+  \item Read the documentation on Video Memory.
+  \item Become familiar with the following opcodes: MOV, ADD, INC(X), JMP, CMP.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\section*{During Lab}
+
+\begin{problem}
+	You will write a simple program that will draw a line on the screen with each pixel being slightly dimmer than the last.
+\end{problem}
+
+%------------------------------------------------
+
+\begin{itemize}
+  \item Create variables to hold your screen position and brightness.
+  \item Write a loop to go through positions on the screen.
+  \item Decrement the brightness value.
+  \item Continue for the length of the screen.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\section*{Grading}
+
+40\% - Program assembles\\
+40\% - Program draws line\\
+10\% - Comments added\\
+10\% - Loop runs in less than 15 cycles\\
+
+
+%------------------------------------------------
+
+\section*{Helpful Links}
+\href{https://github.com/clbx/Cosmic/tree/master/doc}{Cosmic Documentation}\\
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

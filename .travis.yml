@@ -4,19 +4,45 @@ language: cpp
 matrix:
   include:
     - os: linux
+      arch: arm64
       sudo: required
       before_install:
         - sudo apt update
-        - sudo apt install libsdl2-dev
+        - sudo apt -y install libsdl2-dev libncurses-dev
+    - os: linux
+      arch: amd64
+      sudo: required
+      before_install:
+        - sudo apt update
+        - sudo apt -y install libsdl2-dev libncurses-dev
+    - os: windows
+      arch: amd64
+      before_install:
+        - wget https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
+        - tar -xf SDL2-devel-2.0.10-mingw.tar.gz
+        - cd SDL2-2.0.10
+        - cp -r x86_64-w64-mingw32 /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
+        - cd ..
+        - choco install make -version 4.3
     - os: osx
       before_install:
         - brew update
         - brew install sdl2
-     
-
+    
 script:
 - cd test
 - make
 - ./test
 - cd ..
 - make
+
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_OATH
+  file: "cosmic.exe"
+  skip_cleanup: true
+  draft: true
+  on:
+    branch: travis
+    tags: true

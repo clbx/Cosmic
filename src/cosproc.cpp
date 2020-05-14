@@ -79,7 +79,7 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x38] = (Instruction){&cosproc::IMM,&cosproc::MOVRI,"MOV #oper, RX",3};
 	InstructionSet[0x39] = (Instruction){&cosproc::ABS,&cosproc::MOVR,"MOV oper, RX",4};
 	InstructionSet[0x3A] = (Instruction){&cosproc::IND,&cosproc::MOVR,"MOV @oper, RX",4};
-	InstructionSet[0x3B] = (Instruction){&cosproc::IMM,&cosproc::MOVRR,"MOV RX, RX",3};
+	InstructionSet[0x3B] = (Instruction){&cosproc::REG,&cosproc::MOVRR,"MOV RX, RX",3};
 
 	InstructionSet[0x3C] = (Instruction){&cosproc::IMM,&cosproc::SHL,"SHL #oper",2};
 	InstructionSet[0x3D] = (Instruction){&cosproc::ABS,&cosproc::SHL,"SHL oper",3};
@@ -132,11 +132,6 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x65] = (Instruction){&cosproc::ABS,&cosproc::CMPX,"CMPX oper",3};
 	InstructionSet[0x66] = (Instruction){&cosproc::IND,&cosproc::CMPX,"CMPX @oper",3};
 	InstructionSet[0x67] = (Instruction){&cosproc::REG,&cosproc::CMPXR,"CMPX RX",2};
-
-	InstructionSet[0x68] = (Instruction){&cosproc::IMP,&cosproc::INC,"INC",1};
-	InstructionSet[0x69] = (Instruction){&cosproc::IMP,&cosproc::INCX,"INCX",1};
-	InstructionSet[0x6A] = (Instruction){&cosproc::IMP,&cosproc::DEC,"DEC",1};
-	InstructionSet[0x6B] = (Instruction){&cosproc::IMP,&cosproc::DECX,"DECX",1};
 
 	InstructionSet[0x6C] = (Instruction){&cosproc::IMM,&cosproc::SHRX,"SHRX #oper",3};
 	InstructionSet[0x6D] = (Instruction){&cosproc::ABS,&cosproc::SHRX,"SHRX oper",3};
@@ -199,19 +194,39 @@ cosproc::cosproc(BusRead r, BusWrite w)
 	InstructionSet[0x9A] = (Instruction){&cosproc::IND,&cosproc::JNL,"JNL @oper",0};
 	InstructionSet[0x9B] = (Instruction){&cosproc::REG,&cosproc::JNLR,"JNL RX",0};
 
+	InstructionSet[0x9C] = (Instruction){&cosproc::IMM,&cosproc::JES,"JES #oper",0};
+	InstructionSet[0x9D] = (Instruction){&cosproc::ABS,&cosproc::JES,"JES oper",0};
+	InstructionSet[0x9E] = (Instruction){&cosproc::IND,&cosproc::JES,"JES @oper",0};
+	InstructionSet[0x9F] = (Instruction){&cosproc::REG,&cosproc::JESR,"JES RX",0};
+
 	InstructionSet[0xA0] = (Instruction){&cosproc::IMP,&cosproc::CSF,"CSF",1};
 	InstructionSet[0xA1] = (Instruction){&cosproc::IMP,&cosproc::CZF,"CZF",1};
 	InstructionSet[0xA2] = (Instruction){&cosproc::IMP,&cosproc::SZF,"SZF",1};
 	InstructionSet[0xA3] = (Instruction){&cosproc::IMP,&cosproc::CNF,"CNF",1};
 	InstructionSet[0xA4] = (Instruction){&cosproc::IMP,&cosproc::SNF,"SNF",1};
-	InstructionSet[0xA5] = (Instruction){&cosproc::IMP,&cosproc::COF,"COF",1};
-	InstructionSet[0xA6] = (Instruction){&cosproc::IMP,&cosproc::SOF,"SOF",1};
-	InstructionSet[0xA7] = (Instruction){&cosproc::IMP,&cosproc::CCF,"CCF",1};
-	InstructionSet[0xA8] = (Instruction){&cosproc::IMP,&cosproc::SCF,"SCF",1};
+	InstructionSet[0xA5] = (Instruction){&cosproc::IMP,&cosproc::CCF,"CCF",1};
+	InstructionSet[0xA6] = (Instruction){&cosproc::IMP,&cosproc::SCF,"SCF",1};
+	InstructionSet[0xA7] = (Instruction){&cosproc::IMP,&cosproc::COF,"COF",1};
+	InstructionSet[0xA8] = (Instruction){&cosproc::IMP,&cosproc::SOF,"SOF",1};
 	InstructionSet[0xA9] = (Instruction){&cosproc::IMP,&cosproc::CLF,"CLF",1};
 	InstructionSet[0xAA] = (Instruction){&cosproc::IMP,&cosproc::SLF,"SLF",1};
 	InstructionSet[0xAB] = (Instruction){&cosproc::IMP,&cosproc::CIF,"CIF",1};
 	InstructionSet[0xAC] = (Instruction){&cosproc::IMP,&cosproc::SIF,"SIF",1};
+	InstructionSet[0xAD] = (Instruction){&cosproc::IMP,&cosproc::CEF,"CEF",1};
+
+	InstructionSet[0xB0] = (Instruction){&cosproc::ABS,&cosproc::INC,"INC oper",3};
+	InstructionSet[0xB1] = (Instruction){&cosproc::IND,&cosproc::INC,"INC @oper",3};
+	InstructionSet[0xB2] = (Instruction){&cosproc::REG,&cosproc::INCR,"INC RX",2};
+	InstructionSet[0xB3] = (Instruction){&cosproc::ABS,&cosproc::INCX,"INCX oper",3};
+	InstructionSet[0xB4] = (Instruction){&cosproc::IND,&cosproc::INCX,"INCX @oper",3};
+	InstructionSet[0xB5] = (Instruction){&cosproc::REG,&cosproc::INCXR,"INCX RX",2};
+
+	InstructionSet[0xB6] = (Instruction){&cosproc::ABS,&cosproc::DEC,"DEC oper",3};
+	InstructionSet[0xB7] = (Instruction){&cosproc::IND,&cosproc::DEC,"DEC @oper",3};
+	InstructionSet[0xB8] = (Instruction){&cosproc::REG,&cosproc::DECR,"DEC RX",2};
+	InstructionSet[0xB9] = (Instruction){&cosproc::ABS,&cosproc::DECX,"DECX oper",3};
+	InstructionSet[0xBA] = (Instruction){&cosproc::IND,&cosproc::DECX,"DECX @oper",3};
+	InstructionSet[0xBB] = (Instruction){&cosproc::REG,&cosproc::DECXR,"DECX RX",2};
 
 	reset();
 }
@@ -363,6 +378,7 @@ void cosproc::ADDX(uint16_t src){
 	uint8_t dataHigh = Read(src);
 	uint8_t dataLow = Read(src+1);
 	uint16_t data = ((dataHigh << 8) | dataLow);
+	uint16_t regs = r[0] << 8 | r[1];
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) + data;
 
@@ -371,7 +387,7 @@ void cosproc::ADDX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -383,6 +399,7 @@ void cosproc::ADDX(uint16_t src){
 
 /* 0x17 ADDXR */
 void cosproc::ADDXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -398,7 +415,7 @@ void cosproc::ADDXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -450,8 +467,8 @@ void cosproc::SUBR(uint16_t src){
 void cosproc::SUBX(uint16_t src){
 	uint8_t dataHigh = Read(src++);
 	uint8_t dataLow = Read(src);
-
 	uint16_t data = ((dataHigh << 8) | dataLow);
+	uint16_t regs = r[0] << 8 | r[1];
 
 	unsigned int temp =  ((r[0] << 8) | r[1] ) - data;
 
@@ -460,7 +477,7 @@ void cosproc::SUBX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -472,6 +489,7 @@ void cosproc::SUBX(uint16_t src){
 
 /* 0x1F SUBXR  */
 void cosproc::SUBXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -487,7 +505,7 @@ void cosproc::SUBXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -538,6 +556,7 @@ void cosproc::MULR(uint16_t src){
 /* 0x24-0x26 MULX from 16-bit Imm/Abs/Ind */
 void cosproc::MULX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) * data;
 
 	//Set Negative
@@ -545,7 +564,7 @@ void cosproc::MULX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -557,6 +576,7 @@ void cosproc::MULX(uint16_t src){
 
 /* 0x27 MULX from 16-bit register */
 void cosproc::MULXR(uint16_t src){
+	uint16_t regs = r[0] << 8 | r[1];
 	uint16_t data;
 
 	if(src % 2 == 0){
@@ -571,7 +591,7 @@ void cosproc::MULXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -584,6 +604,10 @@ void cosproc::MULXR(uint16_t src){
 /* 0x28-0x2A DIV from Imm/Abs/Ind */
 void cosproc::DIV(uint16_t src){
 	uint8_t data = Read(src);
+	if(!data){
+		st[6] = 1;
+		return;
+	}
 	unsigned int temp = r[0] / data;
 
 	//Set Negative
@@ -603,6 +627,10 @@ void cosproc::DIV(uint16_t src){
 /* 0x2B DIV from register */
 void cosproc::DIVR(uint16_t src){
 	uint8_t data = r[src];
+	if(!data){
+		st[6] = 1;
+		return;
+	}
 	unsigned int temp = r[0] / data;
 
 	//Set Negative
@@ -622,6 +650,11 @@ void cosproc::DIVR(uint16_t src){
 /* 0x2C-0x2E DIVX from 16-bit Imm/Abs/Ind */
 void cosproc::DIVX(uint16_t src){
 	uint16_t data = ((Read(src) << 8) | Read(src+1));
+	if(!data){
+		st[6] = 1;
+		return;
+	}
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
 	//Set Negative
@@ -629,7 +662,7 @@ void cosproc::DIVX(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -642,12 +675,17 @@ void cosproc::DIVX(uint16_t src){
 /* 0x2F DIVX from 16-bit register */
 void cosproc::DIVXR(uint16_t src){
 	uint16_t data;
-
 	if(src % 2 == 0){
 		data = ((r[src] << 8) | r[src+1]);
 	}else{
 		data = ((r[src-1] << 8) | r[src]);
 	}
+	if(!data){
+		st[6] = 1;
+		return;
+	}
+
+	uint16_t regs = r[0] << 8 | r[1];
 	unsigned int temp =  ((r[0] << 8) | r[1] ) / data;
 
 	//Set Negative
@@ -655,7 +693,7 @@ void cosproc::DIVXR(uint16_t src){
 	//Set Carry
 	st[2] = temp > 0xFFFF;
 	//Set Overflow
-	st[3] = ((r[0]^temp)&(data^temp)&0x8000) != 0;
+	st[3] = ((regs^temp)&(data^temp)&0x8000) != 0;
 
 	//Set Value
 	r[0] = (temp & 0xFF00) >> 8;
@@ -716,7 +754,7 @@ void cosproc:: MOVR(uint16_t src){
 
 /* 0x3B MOV to Register from Register */
 void cosproc::MOVRR(uint16_t src){
-	r[Read(src+1)] = r[Read(src)];
+	r[Read(pc+2)] = r[src];
 }
 
 /* 0x3C-0x3E SHL Shift the Accumulator left from Imm/Abs/Ind */
@@ -1048,80 +1086,6 @@ void cosproc::CMPXR(uint16_t src){
 	}
 }
 
-/* 0x68 INC Increment the Accumulator */
-void cosproc::INC(uint16_t src){
-	unsigned int temp = r[0] + 1;
-	
-	//Set Negative
-	st[1] = temp >= 0x80;
-	//Set Carry
-	st[2] = temp > 0xFF;
-	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x01^temp)&0x80) != 0;
-	
-	//Set Value
-	r[0] = temp & 0xFF;
-
-	//Set Zero
-	st[0] = r[0] == 0;
-}
-
-/* 0x69 INC Increment the 16-bit Accumulator */
-void cosproc::INCX(uint16_t src){
-	unsigned int temp = ((r[0] << 8) | r[1] ) + 1;
-
-	//Set Negative
-	st[1] = temp >= 0x8000;
-	//Set Carry
-	st[2] = temp > 0xFFFF;
-	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x0001^temp)&0x8000) != 0;
-
-	//Set Value
-	r[0] = (temp & 0xFF00) >> 8;
-	r[1] = temp & 0x00FF;
-
-	//Set Zero
-	st[0] = (r[0] << 8 | r[1]) == 0;
-}
-
-/* 0x6A DEC Decrement the Accumulator */
-void cosproc::DEC(uint16_t src){
-	unsigned int temp = r[0] - 1;
-
-	//Set Negative
-	st[1] = temp >= 0x80;
-	//Set Carry
-	st[2] = temp > 0xFF;
-	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x01^temp)&0x80) != 0;
-	
-	//Set Value
-	r[0] = temp & 0xFF;
-
-	//Set Zero
-	st[0] = r[0] == 0;
-}
-
-/* 0x6B DECX Decrement the 16-bit Accumulator */
-void cosproc::DECX(uint16_t src){
-	unsigned int temp = ((r[0] << 8) | r[1] ) - 1;
-
-	//Set Negative
-	st[1] = temp >= 0x8000;
-	//Set Carry
-	st[2] = temp > 0xFFFF;
-	//Set Overflow
-	st[3] = ((r[0]^temp)&(0x0001^temp)&0x8000) != 0;
-
-	//Set Value
-	r[0] = (temp & 0xFF00) >> 8;
-	r[1] = temp & 0x00FF;
-
-	//Set Zero
-	st[0] = (r[0] << 8 | r[1]) == 0;
-}
-
 /* 0x6C-0x6E SHRX Shift the 16-bit Accumulator right from Imm/Abs/Ind */
 void cosproc::SHRX(uint16_t src){
 	uint16_t shift = (Read(src) << 8) | Read(src+1);
@@ -1407,6 +1371,30 @@ void cosproc::JNLR(uint16_t src){
 	}
 }
 
+/* 0x9C-0x9E JES from Imm/Abs/Ind */
+void cosproc::JES(uint16_t src){
+	if(st[6]){
+		pc = ((Read(src) << 8) | Read(src+1));
+	}else{
+		pc += 3;
+	}
+}
+
+/* 0x9F JES from Reg */
+void cosproc::JESR(uint16_t src){
+	int data;
+	if(st[6]){
+		if(src % 2 == 0){
+			data = ((r[src] << 8) | r[src+1]);
+		}else{
+			data = ((r[src-1] << 8) | r[src]);
+		}
+		pc = (data);
+	}else{
+		pc += 2;
+	}
+}
+
 /* 0xA0 CSF */
 void cosproc::CSF(uint16_t src){
 	for(int i = 0; i < 8; i++){
@@ -1434,24 +1422,24 @@ void cosproc::SNF(uint16_t src){
 	st[1] = 1;
 }
 
-/* 0xA5 COF */
-void cosproc::COF(uint16_t src){
-	st[3] = 0;
-}
-
-/* 0xA6 SOF */
-void cosproc::SOF(uint16_t src){
-	st[3] = 1; 
-}
-
-/* 0xA7 CCF */
+/* 0xA5 CCF */
 void cosproc::CCF(uint16_t src){
 	st[2] = 0;
 }
 
-/* 0xA8 SCF */
+/* 0xA6 SCF */
 void cosproc::SCF(uint16_t src){
-	st[2] = 1;
+	st[2] = 1; 
+}
+
+/* 0xA7 COF */
+void cosproc::COF(uint16_t src){
+	st[3] = 0;
+}
+
+/* 0xA8 SOF */
+void cosproc::SOF(uint16_t src){
+	st[3] = 1;
 }
 
 /* 0xA9 CLF */
@@ -1468,12 +1456,212 @@ void cosproc::SLF(uint16_t src){
 void cosproc::CIF(uint16_t src){
 	st[5] = 0;
 }
+
 /* 0xAC SIF */
 void cosproc::SIF(uint16_t src){
 	st[5] = 1;
 }
 
+/* 0xAD CEF */
+void cosproc::CEF(uint16_t src){
+	st[6] = 0;
+}
 
+/* 0xB0-0xB1 INC from Abs/Ind */
+void cosproc::INC(uint16_t src){
+	uint8_t data = Read(src);
+
+	unsigned int temp = data + 1;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x01^temp)&0x80) != 0;
+	
+	//Set Value
+	Write(src, temp & 0xFF);
+
+	//Set Zero
+	st[0] = (temp & 0xFF) == 0;
+}
+
+/* 0xB2 INCR from REG */
+void cosproc::INCR(uint16_t src){
+	uint8_t data = r[src];
+
+	unsigned int temp = data + 1;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x01^temp)&0x80) != 0;
+	
+	//Set Value
+	r[src] = temp & 0xFF;
+
+	//Set Zero
+	st[0] = r[src] == 0;
+}
+
+/* 0xB3-0xB4 INCX from Abs/Ind */
+void cosproc::INCX(uint16_t src){
+	uint8_t dataHigh = Read(src);
+	uint8_t dataLow = Read(src+1);
+	uint16_t data = ((dataHigh << 8) | dataLow);
+
+	unsigned int temp = data + 1;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x0001^temp)&0x8000) != 0;
+
+	//Set Value
+	Write(src, (temp & 0xFF00) >> 8);
+	Write(src+1, temp & 0x00FF);
+
+	//Set Zero
+	st[0] = (temp & 0xFFFF) == 0;
+}
+
+/* 0xB5 INCXR from REG */
+void cosproc::INCXR(uint16_t src){
+	uint16_t data;
+
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[src+1]);
+	}else{
+		data = ((r[src-1] << 8) | r[src]);
+	}
+
+	unsigned int temp = data + 1;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x0001^temp)&0x8000) != 0;
+
+	//Set Value
+	if(src % 2 == 0){
+		r[src] = (temp & 0xFF00) >> 8;
+		r[src+1] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src] << 8 | r[src+1]) == 0;
+	}else{
+		r[src-1] = (temp & 0xFF00) >> 8;
+		r[src] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src-1] << 8 | r[src]) == 0;
+	}	
+}
+
+/* 0xB6-0xB7 DEC from Abs/Ind */
+void cosproc::DEC(uint16_t src){
+	uint8_t data = Read(src);
+
+	unsigned int temp = data - 1;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x01^temp)&0x80) != 0;
+	
+	//Set Value
+	Write(src, temp & 0xFF);
+
+	//Set Zero
+	st[0] = (temp & 0xFF) == 0;
+}
+
+/* 0xB8 DECR from REG */
+void cosproc::DECR(uint16_t src){
+	uint8_t data = r[src];
+
+	unsigned int temp = data - 1;
+
+	//Set Negative
+	st[1] = temp >= 0x80;
+	//Set Carry
+	st[2] = temp > 0xFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x01^temp)&0x80) != 0;
+	
+	//Set Value
+	r[src] = temp & 0xFF;
+
+	//Set Zero
+	st[0] = r[src] == 0;
+}
+
+/* 0xB9-0xBA DECX from Abs/Ind */
+void cosproc::DECX(uint16_t src){
+	uint8_t dataHigh = Read(src);
+	uint8_t dataLow = Read(src+1);
+	uint16_t data = ((dataHigh << 8) | dataLow);
+
+	unsigned int temp = data - 1;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x0001^temp)&0x8000) != 0;
+
+	//Set Value
+	Write(src, (temp & 0xFF00) >> 8);
+	Write(src+1, temp & 0x00FF);
+
+	//Set Zero
+	st[0] = (temp & 0xFFFF) == 0;
+}
+
+/* 0xBB DECXR from REG */
+void cosproc::DECXR(uint16_t src){
+	uint16_t data;
+
+	if(src % 2 == 0){
+		data = ((r[src] << 8) | r[src+1]);
+	}else{
+		data = ((r[src-1] << 8) | r[src]);
+	}
+
+	unsigned int temp = data - 1;
+
+	//Set Negative
+	st[1] = temp >= 0x8000;
+	//Set Carry
+	st[2] = temp > 0xFFFF;
+	//Set Overflow
+	st[3] = ((data^temp)&(0x0001^temp)&0x8000) != 0;
+
+	//Set Value
+	if(src % 2 == 0){
+		r[src] = (temp & 0xFF00) >> 8;
+		r[src+1] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src] << 8 | r[src+1]) == 0;
+	}else{
+		r[src-1] = (temp & 0xFF00) >> 8;
+		r[src] = temp & 0x00FF;
+
+		//Set Zero
+		st[0] = (r[src-1] << 8 | r[src]) == 0;
+	}
+}
 
 /* Low Priority Interrupt */
 void cosproc::LPI(){

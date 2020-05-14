@@ -10,7 +10,10 @@
 <p align="center">
 <a href="https://travis-ci.org/clbx/Cosmic"><img src="https://travis-ci.org/clbx/Cosmic.svg?branch=master"/></a>
 <a href="https://www.codefactor.io/repository/github/clbx/cosmic"><img src="https://www.codefactor.io/repository/github/clbx/cosmic/badge" alt="CodeFactor" /></a>
+<a href="https://gitter.im/CosmicProcessor/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/CosmicProcessor/community.svg"/></a>
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/clbx/Cosmic">
+</br>
+<a href="https://gitpod.io/#https://github.com/clbx/Cosmic"><img src="https://gitpod.io/button/open-in-gitpod.svg"></a>
 </p>
 
 Cosmic is a fully simulated computer architecture that provides a full environment to use the Cosmic Processor, specialized devices, ROM, RAM, graphics, and more. The cosmic processor can also be used on a Raspberry Pi to interface with real-world devices. The cosmic system is all entirely accessible in a rich GUI interface that allows for full customization of the system environment and code execution.*
@@ -26,26 +29,18 @@ With an instruction set that makes sense (and is fun), and simple memory-mapped 
 <sub>* in deveopment</sub>
 
 #### What is Cosmic?
+* A great educational tool to teach how processors work and assembly language
 * A very interesting project
 * A Proof of Concept
 * Kinda cool
-* A good way to learn assembly and how processors work
 * Fun to play with
-* Made by two guys learning as they went along
-
-#### What isn't Cosmic
-* An optimized, properly designed processor
-* Free of mistakes or beginner errors
-* Something to base a serious project off of
-
-
-
-
 
 
 -----
 
-Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank) at Elizabethtown College. All academically required reports and documentation is in the ``/doc`` folder.
+Cosmic is the Senior Project for Clay Buxton ([@clbx](https://github.com/clbx)) and Kevin Carman ([@carmank](https://github.com/carmank)) at Elizabethtown College. All academically required reports and documentation is in the ``/doc`` folder.
+
+Special thanks to [@Gwarks](https://github.com/Gwarks), who did a lot of base work on the graphics.
 
 ----
 
@@ -55,48 +50,70 @@ Cosmic is the Senior Project for Clay Buxton (@clbx) and Kevin Carman (@carmank)
 * [Cosmic System Specifications](https://github.com/clbx/Cosmic/blob/master/doc/Cosmic%20System%20Specifications.md) This has information about other parts of the Cosmic system work (Video, Audio, etc.)
 
 ## Installation Instructions
+**Be sure to clone recursively, Cosmic uses git submodules**
+
+``git clone --recursive https://github.com/clbx/Cosmic``
+
+If you have already cloned:
+```
+git submodule init
+git submodule update
+```
+
 
 ### Linux
-
-Install SDL2 using your distros package manager
+Install ``SDL2`` using your distributions package manager
 ```
-cd Cosmic
-cd src
 make
 ```
-### Mac
-Install SDL2
+
+
+### macOS
+Install SDL2 using brew. Get brew [here](brew.sh) if you don't already have it. 
 ```
 brew install sdl2
-```
-Then make
-```
-cd Cosmic
-cd src
 make
 ```
 
-### Windows (Unsupported)
-Windows requires MSYS2/MinGW
-Install the following packages:
-```
-pacman -S git mingw-w64-x86_64-toolchain mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_ttf mingw64/mingw-w64-x86_64-SDL2_net mingw64/mingw-w64-x86_64-cmake make
-```
-Add MinGW to your Path
+### Windows 
+A pre-compiled binary can be downloaded from the release page. You will still need to install MinGW and SDL2
+Be sure to add both MinGW and SDL2.dll to your path
+
+**Compilation Instructions:**
+
+Get [Chocolatey](https://chocolatey.org/install) if you don't have it already, it helps for installing tools
+
+Install MinGW ``choco install mingw``
+
+Install make ``choco install make``
+
+
+Download SDL2 Development Library
+
+Untar SDL to the MinGW install directory
+
 
 ```
-cd Cosmic
-cd src
 make
 ```
+
+Make sure any missing .dll's are in your path
+
+### Assembler
+
+The assembler is written in Python, so if you plan on assembling anything for Cosmic, Python 3 is required
 
 ----
 
 ``/lib`` contains some included software:
 *  [ImGui](https://github.com/ocornut/imgui) is a GUI library used for the interface, along with a slightly modified memory editor addon. This is under the MIT License and the license file is included accordingly
+
+* [ImTui](https://github.com/ggerganov/imtui) A library that takes ImGui and puts it into a terminal.
+
 * [gl3w](https://github.com/skaslev/gl3w) A OpenGL core loader. This is under the unlicense. 
 
 * [catch2](https://github.com/catchorg/Catch2) is used for testing. This is under the BSL Software License
+
 
 SDL2 is also required to run Cosmic.
 
