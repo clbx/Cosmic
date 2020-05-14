@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <cmath>
 #include <cstdio>
+#include <dirent.h>
 
 const GLchar* vertex_shader =
     "#version 150\n"
@@ -24,29 +25,58 @@ const GLchar* fragment_shader =
     "in vec2 Frag_UV;\n"
     "in vec4 Frag_Color;\n"
     "out vec4 Out_Color;\n"
+    "vec4 render(vec2 pos);\n"
     "void main()\n"
     "{\n"
-"if(any(lessThan(Frag_UV,vec2(0,0)))||any(greaterThanEqual(Frag_UV,vec2(128,128))))Out_Color=vec4(0.2,0.1,0.0,1.0);\n"
-    "    else Out_Color = Frag_Color * vec4(0.0,float(texelFetch(Texture,ivec2(Frag_UV),0))/255.,0.0,10.);\n"
+		"  Out_Color=Frag_Color;\n"
+    "  Out_Color=render(Frag_UV);\n"
+    "}\n"
+    "uvec4 readRAM(ivec2 pos)\n"
+    "{\n"
+     "  return texelFetch(Texture,pos,0);\n"
+    "}\n";
+
+const GLchar* pixel_shader =
+    "vec4 render(vec2 pos)\n"
+    "{\n"
+"if(any(lessThan(pos,vec2(0,0)))||any(greaterThanEqual(pos,vec2(128,128))))return vec4(0.2,0.1,0.0,1.0);\n"
+    "    else return vec4(0.0,float(readRAM(ivec2(pos)).x)/255.,0.0,1.0);\n"
     "}\n";
 
 
-void PGU::init()
+void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 {
-  GLuint g_VertHandle = 0, g_FragHandle = 0;
-
 	glGenTextures(1,&vramTexture);
 	glBindTexture(GL_TEXTURE_2D,vramTexture);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_R8UI,128,128,0,GL_RED_INTEGER,GL_UNSIGNED_BYTE,0);
+	switch(colorbits)
+	{
+	case 2:
+	  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8UI,1<<(12-ybits),1<<ybits,0,GL_RGBA_INTEGER,GL_UNSIGNED_BYTE,0);
+	  break;
+	case 1:
+	  glTexImage2D(GL_TEXTURE_2D,0,GL_RG8UI,1<<(13-ybits),1<<ybits,0,GL_RG,GL_UNSIGNED_BYTE,0);
+	  break;
+	default:
+	  glTexImage2D(GL_TEXTURE_2D,0,GL_R8UI,1<<(14-ybits),1<<ybits,0,GL_RED_INTEGER,GL_UNSIGNED_BYTE,0);
+	}
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+}
+
+void PGU::init()
+{
+  nmoduls=0;
+  GLuint g_VertHandle = 0, g_FragHandle = 0;
+
+  makeTexture(0,7);
 
 	g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(g_VertHandle,1,&vertex_shader,NULL);
 	glCompileShader(g_VertHandle);
 
 	g_FragHandle = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(g_FragHandle,1,&fragment_shader,NULL);
+  const GLchar* shaders[2]={fragment_shader,pixel_shader};
+	glShaderSource(g_FragHandle,2,shaders,NULL);
 	glCompileShader(g_FragHandle);
 
 	g_ShaderHandle = glCreateProgram();
@@ -65,12 +95,63 @@ void PGU::init()
 
   width=128;
   heigth=128;
+
+  DIR *dir;
+  struct dirent *ent;
+  if((dir = opendir ("pgu")) != NULL)
+  {
+    while((ent = readdir (dir)) != NULL)
+    {
+      if(ent->d_type==DT_REG)nmoduls++;
+    }
+    rewinddir(dir);
+    moduls_data = new char*[nmoduls];
+    moduls_json = new json_value*[nmoduls];
+    moduls_name = new const char*[nmoduls];
+    unsigned int i=0;
+    char path[512]="pgu/";
+    while((ent = readdir (dir)) != NULL)
+    {
+      if(ent->d_type==DT_REG)
+      {
+        strcpy(path+4,ent->d_name);
+        FILE *f = fopen(path, "rb");
+        fseek(f, 0, SEEK_END);
+        long fsize = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        moduls_data[i] = new char[fsize];
+        fread(moduls_data[i], 1, fsize, f);
+        fclose(f);
+        json_value* json=moduls_json[i]=json_parse(moduls_data[i],fsize);
+        if(json)
+        {
+          moduls_name[i]="[unnamed]";
+          for(unsigned int k=0;k<json->u.object.length;k++)
+          {
+            if(!strcmp(json->u.object.values[k].name,"name"))moduls_name[i]=json->u.object.values[k].value->u.string.ptr;
+          }         
+        }else moduls_name[i]="[defunct]";
+        i++;
+      }
+    }
+    closedir(dir);
+  }else{
+    perror("");
+  }
 }
 
 void PGU::kill()
 {
   glDeleteBuffers(1,&vramTexture);
   glDeleteProgram(g_ShaderHandle);
+  while(nmoduls--)
+  {
+    delete moduls_data[nmoduls];
+    json_value_free(moduls_json[nmoduls]);
+  }
+  delete moduls_data;
+  delete moduls_json;
+  delete moduls_name;
 }
 
 void PGU::copy(GLubyte* mem)
@@ -123,4 +204,26 @@ void PGU::show()
 	draw_list->AddCallback(_userCallBack,this);
 	draw_list->AddImage((void*)(intptr_t)vramTexture,pos,ImVec2(pos.x+size.x*scale,pos.y+size.y*scale),ImVec2(-ox,-oy),ImVec2(size.x-ox-1,size.y-oy-1));
 	draw_list->AddCallback(ImDrawCallback_ResetRenderState,NULL);
+}
+
+void PGU::menu()
+{
+  if (ImGui::BeginMenu("PGU"))
+  {
+    if (ImGui::MenuItem("remove"))
+    {
+    }
+    if (ImGui::BeginMenu("insert"))
+    {
+      for(unsigned int i=0;i<nmoduls;i++)
+      {
+        if (ImGui::MenuItem(moduls_name[i]))
+        {
+          
+        }
+      }
+      ImGui::EndMenu();
+    }
+    ImGui::EndMenu();
+  }
 }
