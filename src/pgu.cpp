@@ -1,8 +1,10 @@
 #include "pgu.hpp"
 #include "imgui.h"
+#include "imgui_logger.h"
 #include <cmath>
 #include <cstdio>
 #include <dirent.h>
+
 
 const GLchar* vertex_shader =
     "#version 150\n"
@@ -45,7 +47,6 @@ const GLchar* pixel_shader =
 
 void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 {
-	glGenTextures(1,&vramTexture);
 	glBindTexture(GL_TEXTURE_2D,vramTexture);
 	switch(colorbits)
 	{
@@ -53,7 +54,7 @@ void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 	  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8UI,1<<(12-ybits),1<<ybits,0,GL_RGBA_INTEGER,GL_UNSIGNED_BYTE,0);
 	  break;
 	case 1:
-	  glTexImage2D(GL_TEXTURE_2D,0,GL_RG8UI,1<<(13-ybits),1<<ybits,0,GL_RG,GL_UNSIGNED_BYTE,0);
+	  glTexImage2D(GL_TEXTURE_2D,0,GL_RG8UI,1<<(13-ybits),1<<ybits,0,GL_RG_INTEGER,GL_UNSIGNED_BYTE,0);
 	  break;
 	default:
 	  glTexImage2D(GL_TEXTURE_2D,0,GL_R8UI,1<<(14-ybits),1<<ybits,0,GL_RED_INTEGER,GL_UNSIGNED_BYTE,0);
@@ -62,95 +63,47 @@ void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 }
 
-void PGU::init()
+
+void PGU::compileProgram(const char* shader)
 {
-  nmoduls=0;
-  GLuint g_VertHandle = 0, g_FragHandle = 0;
 
-  makeTexture(0,7);
-
-	g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(g_VertHandle,1,&vertex_shader,NULL);
 	glCompileShader(g_VertHandle);
 
-	g_FragHandle = glCreateShader(GL_FRAGMENT_SHADER);
-  const GLchar* shaders[2]={fragment_shader,pixel_shader};
+  const GLchar* shaders[2]={fragment_shader,shader};
 	glShaderSource(g_FragHandle,2,shaders,NULL);
 	glCompileShader(g_FragHandle);
 
-	g_ShaderHandle = glCreateProgram();
-	glAttachShader(g_ShaderHandle, g_VertHandle);
-	glAttachShader(g_ShaderHandle, g_FragHandle);
 	glLinkProgram(g_ShaderHandle);
-
-	glDeleteShader(g_VertHandle);
-	glDeleteShader(g_FragHandle);
 
 	g_AttribLocationTex = glGetUniformLocation(g_ShaderHandle, "Texture");
 	g_AttribLocationProjMtx = glGetUniformLocation(g_ShaderHandle, "ProjMtx");
 	g_AttribLocationVtxPos = glGetAttribLocation(g_ShaderHandle, "Position");
 	g_AttribLocationVtxUV = glGetAttribLocation(g_ShaderHandle, "UV");
 	g_AttribLocationVtxColor = glGetAttribLocation(g_ShaderHandle, "Color");
+}
+
+void PGU::init()
+{
+	glGenTextures(1,&vramTexture);
+  makeTexture(0,7);
+	g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
+	g_FragHandle = glCreateShader(GL_FRAGMENT_SHADER);
+	g_ShaderHandle = glCreateProgram();
+	glAttachShader(g_ShaderHandle, g_VertHandle);
+	glAttachShader(g_ShaderHandle, g_FragHandle);
 
   width=128;
   heigth=128;
-
-  DIR *dir;
-  struct dirent *ent;
-  if((dir = opendir ("pgu")) != NULL)
-  {
-    while((ent = readdir (dir)) != NULL)
-    {
-      if(ent->d_type==DT_REG)nmoduls++;
-    }
-    rewinddir(dir);
-    moduls_data = new char*[nmoduls];
-    moduls_json = new json_value*[nmoduls];
-    moduls_name = new const char*[nmoduls];
-    unsigned int i=0;
-    char path[512]="pgu/";
-    while((ent = readdir (dir)) != NULL)
-    {
-      if(ent->d_type==DT_REG)
-      {
-        strcpy(path+4,ent->d_name);
-        FILE *f = fopen(path, "rb");
-        fseek(f, 0, SEEK_END);
-        long fsize = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        moduls_data[i] = new char[fsize];
-        fread(moduls_data[i], 1, fsize, f);
-        fclose(f);
-        json_value* json=moduls_json[i]=json_parse(moduls_data[i],fsize);
-        if(json)
-        {
-          moduls_name[i]="[unnamed]";
-          for(unsigned int k=0;k<json->u.object.length;k++)
-          {
-            if(!strcmp(json->u.object.values[k].name,"name"))moduls_name[i]=json->u.object.values[k].value->u.string.ptr;
-          }         
-        }else moduls_name[i]="[defunct]";
-        i++;
-      }
-    }
-    closedir(dir);
-  }else{
-    perror("");
-  }
+  compileProgram(pixel_shader);
 }
 
 void PGU::kill()
 {
   glDeleteBuffers(1,&vramTexture);
+	glDeleteShader(g_VertHandle);
+	glDeleteShader(g_FragHandle);
   glDeleteProgram(g_ShaderHandle);
-  while(nmoduls--)
-  {
-    delete moduls_data[nmoduls];
-    json_value_free(moduls_json[nmoduls]);
-  }
-  delete moduls_data;
-  delete moduls_json;
-  delete moduls_name;
 }
 
 void PGU::copy(GLubyte* mem)
@@ -205,24 +158,48 @@ void PGU::show()
 	draw_list->AddCallback(ImDrawCallback_ResetRenderState,NULL);
 }
 
-void PGU::menu()
+void PGU::swap(char* path,Logger* debugLog)
 {
-  if (ImGui::BeginMenu("PGU"))
+  FILE *f = fopen(path, "rb");
+  fseek(f, 0, SEEK_END);
+  long fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  char* data = new char[fsize];
+  fread(data, 1, fsize, f);
+  fclose(f);
+  json_value* json=json_parse(data,fsize);
+  if(json)
   {
-    if (ImGui::MenuItem("remove"))
+    unsigned int colorbits=0;
+    unsigned int ybits=7;
+    width=128;
+    heigth=128;
+    const char* shader=pixel_shader;
+    for(unsigned int k=0;k<json->u.object.length;k++)
     {
-    }
-    if (ImGui::BeginMenu("insert"))
-    {
-      for(unsigned int i=0;i<nmoduls;i++)
+      const char* key=json->u.object.values[k].name;
+      json_value* v=json->u.object.values[k].value;
+      if(!strcmp(key,"vram"))
       {
-        if (ImGui::MenuItem(moduls_name[i]))
-        {
-          
-        }
+        colorbits=v->u.array.values[0]->u.integer;
+        ybits=v->u.array.values[1]->u.integer;
       }
-      ImGui::EndMenu();
-    }
-    ImGui::EndMenu();
+      if(!strcmp(key,"size"))
+      {
+        width=v->u.array.values[0]->u.integer;
+        heigth=v->u.array.values[1]->u.integer;
+      }
+      if(!strcmp(key,"shader"))
+      {
+        shader=v->u.string.ptr;
+      }
+    }      
+    debugLog->AddLog("PGU: vram %d %d width %d heigth %d\n", colorbits, ybits, width, heigth);
+    makeTexture(colorbits,ybits);
+    compileProgram(shader);
+    json_value_free(json);
   }
+  delete data;
 }
+
+

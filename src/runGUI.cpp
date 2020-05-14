@@ -121,11 +121,11 @@ void runGUI::MemoryEditor(cosproc proc){
 
 }
 
-void runGUI::VideoOut(PGU* pgu){
+void runGUI::VideoOut(){
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
     ImGui::Begin("Video Out");
-    pgu->show();
+    pgu.show();
     ImGui::End();
 }
 
@@ -164,6 +164,10 @@ void runGUI::ShowTopMenu(){
                 if (ImGui::MenuItem("Save Assembly")){
                     menu_action = "saveasm";
                 }
+                ImGui::Separator();
+                if (ImGui::MenuItem("Swap PGU")){
+                  menu_action = "swappgu";
+                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")){
@@ -181,7 +185,6 @@ void runGUI::ShowTopMenu(){
                 ImGui::Checkbox("Show Demo Window", &showDemo);
                 ImGui::EndMenu();
             }
-            pgu.menu();
             ImGui::EndMainMenuBar();
         }
 
@@ -201,6 +204,10 @@ void runGUI::ShowTopMenu(){
         if (menu_action == "saveasm"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
             ImGui::OpenPopup("Save Assembly");
+        }
+        if (menu_action == "swappgu"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Swap PGU");
         }
 
         if (ImGui::BeginPopupModal("Load Binary", NULL)){
@@ -301,6 +308,29 @@ void runGUI::ShowTopMenu(){
             }
             ImGui::EndPopup();
         }
+        
+        if (ImGui::BeginPopupModal("Swap PGU", NULL)){
+            ImGui::Text("Choose File: ");
+            static char swapPGUFilepath[4096];
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", swapPGUFilepath, IM_ARRAYSIZE(swapPGUFilepath));
+            ImGui::SameLine();
+            const bool browseBinButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog swapPGUFsInstance;
+            swapPGUFsInstance.chooseFileDialog(browseBinButtonPressed,"./pgu/");
+            strcpy(swapPGUFilepath,swapPGUFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(swapPGUFilepath)>0) {
+            }
+            if (ImGui::Button("Open")){
+                pgu.swap(swapPGUFilepath,&debugLog);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }        
 }
 
 int runGUI::run(){
@@ -393,7 +423,6 @@ int runGUI::run(){
     glEnable(GL_DEBUG_OUTPUT);
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    PGU pgu;
     pgu.init();
 
     cosproc::Debug debugPackage;
@@ -609,7 +638,7 @@ int runGUI::run(){
         }
         ImGui::SameLine();
         ImGui::PushItemWidth(75);
-        const char *speeds[] = {"3000", "1500", "600", "300", "60"};
+        const char *speeds[] = {"3000", "1500", "600", "300", "60", "1"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
         if (ImGui::BeginCombo("Hz", current_speed, flags)){
@@ -655,7 +684,7 @@ int runGUI::run(){
         *   Cosmic, VRAM is memory mapped
         */
         if (showGraphics){
-            VideoOut(&pgu);
+            VideoOut();
         }
 
         // Rendering

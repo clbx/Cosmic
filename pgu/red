@@ -1,12 +1,3 @@
 {
-  "name": "128x128 Redscale",
-  "size": [
-    128,
-    128
-  ],
-  "vram": [
-    0,
-    7
-  ],
   "shader": "vec4 render(vec2 pos)\n{\n  if(any(lessThan(pos,vec2(0,0)))||any(greaterThanEqual(pos,vec2(128,128))))return vec4(0.2,0.1,0.0,1.0);\n  else return vec4(float(readRAM(ivec2(pos)).x)/255.,0.0,0.0,1.0);\n}"
 }
