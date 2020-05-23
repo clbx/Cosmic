@@ -13,17 +13,18 @@ static char editorText[256 * 1000] = "";
 /** Globals to show and hide windows **/
 bool showGraphics = false;
 bool showDemo = false;
+bool logram = false;
 bool verbose = true;
 
 void MemoryWrite(uint16_t address, uint8_t value){
-    if(verbose){
+    if(verbose && logram){
         debugLog.AddLog("Wrote %X to %X\n", value, address);
     }
     memory[address] = value;
 }
 
 uint8_t MemoryRead(uint16_t address){
-    if(verbose){
+    if(verbose && logram){
         debugLog.AddLog("READ: %X from %X\n", memory[address], address);
     }
     return memory[address];
@@ -183,6 +184,7 @@ void runGUI::ShowTopMenu(){
             if (ImGui::BeginMenu("Window")){
                 ImGui::Checkbox("Show Video Out", &showGraphics);
                 ImGui::Checkbox("Show Demo Window", &showDemo);
+                ImGui::Checkbox("Log Ram Access", &logram);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -423,11 +425,12 @@ int runGUI::run(){
     glEnable(GL_DEBUG_OUTPUT);
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    pgu.init();
+    pgu.init(&debugLog);
 
     cosproc::Debug debugPackage;
     bool running = false;
     int procFrequency = 3000;
+    int procFraction = 0;
 
     bool done = false;
 
@@ -638,7 +641,7 @@ int runGUI::run(){
         }
         ImGui::SameLine();
         ImGui::PushItemWidth(75);
-        const char *speeds[] = {"3000", "1500", "600", "300", "60", "1"};
+        const char *speeds[] = {"3000", "1500", "600", "300", "60", "1","1000000"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
         if (ImGui::BeginCombo("Hz", current_speed, flags)){
@@ -663,11 +666,11 @@ int runGUI::run(){
 
         //Run if the run button it pushed
         if (running){
-            int i = 0;
-            while (i < procFrequency / 60){
+            procFraction+=procFrequency;
+            while (0<procFraction){
                 debugPackage = proc.cycle();
                 debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
-                i++;
+                procFraction-=60;
             }
         }
 

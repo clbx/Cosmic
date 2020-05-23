@@ -3,4 +3,4 @@ loop:
 	MOV 20 R00
 	ADD #11
 	MOV R0 20
-	JMP loop
+	JMP #loop

@@ -1,0 +1,12 @@
+SIZE 512 512
+VRAM 2 6
+SHADER
+vec4 render(vec2 pos)
+{
+  if(any(lessThan(pos,vec2(0,0)))||any(greaterThanEqual(pos,vec2(512,512))))return vec4(0.1,0.2,0.0,1.0);
+  uint i=readRAM(ivec2(pos)>>3).a;
+  ivec2 p=ivec2(pos)&7;
+  if((i&128u)>0u)p.x=7-p.x;
+  if((i&64u)>0u)p.y=7-p.y;
+  return vec4(readRAM(ivec2(p.x+(p.y<<3),i&63u)).rgb,1.0);
+}

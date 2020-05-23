@@ -2,9 +2,8 @@
 #include "imgui.h"
 #include "imgui_logger.h"
 #include <cmath>
-#include <cstdio>
-#include <dirent.h>
-
+#include <fstream>
+#include <vector>
 
 const GLchar* vertex_shader =
     "#version 150\n"
@@ -45,7 +44,7 @@ const GLchar* pixel_shader =
     "    else return vec4(0.0,float(readRAM(ivec2(pos)).x)/255.,0.0,1.0);\n"
     "}\n";
 
-void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
+void PGU::makeTexture()
 {
 	glBindTexture(GL_TEXTURE_2D,vramTexture);
 	switch(colorbits)
@@ -64,15 +63,26 @@ void PGU::makeTexture(unsigned int colorbits,unsigned int ybits)
 }
 
 
-void PGU::compileProgram(const char* shader)
+void PGU::compileProgram(const char* shader,Logger* debugLog)
 {
-
+  GLint isCompiled = 0;
 	glShaderSource(g_VertHandle,1,&vertex_shader,NULL);
 	glCompileShader(g_VertHandle);
 
   const GLchar* shaders[2]={fragment_shader,shader};
 	glShaderSource(g_FragHandle,2,shaders,NULL);
 	glCompileShader(g_FragHandle);
+
+  glGetShaderiv(g_FragHandle, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+  {
+	  GLint maxLength = 0;
+  	glGetShaderiv(g_FragHandle, GL_INFO_LOG_LENGTH, &maxLength);
+    std::vector<GLchar> errorLog(maxLength+1);
+    errorLog[maxLength]=0;
+    glGetShaderInfoLog(g_FragHandle, maxLength, &maxLength, &errorLog[0]);
+    debugLog->AddLog("PGU Compile Failed:\n%s\n", &errorLog[0]);
+  }	
 
 	glLinkProgram(g_ShaderHandle);
 
@@ -83,19 +93,20 @@ void PGU::compileProgram(const char* shader)
 	g_AttribLocationVtxColor = glGetAttribLocation(g_ShaderHandle, "Color");
 }
 
-void PGU::init()
+void PGU::init(Logger* debugLog)
 {
+  colorbits=0;
+  ybits=7;
+  width=128;
+  heigth=128;
 	glGenTextures(1,&vramTexture);
-  makeTexture(0,7);
+  makeTexture();
 	g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
 	g_FragHandle = glCreateShader(GL_FRAGMENT_SHADER);
 	g_ShaderHandle = glCreateProgram();
 	glAttachShader(g_ShaderHandle, g_VertHandle);
 	glAttachShader(g_ShaderHandle, g_FragHandle);
-
-  width=128;
-  heigth=128;
-  compileProgram(pixel_shader);
+  compileProgram(pixel_shader,debugLog);
 }
 
 void PGU::kill()
@@ -109,7 +120,17 @@ void PGU::kill()
 void PGU::copy(GLubyte* mem)
 {
 	glBindTexture(GL_TEXTURE_2D,vramTexture);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,128,128,GL_RED_INTEGER,GL_UNSIGNED_BYTE,mem);
+  switch(colorbits)
+	{
+	case 2:
+  	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1<<(12-ybits),1<<ybits,GL_RGBA_INTEGER,GL_UNSIGNED_BYTE,mem);
+	  break;
+	case 1:
+  	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1<<(13-ybits),1<<ybits,GL_RG_INTEGER,GL_UNSIGNED_BYTE,mem);
+	  break;
+	default:
+  	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1<<(14-ybits),1<<ybits,GL_RED_INTEGER,GL_UNSIGNED_BYTE,mem);
+	}
 }
 
 void PGU::userCallBack()
@@ -151,55 +172,67 @@ void PGU::show()
   float scale=fmax(fmin(floor((size.x-24.)/width),floor((size.y-24.)/heigth)),1.);
   size.x=floor(size.x/scale);
   size.y=floor(size.y/scale);
-  float ox=(size.x-width)/2;
-  float oy=(size.y-heigth)/2;
+  float ox=floor((size.x-width)/2);
+  float oy=floor((size.y-heigth)/2);
 	draw_list->AddCallback(_userCallBack,this);
-	draw_list->AddImage((void*)(intptr_t)vramTexture,pos,ImVec2(pos.x+size.x*scale,pos.y+size.y*scale),ImVec2(-ox,-oy),ImVec2(size.x-ox-1,size.y-oy-1));
+	draw_list->AddImage((void*)(intptr_t)vramTexture,pos,ImVec2(pos.x+size.x*scale,pos.y+size.y*scale),ImVec2(-ox,-oy),ImVec2(size.x-ox,size.y-oy));
 	draw_list->AddCallback(ImDrawCallback_ResetRenderState,NULL);
 }
 
 void PGU::swap(char* path,Logger* debugLog)
 {
-  FILE *f = fopen(path, "rb");
-  fseek(f, 0, SEEK_END);
-  long fsize = ftell(f);
-  fseek(f, 0, SEEK_SET);
-  char* data = new char[fsize];
-  fread(data, 1, fsize, f);
-  fclose(f);
-  json_value* json=json_parse(data,fsize);
-  if(json)
+  colorbits=0;
+  ybits=7;
+  width=128;
+  heigth=128;
+  const char* shader=pixel_shader;  
+  std::string sshader;
+  std::ifstream inFile;
+  inFile.open(path);
+	if(!inFile.is_open())return;
+  std::string line;
+  while(std::getline(inFile,line))
   {
-    unsigned int colorbits=0;
-    unsigned int ybits=7;
-    width=128;
-    heigth=128;
-    const char* shader=pixel_shader;
-    for(unsigned int k=0;k<json->u.object.length;k++)
+    std::string token,param;
+    int i=line.find(' ');
+    if(i>0)
     {
-      const char* key=json->u.object.values[k].name;
-      json_value* v=json->u.object.values[k].value;
-      if(!strcmp(key,"vram"))
+      token=line.substr(0,i);
+      param=line.substr(i+1);
+    }else{
+      token=line;
+      param="";
+    }
+    if(token=="SIZE")
+    {
+      int i=param.find(' ');
+      if(i>0)
       {
-        colorbits=v->u.array.values[0]->u.integer;
-        ybits=v->u.array.values[1]->u.integer;
+        width=stof(param.substr(0,i));
+        heigth=stof(param.substr(i+1));
       }
-      if(!strcmp(key,"size"))
+    }else if(token=="VRAM")
+    {
+      int i=param.find(' ');      
+      if(i>0)
       {
-        width=v->u.array.values[0]->u.integer;
-        heigth=v->u.array.values[1]->u.integer;
+        colorbits=stoi(param.substr(0,i));
+        ybits=stoi(param.substr(i+1));
       }
-      if(!strcmp(key,"shader"))
+    }else if(token=="SHADER")
+    {
+      while(std::getline(inFile, line))
       {
-        shader=v->u.string.ptr;
+        sshader+=line;
+        sshader+="\n";
       }
-    }      
-    debugLog->AddLog("PGU: vram %d %d width %d heigth %d\n", colorbits, ybits, width, heigth);
-    makeTexture(colorbits,ybits);
-    compileProgram(shader);
-    json_value_free(json);
+      shader=sshader.c_str();
+    }
   }
-  delete data;
+  inFile.close();	
+  debugLog->AddLog("PGU: vram %d %d width %f heigth %f\n", colorbits, ybits, width, heigth);
+  makeTexture();
+  compileProgram(shader,debugLog);
 }
 
 
