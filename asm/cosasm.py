@@ -452,7 +452,7 @@ def MOVX(tokens):
         output.append((operand2 & 0xFF))
 
 def SHL(tokens):
-    handleStd16bitOpcode(tokens)
+    handleStd8bitOpcode(tokens)
 
 def SHLX(tokens):
     handleStd16bitOpcode(tokens)

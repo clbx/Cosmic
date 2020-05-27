@@ -35,9 +35,9 @@ class runGUI{
         void MemoryEditor(cosproc proc);
         void Assembler(cosproc proc);
         void ShowTopMenu();
-        void VideoOut(PGU* pgu);
+        void VideoOut();
         void handlePins();
-
+        PGU pgu;
 
 
 

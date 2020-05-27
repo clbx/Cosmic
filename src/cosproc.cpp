@@ -1118,7 +1118,7 @@ void cosproc::SHRXR(uint16_t src){
 
 /* 0x70-0x72 JMP from Imm/Abs/Ind */
 void cosproc::JMP(uint16_t src){
-	pc = ((Read(src) << 8) | Read(src+1));
+	pc = ((Read(src) << 8) | Read(src+1));	
 }
 
 // 0x73 JMP from Reg

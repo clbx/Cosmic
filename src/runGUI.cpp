@@ -13,17 +13,18 @@ static char editorText[256 * 1000] = "";
 /** Globals to show and hide windows **/
 bool showGraphics = false;
 bool showDemo = false;
+bool logram = false;
 bool verbose = true;
 
 void MemoryWrite(uint16_t address, uint8_t value){
-    if(verbose){
+    if(verbose && logram){
         debugLog.AddLog("Wrote %X to %X\n", value, address);
     }
     memory[address] = value;
 }
 
 uint8_t MemoryRead(uint16_t address){
-    if(verbose){
+    if(verbose && logram){
         debugLog.AddLog("READ: %X from %X\n", memory[address], address);
     }
     return memory[address];
@@ -121,11 +122,11 @@ void runGUI::MemoryEditor(cosproc proc){
 
 }
 
-void runGUI::VideoOut(PGU* pgu){
+void runGUI::VideoOut(){
     ImGui::SetNextWindowSize(ImVec2(650, 450), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(500, 300), ImGuiCond_Once);
     ImGui::Begin("Video Out");
-    pgu->show();
+    pgu.show();
     ImGui::End();
 }
 
@@ -164,6 +165,10 @@ void runGUI::ShowTopMenu(){
                 if (ImGui::MenuItem("Save Assembly")){
                     menu_action = "saveasm";
                 }
+                ImGui::Separator();
+                if (ImGui::MenuItem("Swap PGU")){
+                  menu_action = "swappgu";
+                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")){
@@ -179,6 +184,7 @@ void runGUI::ShowTopMenu(){
             if (ImGui::BeginMenu("Window")){
                 ImGui::Checkbox("Show Video Out", &showGraphics);
                 ImGui::Checkbox("Show Demo Window", &showDemo);
+                ImGui::Checkbox("Log Ram Access", &logram);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -200,6 +206,10 @@ void runGUI::ShowTopMenu(){
         if (menu_action == "saveasm"){
             ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
             ImGui::OpenPopup("Save Assembly");
+        }
+        if (menu_action == "swappgu"){
+            ImGui::SetNextWindowSize(ImVec2(500, 100), ImGuiCond_Once);
+            ImGui::OpenPopup("Swap PGU");
         }
 
         if (ImGui::BeginPopupModal("Load Binary", NULL)){
@@ -300,6 +310,29 @@ void runGUI::ShowTopMenu(){
             }
             ImGui::EndPopup();
         }
+        
+        if (ImGui::BeginPopupModal("Swap PGU", NULL)){
+            ImGui::Text("Choose File: ");
+            static char swapPGUFilepath[4096];
+            ImGui::PushItemWidth(400);
+            ImGui::InputText("", swapPGUFilepath, IM_ARRAYSIZE(swapPGUFilepath));
+            ImGui::SameLine();
+            const bool browseBinButtonPressed = ImGui::Button("...");
+            static ImGuiFs::Dialog swapPGUFsInstance;
+            swapPGUFsInstance.chooseFileDialog(browseBinButtonPressed,"./pgu/");
+            strcpy(swapPGUFilepath,swapPGUFsInstance.getChosenPath()); //TODO: https://i.imgur.com/xZrKmAS.jpg
+            if (strlen(swapPGUFilepath)>0) {
+            }
+            if (ImGui::Button("Open")){
+                pgu.swap(swapPGUFilepath,&debugLog);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }        
 }
 
 int runGUI::run(){
@@ -392,12 +425,12 @@ int runGUI::run(){
     glEnable(GL_DEBUG_OUTPUT);
     //System setup
     cosproc proc = cosproc(MemoryRead, MemoryWrite);
-    PGU pgu;
-    pgu.init();
+    pgu.init(&debugLog);
 
     cosproc::Debug debugPackage;
     bool running = false;
     int procFrequency = 3000;
+    int procFraction = 0;
 
     bool done = false;
 
@@ -608,7 +641,7 @@ int runGUI::run(){
         }
         ImGui::SameLine();
         ImGui::PushItemWidth(75);
-        const char *speeds[] = {"3000", "1500", "600", "300", "60"};
+        const char *speeds[] = {"3000", "1500", "600", "300", "60", "1","1000000"};
         static const char *current_speed = speeds[0];
         static ImGuiComboFlags flags = 0;
         if (ImGui::BeginCombo("Hz", current_speed, flags)){
@@ -633,11 +666,11 @@ int runGUI::run(){
 
         //Run if the run button it pushed
         if (running){
-            int i = 0;
-            while (i < procFrequency / 60){
+            procFraction+=procFrequency;
+            while (0<procFraction){
                 debugPackage = proc.cycle();
                 debugLog.AddLog("[%04X] %s\n", debugPackage.pc, debugPackage.instruction.mnemonic);
-                i++;
+                procFraction-=60;
             }
         }
 
@@ -654,7 +687,7 @@ int runGUI::run(){
         *   Cosmic, VRAM is memory mapped
         */
         if (showGraphics){
-            VideoOut(&pgu);
+            VideoOut();
         }
 
         // Rendering

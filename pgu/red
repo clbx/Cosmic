@@ -1,0 +1,6 @@
+SHADER
+vec4 render(vec2 pos)
+{
+  if(any(lessThan(pos,vec2(0,0)))||any(greaterThanEqual(pos,vec2(128,128))))return vec4(0.2,0.1,0.0,1.0);
+  else return vec4(float(readRAM(ivec2(pos)).x)/255.,0.0,0.0,1.0);
+}
