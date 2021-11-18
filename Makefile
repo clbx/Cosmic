@@ -39,7 +39,7 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	LIBS += -L/usr/local/lib -L/opt/local/lib
 
 	CXXFLAGS += -Ilibs/gl3w `sdl2-config --cflags` -Wall
-	CXXFLAGS += -I/usr/local/include -I/opt/local/include
+	CXXFLAGS += -I/usr/local/include -I/opt/local/include -I/opt/homebrew/include/
 	CFLAGS = $(CXXFLAGS)
 endif
 
