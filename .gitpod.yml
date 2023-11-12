@@ -1,4 +1,0 @@
-image:
-  file: .gitpod.dockerfile
-ports:
-  - port: 22
