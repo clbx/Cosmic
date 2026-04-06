@@ -1,0 +1,9 @@
+[
+  {
+    "name": "MOV Rx, abs stores register to memory",
+    "hex": "38 7F 00  33 00 02 00  01",
+    "expect": {
+      "memory": { "0200": "7F" }
+    }
+  }
+]

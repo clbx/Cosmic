@@ -1,0 +1,54 @@
+[
+  {
+    "name": "ADD Immediate",
+    "hex": "10 35 01",
+    "expect": {
+      "registers": { "A": "35" }
+    }
+  },
+  {
+    "name": "ADD Absolute",
+    "hex": "11 00 04 01 22",
+    "expect": {
+      "registers": { "A": "22" }
+    }
+  },
+  {
+    "name": "ADD Indirect",
+    "hex": "12 00 04 01 00 06 33",
+    "expect": {
+      "registers": { "A": "33" }
+    }
+  },
+  {
+    "name": "ADD #imm accumulates into A",
+    "hex": "38 05 00 10 03 01",
+    "expect": {
+      "registers": { "A": "08" },
+      "flags": { "Z": false, "C": false }
+    }
+  },
+  {
+    "name": "ADD #imm sets zero flag on zero result",
+    "hex": "38 00 00  10 00  01",
+    "expect": {
+      "registers": { "A": "00" },
+      "flags": { "Z": true }
+    }
+  },
+  {
+    "name": "ADD #imm sets carry on 8-bit overflow",
+    "hex": "38 FF 00  10 01  01",
+    "expect": {
+      "registers": { "A": "00" },
+      "flags": { "C": true, "Z": true }
+    }
+  },
+  {
+    "name": "ADD Rx adds register to A",
+    "hex": "38 0A 00  38 14 01  13 01  01",
+    "expect": {
+      "registers": { "A": "1E" }
+    }
+  }
+]

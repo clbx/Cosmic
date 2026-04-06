@@ -1,0 +1,275 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: monospace;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: #252526;
+  border-bottom: 1px solid #3c3c3c;
+  flex-shrink: 0;
+}
+
+header h1 { font-size: 1.1rem; color: #9cdcfe; }
+
+#controls { display: flex; align-items: center; gap: 0.4rem; }
+
+button {
+  background: #0e639c;
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+button:hover { background: #1177bb; }
+button:disabled { background: #3c3c3c; color: #666; cursor: not-allowed; }
+
+#inp-hz {
+  width: 10ch;
+  background: #3c3c3c;
+  border: 1px solid #555;
+  color: #d4d4d4;
+  font-family: monospace;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.badge {
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+}
+.badge-stopped { background: #3c3c3c; color: #858585; }
+.badge-running { background: #1a4d1a; color: #4ec9b0; }
+.badge-halted  { background: #4d1a1a; color: #f48771; }
+
+/* Dockview fills the rest of the viewport */
+.dockview-react { flex: 1; overflow: hidden; }
+
+h2 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #858585;
+  margin-bottom: 0.5rem;
+  margin-top: 0.75rem;
+}
+h2:first-child { margin-top: 0; }
+
+/* ── Editor panel ─────────────────────────────────────────────────────────── */
+
+.panel-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem;
+  overflow: hidden;
+}
+
+#editor {
+  flex: 1;
+  min-height: 0;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: 1px solid #3c3c3c;
+  padding: 0.5rem;
+  resize: none;
+  font-family: monospace;
+  font-size: 0.85rem;
+  tab-size: 4;
+}
+
+#editor-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+  flex-shrink: 0;
+}
+
+.file-label {
+  display: inline-block;
+  background: #0e639c;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+.file-label:hover { background: #1177bb; }
+
+.assembler-output {
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #3c3c3c;
+  padding: 0.4rem;
+  color: #858585;
+  flex-shrink: 0;
+}
+.assembler-output.output-ok    { color: #4ec9b0; border-color: #2a5a4a; }
+.assembler-output.output-error { color: #f48771; border-color: #5a2a2a; }
+
+
+/* ── VideoOutput panel ─────────────────────────────────────────────────────── */
+
+.panel-videoOutput {
+  height: 100%; 
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+/* ── Registers panel ─────────────────────────────────────────────────────── */
+
+.panel-registers {
+  height: 100%;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+#reg-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+#reg-table th { text-align: left; color: #9cdcfe; padding: 1px 6px; }
+#reg-table td { color: #b5cea8; font-variant-numeric: tabular-nums; }
+
+#flags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.flag {
+  padding: 2px 6px;
+  border: 1px solid #555;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  color: #555;
+}
+.flag.set { color: #4ec9b0; border-color: #4ec9b0; }
+
+#pgu-canvas {
+  border: 1px solid #3c3c3c;
+  image-rendering: pixelated;
+  width: 100%;
+}
+
+/* ── Memory panel ────────────────────────────────────────────────────────── */
+
+.panel-memory {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+#memory-header {
+  padding: 0.75rem 0.75rem 0.4rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+#memory-controls {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+#memory-controls input {
+  background: #3c3c3c;
+  border: 1px solid #555;
+  color: #d4d4d4;
+  font-family: monospace;
+  padding: 2px 4px;
+}
+
+#memory-regions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.btn-region {
+  background: #2a2d2e;
+  color: #9cdcfe;
+  border: 1px solid #3c3c3c;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: monospace;
+}
+.btn-region:hover { background: #37373d; border-color: #555; }
+
+#memory-col-header {
+  flex-shrink: 0;
+  padding: 0.2rem 0.75rem;
+  border-bottom: 1px solid #3c3c3c;
+  background: #1e1e1e;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#memory-grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  position: relative;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#memory-status {
+  flex-shrink: 0;
+  padding: 0.3rem 0.75rem;
+  border-top: 1px solid #3c3c3c;
+  font-size: 0.75rem;
+  color: #858585;
+  font-variant-numeric: tabular-nums;
+}
+
+.mem-row { display: flex; gap: 0.3rem; height: 20px; align-items: center; }
+.mem-addr { color: #858585; min-width: 4ch; }
+.mem-byte { color: #b5cea8; min-width: 2ch; cursor: pointer; user-select: none; }
+.mem-byte:hover { background: #264f78; }
+.mem-byte.pc { background: #4a3f00; color: #ffd700; }
+.mem-col-hdr { color: #555; min-width: 2ch; }
+
+.mem-byte-input {
+  background: #264f78;
+  color: #d4d4d4;
+  border: 1px solid #9cdcfe;
+  font-family: monospace;
+  font-size: 0.75rem;
+  padding: 0;
+  outline: none;
+  text-transform: uppercase;
+  width: 2ch;
+}
+
+/* ── Dockview dark theme ─────────────────────────────────────────────────── */
+
+.dockview-theme-dark {
+  --dv-background-color: #1e1e1e;
+  --dv-tabs-and-actions-container-background-color: #252526;
+  --dv-activegroup-visiblepanel-tab-background-color: #1e1e1e;
+  --dv-activegroup-hiddenpanel-tab-background-color: #2d2d2d;
+  --dv-inactivegroup-visiblepanel-tab-background-color: #2d2d2d;
+  --dv-inactivegroup-hiddenpanel-tab-background-color: #252526;
+  --dv-tab-color: #858585;
+  --dv-activegroup-visiblepanel-tab-color: #d4d4d4;
+  --dv-separator-border: #3c3c3c;
+  --dv-paneview-header-border-color: #3c3c3c;
+  --dv-group-view-background-color: #1e1e1e;
+  --dv-tabs-and-actions-container-font-family: monospace;
+  --dv-tabs-and-actions-container-font-size: 0.8rem;
+}

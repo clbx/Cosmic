@@ -1,0 +1,16 @@
+[
+  {
+    "name": "MOV #imm, Rx loads immediate into register",
+    "hex": "38 42 00 01",
+    "expect": {
+      "registers": { "A": "42" }
+    }
+  },
+  {
+    "name": "MOV #imm, Rx sets all eight registers",
+    "hex": "38 01 00  38 02 01  38 03 02  38 04 03  38 05 04  38 06 05  38 07 06  38 08 07  01",
+    "expect": {
+      "registers": { "A": "01", "B": "02", "C": "03", "D": "04", "E": "05", "F": "06", "G": "07", "H": "08" }
+    }
+  }
+]

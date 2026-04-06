@@ -1,0 +1,17 @@
+[
+  {
+    "name": "asm inline: MOV + ADD + HCF",
+    "asm": "MOV #05 R0\nMOV #03 R1\nADD R1\nHCF",
+    "expect": {
+      "registers": { "A": "08" }
+    }
+  },
+  {
+    "name": "asm inline: loop with label",
+    "asm": "MOV #00 R0\nloop:\n  ADD #01\n  CMP #05\n  JNZ #loop\n  HCF",
+    "expect": {
+      "registers": { "A": "05" },
+      "flags": { "Z": true }
+    }
+  }
+]

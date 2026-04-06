@@ -1,0 +1,7 @@
+{
+  "name": "CALL #imm / RET returns to instruction after CALL",
+  "file": "call_ret.bin",
+  "expect": {
+    "registers": { "A": "AA", "B": "BB" }
+  }
+}
